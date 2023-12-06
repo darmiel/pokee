@@ -1,12 +1,20 @@
 package com.github.pokee.canvas.font;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a font with variable-width glyphs that can be used for drawing text on a canvas.
+ */
 public class FlexibleWidthFont implements Font {
 
-
+    /**
+     * A record representing a glyph with a specific width and pixel data.
+     */
     record Glyph(int width, boolean[][] data) {
 
     }
@@ -17,6 +25,14 @@ public class FlexibleWidthFont implements Font {
     private final int glyphHeight;
     private final int padding;
 
+    /**
+     * Constructs a FlexibleWidthFont with the specified glyph height, padding between glyphs,
+     * and an array of Glyph objects.
+     *
+     * @param glyphHeight the height of each glyph in the font
+     * @param padding     the padding between glyphs when rendering text
+     * @param glyphs      an array of Glyph objects representing each character in the font
+     */
     public FlexibleWidthFont(final int glyphHeight,
                              final int padding,
                              final Glyph[] glyphs) {
@@ -25,7 +41,14 @@ public class FlexibleWidthFont implements Font {
         this.glyphs = glyphs;
     }
 
-    public static FlexibleWidthFont fromImage(final int glyphWidth, final int padding, final BufferedImage image) {
+    /**
+     * Creates a FlexibleWidthFont from a BufferedImage where glyphs are separated by red lines.
+     *
+     * @param padding the padding between glyphs when rendering text
+     * @param image   a BufferedImage containing the glyph data
+     * @return a new instance of FlexibleWidthFont created from the image
+     */
+    public static FlexibleWidthFont fromImage(final int padding, final BufferedImage image) {
         // glyph height is the height of the image
         final int glyphHeight = image.getHeight();
 
@@ -75,6 +98,29 @@ public class FlexibleWidthFont implements Font {
         return new FlexibleWidthFont(glyphHeight, padding, glyphs);
     }
 
+    /**
+     * Creates a FlexibleWidthFont from an image file. This method is unsafe because it throws
+     * a RuntimeException on failure to read the file.
+     *
+     * @param padding  the padding between glyphs when rendering text
+     * @param fileName the name of the file containing the glyph data
+     * @return a new instance of FlexibleWidthFont created from the image file
+     * @throws RuntimeException if reading the file fails
+     */
+    public static FlexibleWidthFont fromImageUnsafe(final int padding, final String fileName) {
+        final File file = new File(fileName);
+        final BufferedImage image;
+        try {
+            image = ImageIO.read(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return FlexibleWidthFont.fromImage(padding, image);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean[][] getCharacterMap(final String text) {
         final char[] characters = text.toLowerCase().toCharArray();

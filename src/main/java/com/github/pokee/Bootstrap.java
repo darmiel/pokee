@@ -1,15 +1,11 @@
 package com.github.pokee;
 
 import com.github.pokee.canvas.BounceAnimation;
-import com.github.pokee.canvas.Canvas;
-import com.github.pokee.canvas.SpriteType;
-import com.github.pokee.canvas.font.FlexibleWidthFont;
-import com.github.pokee.canvas.font.Font;
+import com.github.pokee.canvas.StringCanvas;
+import com.github.pokee.canvas.draw.SpriteType;
+import com.github.pokee.canvas.font.Fonts;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 public class Bootstrap {
@@ -22,7 +18,7 @@ public class Bootstrap {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        final Canvas canvas = new Canvas(150, 70);
+        final StringCanvas canvas = new StringCanvas(150, 70);
 
         final DrawablePokemon pikachu = new DrawablePokemon(25, "Pikachu", PokemonType.ELECTRIC);
         final BounceAnimation pikachuBounce = new BounceAnimation(0, 3);
@@ -32,9 +28,6 @@ public class Bootstrap {
 
         final int padding = 5;
         final BounceAnimation panAnimation = new BounceAnimation(-5, 60);
-
-        final BufferedImage simpleFontMap = ImageIO.read(new File("3x3-font.png"));
-        final Font simpleFont = FlexibleWidthFont.fromImage(3, 1, simpleFontMap);
 
         double health = 1.0;
 
@@ -71,10 +64,26 @@ public class Bootstrap {
             canvas.drawRect(3, 3, 28, 3, Color.RED.getRGB());
             canvas.drawRect(3, 3, (int) (28 * health), 3, Color.GREEN.getRGB());
 
+            // print text box
             canvas.drawRect(5, canvas.getHeight() - 5 - 8, canvas.getWidth() - 10, 8, Color.WHITE.getRGB());
 
-            int previousTextWidth = canvas.drawText(7, canvas.getHeight() - 5 - 7, "Hallo.Ich bin der: ", simpleFont, Color.BLACK.getRGB());
-            previousTextWidth = canvas.drawText(7 + previousTextWidth, canvas.getHeight() - 5 - 7, "Daniel", simpleFont, Color.RED.getRGB());
+            int previousTextWidth = canvas.drawText(
+                    7,
+                    canvas.getHeight() - 5 - 7,
+                    "Hallo.Ich bin der: ",
+                    Fonts.SMALL,
+                    Color.BLACK.getRGB()
+            );
+            previousTextWidth = canvas.drawText(
+                    7 + previousTextWidth,
+                    canvas.getHeight() - 5 - 7,
+                    "Daniel",
+                    Fonts.SMALL,
+                    Color.RED.getRGB()
+            );
+
+            canvas.drawLine(10, 10, canvas.getWidth() - 10, canvas.getHeight() - 10, 1, Color.RED.getRGB());
+            canvas.drawLine(10, canvas.getHeight() - 10, canvas.getWidth() - 10, 10, 1, Color.RED.getRGB());
 
             System.out.println("\n\n\n\n\n" + canvas.render(2));
 

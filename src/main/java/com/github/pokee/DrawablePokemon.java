@@ -1,7 +1,7 @@
 package com.github.pokee;
 
-import com.github.pokee.canvas.Drawable;
-import com.github.pokee.canvas.SpriteType;
+import com.github.pokee.canvas.draw.Drawable;
+import com.github.pokee.canvas.draw.SpriteType;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

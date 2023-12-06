@@ -1,4 +1,4 @@
-package com.github.pokee.canvas;
+package com.github.pokee.canvas.draw;
 
 public class AnsiColor {
 
