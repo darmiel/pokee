@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class MonospacedFont implements Font {
 
-    public static final String GLYPH_MAPPING = "abcdefghijklmnopqrstwuvwxyz0123456789";
+    public static final String GLYPH_MAPPING = "abcdefghijklmnopqrstuvwxyz0123456789";
 
     private final int glyphWidth;
     private final int glyphHeight;
@@ -64,7 +64,7 @@ public class MonospacedFont implements Font {
         for (int i = 0; i < characters.length; i++) {
             final char character = characters[i];
 
-            final int index = MonospacedFont.GLYPH_MAPPING.indexOf(character);
+            final int index = MonospacedFont.GLYPH_MAPPING.indexOf(Character.toLowerCase(character));
             if (index < 0) {
                 System.out.println("cannot find " + character + " in " + MonospacedFont.GLYPH_MAPPING);
                 continue;
@@ -75,8 +75,8 @@ public class MonospacedFont implements Font {
                     result[x + i * (this.glyphWidth + this.padding)][y] = glyph[x][y];
                 }
             }
-
         }
+
         return result;
     }
 

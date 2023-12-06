@@ -22,7 +22,7 @@ public class Bootstrap {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        final Canvas canvas = new Canvas(100, 17);
+        final Canvas canvas = new Canvas(100, 30);
 
         final DrawablePokemon pikachu = new DrawablePokemon(25, "Pikachu", PokemonType.ELECTRIC);
         final BounceAnimation pikachuBounce = new BounceAnimation(0, 3);
@@ -37,8 +37,8 @@ public class Bootstrap {
         final Font simpleFont = MonospacedFont.fromImage(5, 1, simpleFontMap);
 
         canvas.reset();
-        canvas.drawText(0, 0, "abcdefghijkl", simpleFont, Color.BLACK.getRGB());
-        canvas.drawText(0, 7, "mnopqrstuwxyz", simpleFont, Color.BLACK.getRGB());
+        canvas.drawText(0, 0, "Hello", simpleFont, Color.GREEN.getRGB());
+        canvas.drawText(simpleFont.getWidth("Hello") + 2, 0, "World", simpleFont, Color.RED.getRGB());
         canvas.render(2);
 
         if (true) {
