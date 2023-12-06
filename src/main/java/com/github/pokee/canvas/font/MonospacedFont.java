@@ -1,11 +1,6 @@
 package com.github.pokee.canvas.font;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MonospacedFont implements Font {
 
@@ -57,8 +52,7 @@ public class MonospacedFont implements Font {
 
     @Override
     public boolean[][] getCharacterMap(final String text) {
-        final boolean[][] result = new boolean[(this.glyphWidth + this.padding) * text.length()]
-                [(this.glyphHeight + this.padding) * text.length()];
+        final boolean[][] result = new boolean[(this.glyphWidth + this.padding) * text.length()][this.glyphHeight];
 
         final char[] characters = text.toCharArray();
         for (int i = 0; i < characters.length; i++) {
@@ -71,9 +65,7 @@ public class MonospacedFont implements Font {
             }
             final boolean[][] glyph = this.glyphs[index];
             for (int x = 0; x < glyph.length; x++) {
-                for (int y = 0; y < glyph[x].length; y++) {
-                    result[x + i * (this.glyphWidth + this.padding)][y] = glyph[x][y];
-                }
+                System.arraycopy(glyph[x], 0, result[x + i * (this.glyphWidth + this.padding)], 0, glyph[x].length);
             }
         }
 

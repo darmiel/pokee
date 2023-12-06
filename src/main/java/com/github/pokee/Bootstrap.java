@@ -3,8 +3,8 @@ package com.github.pokee;
 import com.github.pokee.canvas.BounceAnimation;
 import com.github.pokee.canvas.Canvas;
 import com.github.pokee.canvas.SpriteType;
+import com.github.pokee.canvas.font.FlexibleWidthFont;
 import com.github.pokee.canvas.font.Font;
-import com.github.pokee.canvas.font.MonospacedFont;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -22,7 +22,7 @@ public class Bootstrap {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        final Canvas canvas = new Canvas(100, 30);
+        final Canvas canvas = new Canvas(150, 70);
 
         final DrawablePokemon pikachu = new DrawablePokemon(25, "Pikachu", PokemonType.ELECTRIC);
         final BounceAnimation pikachuBounce = new BounceAnimation(0, 3);
@@ -33,17 +33,8 @@ public class Bootstrap {
         final int padding = 5;
         final BounceAnimation panAnimation = new BounceAnimation(-5, 60);
 
-        final BufferedImage simpleFontMap = ImageIO.read(new File("font.png"));
-        final Font simpleFont = MonospacedFont.fromImage(5, 1, simpleFontMap);
-
-        canvas.reset();
-        canvas.drawText(0, 0, "Hello", simpleFont, Color.GREEN.getRGB());
-        canvas.drawText(simpleFont.getWidth("Hello") + 2, 0, "World", simpleFont, Color.RED.getRGB());
-        canvas.render(2);
-
-        if (true) {
-            return;
-        }
+        final BufferedImage simpleFontMap = ImageIO.read(new File("3x3-font.png"));
+        final Font simpleFont = FlexibleWidthFont.fromImage(3, 1, simpleFontMap);
 
         double health = 1.0;
 
@@ -79,11 +70,13 @@ public class Bootstrap {
             canvas.drawRect(2, 2, 30, 5, Color.BLACK.getRGB());
             canvas.drawRect(3, 3, 28, 3, Color.RED.getRGB());
             canvas.drawRect(3, 3, (int) (28 * health), 3, Color.GREEN.getRGB());
-            canvas.drawText(3, 3, "Hello!", simpleFont, Color.YELLOW.getRGB());
-            ;
 
-            System.out.println("\n\n\n\n\n");
-            canvas.render(2);
+            canvas.drawRect(5, canvas.getHeight() - 5 - 8, canvas.getWidth() - 10, 8, Color.WHITE.getRGB());
+
+            int previousTextWidth = canvas.drawText(7, canvas.getHeight() - 5 - 7, "Hallo.Ich bin der: ", simpleFont, Color.BLACK.getRGB());
+            previousTextWidth = canvas.drawText(7 + previousTextWidth, canvas.getHeight() - 5 - 7, "Daniel", simpleFont, Color.RED.getRGB());
+
+            System.out.println("\n\n\n\n\n" + canvas.render(2));
 
             pikachuBounce.tick();
             glumandaBounce.tick();
@@ -99,7 +92,7 @@ public class Bootstrap {
 
         canvas.reset();
         canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), Color.RED.getRGB());
-        canvas.render(2);
+        System.out.println(canvas.render(2));
     }
 
 }

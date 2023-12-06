@@ -2,11 +2,7 @@ package com.github.pokee.canvas;
 
 import com.github.pokee.canvas.font.Font;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 public class Canvas {
 
@@ -43,6 +39,7 @@ public class Canvas {
                     continue;
                 }
                 // check if white
+                // TODO: remove this in the future, this is only a workaround since some sprites have white backgrounds
                 if ((rgb & 0xFFFFFF) == 0xFFFFFF) {
                     continue;
                 }
@@ -71,16 +68,17 @@ public class Canvas {
         }
     }
 
-    public void drawText(final int x, final int y, final String text, final Font font, final int rgb) {
+    public int drawText(final int x, final int y, final String text, final Font font, final int rgb) {
         // get character map
         final boolean[][] characterMap = font.getCharacterMap(text);
         for (int cX = 0; cX < characterMap.length; cX++) {
-            for (int cY = 0; cY < characterMap.length; cY++) {
+            for (int cY = 0; cY < characterMap[cX].length; cY++) {
                 if (characterMap[cX][cY]) {
                     this.drawPixel(x + cX, y + cY, rgb);
                 }
             }
         }
+        return characterMap.length;
     }
 
     public void drawLine(final int startX, final int startY, final int endX, final int endY) {
@@ -91,12 +89,11 @@ public class Canvas {
         for (int x = 0; x < this.width; x++) {
             for (int y = 0; y < this.height; y++) {
                 this.colors[x][y] = 0;
-//                this.colors[x][y] = Color.BLACK.getRGB();
             }
         }
     }
 
-    public void render(final int thickness) {
+    public String render(final int thickness) {
         final StringBuilder bob = new StringBuilder();
 
         final String pixel = " ".repeat(thickness);
@@ -115,7 +112,7 @@ public class Canvas {
             }
             bob.append("\n");
         }
-        System.out.println(bob);
+        return bob.toString();
     }
 
     public int getHeight() {
