@@ -1,9 +1,10 @@
 package com.github.pokee;
 
 import com.github.pokee.canvas.BounceAnimation;
-import com.github.pokee.canvas.StringCanvas;
+import com.github.pokee.canvas.Canvas;
 import com.github.pokee.canvas.draw.SpriteType;
 import com.github.pokee.canvas.font.Fonts;
+import com.github.pokee.canvas.impl.JFrameCanvas;
 
 import java.awt.*;
 import java.io.IOException;
@@ -18,7 +19,8 @@ public class Bootstrap {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        final StringCanvas canvas = new StringCanvas(150, 70);
+        final Canvas<?> canvas = new JFrameCanvas(150, 70, 4);
+//        new ConsoleCanvas(150, 70, 1, 8);
 
         final DrawablePokemon pikachu = new DrawablePokemon(25, "Pikachu", PokemonType.ELECTRIC);
         final BounceAnimation pikachuBounce = new BounceAnimation(0, 3);
@@ -85,7 +87,7 @@ public class Bootstrap {
             canvas.drawLine(10, 10, canvas.getWidth() - 10, canvas.getHeight() - 10, 1, Color.RED.getRGB());
             canvas.drawLine(10, canvas.getHeight() - 10, canvas.getWidth() - 10, 10, 1, Color.RED.getRGB());
 
-            System.out.println("\n\n\n\n\n" + canvas.render(2));
+            canvas.render();
 
             pikachuBounce.tick();
             glumandaBounce.tick();
@@ -101,7 +103,7 @@ public class Bootstrap {
 
         canvas.reset();
         canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), Color.RED.getRGB());
-        System.out.println(canvas.render(2));
+        canvas.render();
     }
 
 }
