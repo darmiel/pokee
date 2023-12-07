@@ -2,20 +2,20 @@ package com.github.pokee.canvas.animation;
 
 import com.github.pokee.canvas.canvas.Canvas;
 
-import java.awt.*;
-
 public class SnowflakeAnimation implements Animation {
 
     private final int width;
     private final int height;
     private final boolean[][] snowflakes;
     private final int[] rowColors;
+    private final float amount;
 
-    public SnowflakeAnimation(final int width, final int height, final int[] colors) {
+    public SnowflakeAnimation(final int width, final int height, final int[] colors, final float amount) {
         this.width = width;
         this.height = height;
-        this.snowflakes = new boolean[width][height];
+        this.amount = amount;
 
+        this.snowflakes = new boolean[width][height];
         this.rowColors = new int[width];
         for (int i = 0; i < width; i++) {
             this.rowColors[i] = colors[(int) (Math.random() * colors.length)];
@@ -30,7 +30,7 @@ public class SnowflakeAnimation implements Animation {
                 if (this.snowflakes[x][y]) {
                     continue;
                 }
-                if (Math.random() < 0.01) {
+                if (Math.random() < this.amount) {
                     this.snowflakes[x][y] = true;
                 }
             }
@@ -59,7 +59,8 @@ public class SnowflakeAnimation implements Animation {
                 if (!this.snowflakes[x][y]) {
                     continue;
                 }
-                canvas.drawPixel(x, y, Color.WHITE.getRGB());
+                final int color = this.rowColors[x];
+                canvas.drawPixel(x, y, color);
             }
         }
     }

@@ -52,7 +52,7 @@ public class JFramePixelCanvas extends PixelCanvas implements Renderable<Void> {
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.setSize(
                 JFramePixelCanvas.this.width * thickness,
-                (JFramePixelCanvas.this.height + 3) * thickness
+                (JFramePixelCanvas.this.height) * thickness + (thickness * 25)
         );
         this.frame.setBackground(Color.BLACK);
         this.frame.add(new Panel(thickness));

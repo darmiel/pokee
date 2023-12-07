@@ -2,9 +2,11 @@ package com.github.pokee.canvas.canvas;
 
 import com.github.pokee.canvas.font.Font;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public interface Canvas {
+
     void drawPixel(int x, int y, int rgb);
 
     void drawImage(int startX,
@@ -12,7 +14,13 @@ public interface Canvas {
                    BufferedImage image,
                    boolean replaceTransparentPixels);
 
-    void drawRect(int x,
+    void drawImage(int startX,
+                   int startY,
+                   BufferedImage image,
+                   boolean replaceTransparentPixels,
+                   Color replaceColor);
+
+    void fillRect(int x,
                   int y,
                   int width,
                   int height,
@@ -36,4 +44,9 @@ public interface Canvas {
     int getHeight();
 
     int getWidth();
+
+    void strokeEllipse(int centerX, int centerY, int radiusX, int radiusY, int rgbColor);
+
+    void fillEllipse(int centerX, int centerY, int radiusX, int radiusY, int rgbColor);
+
 }
