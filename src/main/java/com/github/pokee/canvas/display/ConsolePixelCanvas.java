@@ -1,6 +1,6 @@
-package com.github.pokee.canvas.impl;
+package com.github.pokee.canvas.display;
 
-public class ConsoleCanvas extends StringCanvas {
+public class ConsolePixelCanvas extends StringPixelCanvas {
 
     private final int newLines;
 
@@ -12,10 +12,10 @@ public class ConsoleCanvas extends StringCanvas {
      * @param thickness multiplier for pixel representation
      * @param newLines  number of new lines to print before rendering
      */
-    public ConsoleCanvas(final int width,
-                         final int height,
-                         final int thickness,
-                         final int newLines) {
+    public ConsolePixelCanvas(final int width,
+                              final int height,
+                              final int thickness,
+                              final int newLines) {
         super(width, height, thickness);
 
         this.newLines = newLines;

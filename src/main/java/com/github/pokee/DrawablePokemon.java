@@ -1,6 +1,5 @@
 package com.github.pokee;
 
-import com.github.pokee.canvas.draw.Drawable;
 import com.github.pokee.canvas.draw.SpriteType;
 
 import javax.imageio.ImageIO;
@@ -9,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-public class DrawablePokemon extends Pokemon implements Drawable {
+public class DrawablePokemon extends Pokemon {
 
     private static final File missingNoFile = new File("sprites", "MissingNo.png");
 

@@ -1,4 +1,4 @@
-package com.github.pokee.canvas;
+package com.github.pokee.canvas.canvas;
 
 import com.github.pokee.canvas.font.Font;
 
@@ -7,7 +7,9 @@ import java.awt.image.BufferedImage;
 /**
  * Represents a drawing surface where pixels can be manipulated.
  */
-public abstract class Canvas<T> {
+public class PixelCanvas implements Canvas {
+
+    protected final int defaultColor;
 
     protected final int width;
     protected final int height;
@@ -21,13 +23,25 @@ public abstract class Canvas<T> {
     /**
      * Constructs a canvas with the given width and height.
      *
-     * @param width  the width of the canvas
-     * @param height the height of the canvas
+     * @param width        the width of the canvas
+     * @param height       the height of the canvas
+     * @param defaultColor the default color of the canvas
      */
-    public Canvas(final int width, final int height) {
+    public PixelCanvas(final int width, final int height, final int defaultColor) {
         this.width = width;
         this.height = height;
         this.colors = new int[width][height];
+        this.defaultColor = defaultColor;
+    }
+
+    /**
+     * Constructs a canvas with the given width and height.
+     *
+     * @param width  the width of the canvas
+     * @param height the height of the canvas
+     */
+    public PixelCanvas(final int width, final int height) {
+        this(width, height, 0x00000000);
     }
 
     /**
@@ -37,6 +51,7 @@ public abstract class Canvas<T> {
      * @param y   the y-coordinate of the pixel
      * @param rgb the RGB color of the pixel
      */
+    @Override
     public void drawPixel(final int x, final int y, final int rgb) {
         if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
             this.colors[x][y] = rgb;
@@ -51,6 +66,7 @@ public abstract class Canvas<T> {
      * @param image                    the BufferedImage to draw
      * @param replaceTransparentPixels if true, replaces transparent pixels with the image pixels
      */
+    @Override
     public void drawImage(final int startX,
                           final int startY,
                           final BufferedImage image,
@@ -87,6 +103,7 @@ public abstract class Canvas<T> {
      * @param height the height of the rectangle
      * @param rgb    the RGB color of the rectangle
      */
+    @Override
     public void drawRect(final int x,
                          final int y,
                          final int width,
@@ -137,6 +154,7 @@ public abstract class Canvas<T> {
      * @param rgb  the RGB color of the text
      * @return the width of the text in pixels
      */
+    @Override
     public int drawText(final int x,
                         final int y,
                         final String text,
@@ -158,6 +176,11 @@ public abstract class Canvas<T> {
      * Draws a line on the canvas between two points (start and end)
      * using the Bresenham's line drawing algorithm.
      *
+     * <p>
+     * Don't ask me how this works, GitHub Copilot wrote this for me.
+     * But it works, so I'm not complaining.
+     * </p>
+     *
      * @param startX    the starting x-coordinate of the line
      * @param startY    the starting y-coordinate of the line
      * @param endX      the ending x-coordinate of the line
@@ -165,6 +188,7 @@ public abstract class Canvas<T> {
      * @param thickness the thickness of the line
      * @param lineColor the RGB color of the line
      */
+    @Override
     public void drawLine(final int startX,
                          final int startY,
                          final int endX,
@@ -172,16 +196,16 @@ public abstract class Canvas<T> {
                          final int thickness,
                          final int lineColor) {
         // Calculate the change in x and y
-        int deltaX = Math.abs(endX - startX);
-        int deltaY = Math.abs(endY - startY);
+        final int deltaX = Math.abs(endX - startX);
+        final int deltaY = Math.abs(endY - startY);
+
         // Determine the sign of the increment (positive or negative step)
-        int stepX = startX < endX ? 1 : -1;
-        int stepY = startY < endY ? 1 : -1;
+        final int stepX = startX < endX ? 1 : -1;
+        final int stepY = startY < endY ? 1 : -1;
 
         // Initial error term for decision making
         int error = deltaX - deltaY;
         int errorAdjustment;
-
         int currentX = startX;
         int currentY = startY;
 
@@ -211,21 +235,21 @@ public abstract class Canvas<T> {
     /**
      * Resets the canvas to its default state.
      */
+    @Override
     public void reset() {
         for (int x = 0; x < this.width; x++) {
             for (int y = 0; y < this.height; y++) {
-                this.colors[x][y] = 0;
+                this.colors[x][y] = this.defaultColor;
             }
         }
     }
-
-    public abstract T render();
 
     /**
      * Gets the height of the canvas.
      *
      * @return the height of the canvas
      */
+    @Override
     public int getHeight() {
         return height;
     }
@@ -235,7 +259,9 @@ public abstract class Canvas<T> {
      *
      * @return the width of the canvas
      */
+    @Override
     public int getWidth() {
         return width;
     }
+
 }

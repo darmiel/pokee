@@ -1,6 +1,6 @@
-package com.github.pokee.canvas;
+package com.github.pokee.canvas.animation;
 
-public class BounceAnimation {
+public class BounceAnimation implements Animation {
 
     private final int startY;
     private final int endY;
@@ -16,6 +16,7 @@ public class BounceAnimation {
         this.direction = this.endY > this.startY;
     }
 
+    @Override
     public void tick() {
         if (this.direction) {
             if (++this.y >= this.endY) {
@@ -28,6 +29,11 @@ public class BounceAnimation {
         }
     }
 
+    @Override
+    public boolean isDone() {
+        return false; // this is an infinite animation
+    }
+
     public int getY() {
         return y;
     }
@@ -35,4 +41,5 @@ public class BounceAnimation {
     public int getEndY() {
         return endY;
     }
+
 }

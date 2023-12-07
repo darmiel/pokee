@@ -1,9 +1,9 @@
-package com.github.pokee.canvas.impl;
+package com.github.pokee.canvas.display;
 
-import com.github.pokee.canvas.Canvas;
 import com.github.pokee.canvas.draw.AnsiColor;
+import com.github.pokee.canvas.canvas.PixelCanvas;
 
-public class StringCanvas extends Canvas<String> {
+public class StringPixelCanvas extends PixelCanvas implements Renderable<String> {
 
     private final int thickness;
 
@@ -13,7 +13,7 @@ public class StringCanvas extends Canvas<String> {
      * @param width  the width of the canvas
      * @param height the height of the canvas
      */
-    public StringCanvas(final int width, final int height, final int thickness) {
+    public StringPixelCanvas(final int width, final int height, final int thickness) {
         super(width, height);
 
         this.thickness = thickness;
