@@ -153,4 +153,7 @@ public class FlexibleWidthFont implements Font {
         return result;
     }
 
+    public int getGlyphHeight() {
+        return glyphHeight;
+    }
 }

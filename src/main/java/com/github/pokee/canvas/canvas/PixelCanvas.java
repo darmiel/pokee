@@ -78,11 +78,6 @@ public class PixelCanvas implements Canvas {
                 if (alpha == 0 && !replaceTransparentPixels) {
                     continue;
                 }
-                // check if white
-                // TODO: remove this in the future, this is only a workaround since some sprites have white backgrounds
-                if ((rgb & 0xFFFFFF) == 0xFFFFFF) {
-                    continue;
-                }
                 // check bounds
                 final int imageX = startX + x;
                 final int imageY = startY + y;
