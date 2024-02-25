@@ -4,6 +4,9 @@ import com.github.pokee.json.token.JsonTokenType;
 
 import java.util.Arrays;
 
+/**
+ * Exception thrown when a token type is expected but another token type is found
+ */
 public class TokenTypeExpectedException extends Exception {
 
     private final JsonTokenType[] expected;

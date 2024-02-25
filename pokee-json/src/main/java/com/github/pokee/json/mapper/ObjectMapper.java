@@ -1,5 +1,6 @@
 package com.github.pokee.json.mapper;
 
+import com.github.pokee.json.exception.MissingRequiredFieldException;
 import com.github.pokee.json.exception.TokenTypeExpectedException;
 import com.github.pokee.json.mapper.annotations.Ignored;
 import com.github.pokee.json.mapper.annotations.Optional;
@@ -16,8 +17,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * Maps a JSON object to a Java object
+ */
 public class ObjectMapper {
 
+    /**
+     * Supported converters for primitive types
+     */
     public static final Map<Class<?>, Function<String, Object>> CONVERTERS = new HashMap<>() {{
         put(String.class, s -> s);
         put(int.class, Integer::parseInt);
@@ -32,10 +39,22 @@ public class ObjectMapper {
         put(Boolean.class, Boolean::parseBoolean);
     }};
 
+    /**
+     * Maps a JsonObject to a Java object
+     *
+     * @param object The JsonObject to map
+     * @param clazz  The class to map to
+     * @param <T>    The type of the object
+     * @return The mapped object
+     * @throws NoSuchMethodException     If the no-args constructor is missing
+     * @throws InvocationTargetException If the constructor throws an exception
+     * @throws InstantiationException    If the class is abstract or an interface
+     * @throws IllegalAccessException    If the class or its no-args constructor is not accessible
+     */
     public static <T> T mapJsonObject(
             final JsonObject object,
             final Class<T> clazz
-    ) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    ) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, MissingRequiredFieldException {
         // we require a no-args constructor
         final Constructor<T> constructor = clazz.getDeclaredConstructor();
         constructor.setAccessible(true);
@@ -57,7 +76,7 @@ public class ObjectMapper {
                 if (declaredField.isAnnotationPresent(Optional.class)) {
                     continue;
                 }
-                throw new IllegalArgumentException("Missing required field: " + key);
+                throw new MissingRequiredFieldException(key);
             }
 
             final Object fieldValue;
@@ -91,10 +110,24 @@ public class ObjectMapper {
         return instance;
     }
 
+    /**
+     * Parses a JSON string to a Java object
+     *
+     * @param json  The JSON string
+     * @param clazz The class to map to
+     * @param <T>   The type of the object
+     * @return The mapped object
+     * @throws TokenTypeExpectedException    If the JSON is invalid
+     * @throws InvocationTargetException     If the constructor throws an exception
+     * @throws NoSuchMethodException         If the no-args constructor is missing
+     * @throws InstantiationException        If the class is abstract or an interface
+     * @throws IllegalAccessException        If the class or its no-args constructor is not accessible
+     * @throws MissingRequiredFieldException If a required field is missing
+     */
     public static <T> T parse(
             final String json,
             final Class<T> clazz
-    ) throws TokenTypeExpectedException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    ) throws TokenTypeExpectedException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, MissingRequiredFieldException {
         final JsonParser parser = new JsonParser(json);
         final JsonElement element = parser.parse();
         if (element.isObject()) {

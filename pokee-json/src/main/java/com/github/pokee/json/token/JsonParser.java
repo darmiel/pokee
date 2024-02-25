@@ -99,6 +99,7 @@ public class JsonParser {
      *             "nestedKey2": "nestedValue2"
      *           }
      *         ]
+     * </pre>
      * @return the array read from the tokenizer
      * @throws TokenTypeExpectedException if the tokenizer does not contain a valid array
      */
