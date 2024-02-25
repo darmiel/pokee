@@ -1,5 +1,8 @@
 package com.github.pokee.json.exception;
 
+/**
+ * Exception thrown when a required field is missing
+ */
 public class MissingRequiredFieldException extends Exception {
 
     private final String key;

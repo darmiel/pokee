@@ -1,5 +1,6 @@
 package com.github.pokee.json;
 
+import com.github.pokee.json.exception.MissingRequiredFieldException;
 import com.github.pokee.json.exception.TokenTypeExpectedException;
 import com.github.pokee.json.mapper.ObjectMapper;
 import com.github.pokee.json.mapper.annotations.Ignored;
@@ -40,7 +41,7 @@ public class Bootstrap {
         }
     }
 
-    public static void main(String[] args) throws TokenTypeExpectedException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public static void main(String[] args) throws TokenTypeExpectedException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, MissingRequiredFieldException {
         String json = "{\"name\":\"John\",\"age\":30,\"person\":{\"name\":\"Tobias\",\"age\":9, \"person\": null}}";
         final Person person = ObjectMapper.parse(json, Person.class);
         System.out.println(person);

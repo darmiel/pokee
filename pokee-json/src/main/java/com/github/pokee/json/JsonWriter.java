@@ -6,8 +6,15 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * This class is responsible for converting an object to a JSON string.
+ */
 public class JsonWriter {
 
+    /**
+     * A set of all wrapper types.
+     * These are the types that can be directly converted to a string.
+     */
     private static final Set<Class<?>> WRAPPER_TYPES = new HashSet<>() {{
         add(Boolean.class);
         add(Character.class);
