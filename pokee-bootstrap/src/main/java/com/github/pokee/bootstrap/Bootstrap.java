@@ -1,27 +1,18 @@
-package com.github.pokee.renderer;
+package com.github.pokee.bootstrap;
 
 import com.github.pokee.renderer.canvas.canvas.Canvas;
-import com.github.pokee.renderer.canvas.display.ConsolePixelCanvas;
 import com.github.pokee.renderer.canvas.display.DebugPixelCanvas;
-import com.github.pokee.renderer.canvas.display.JFramePixelCanvas;
 import com.github.pokee.renderer.canvas.screen.ScreenManager;
 import com.github.pokee.renderer.canvas.screen.screens.AttackScreen;
 import com.github.pokee.renderer.canvas.screen.screens.RestartScreen;
+import com.github.pokee.renderer.console.ConsolePixelCanvas;
+import com.github.pokee.renderer.jframe.JFramePixelCanvas;
 
 import java.io.IOException;
-import java.security.SecureRandom;
-import java.util.Random;
 
 public class Bootstrap {
 
     public static final int FPS = 20;
-
-    public static final Random random = new SecureRandom();
-
-    private static void run(final Canvas canvas) throws IOException, InterruptedException {
-        final int attacker = random.nextInt(20 + 1) - 1;
-        final int defender = random.nextInt(20 + 1) - 1;
-    }
 
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -38,8 +29,10 @@ public class Bootstrap {
         screenManager.push(RestartScreen::new);
         screenManager.push(new AttackScreen(canvas, 25, 25));
 
+        //noinspection InfiniteLoopStatement
         for (; ; ) {
             screenManager.render();
+            //noinspection BusyWait
             Thread.sleep(1000 / FPS);
         }
     }

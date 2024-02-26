@@ -42,4 +42,5 @@ public class DamageAnimation implements Animation {
             default -> null;
         };
     }
+
 }

@@ -1,6 +1,7 @@
 package com.github.pokee.renderer.canvas.canvas;
 
 import com.github.pokee.renderer.canvas.font.Font;
+import lombok.Getter;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -19,6 +20,7 @@ public class PixelCanvas implements Canvas {
      * -1 = transparent
      * Otherwise RGB color for the pixel
      */
+    @Getter
     protected final int[][] colors;
 
     /**
@@ -264,7 +266,7 @@ public class PixelCanvas implements Canvas {
 
         // Initial decision parameter of region 1
         d1 = (radiusY * radiusY) - (radiusX * radiusX * radiusY) + (0.25 * radiusX * radiusX);
-        double dx = 2 * radiusY * radiusY * x;
+        @SuppressWarnings("ConstantValue") double dx = 2 * radiusY * radiusY * x;
         double dy = 2 * radiusX * radiusX * y;
 
         // For region 1
@@ -334,7 +336,7 @@ public class PixelCanvas implements Canvas {
 
         // Initial decision parameter of region 1
         d1 = (radiusY * radiusY) - (radiusX * radiusX * radiusY) + (0.25 * radiusX * radiusX);
-        double dx = 2 * radiusY * radiusY * x;
+        @SuppressWarnings("ConstantValue") double dx = 2 * radiusY * radiusY * x;
         double dy = 2 * radiusX * radiusX * y;
 
         // For region 1
