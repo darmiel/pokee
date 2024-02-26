@@ -2,6 +2,7 @@ package com.github.pokee.json.value;
 
 /**
  * Represents a JSON primitive value.
+ * @noinspection unused
  */
 public class JsonPrimitive implements JsonElement {
 
@@ -82,6 +83,24 @@ public class JsonPrimitive implements JsonElement {
      */
     public boolean isNull() {
         return "null".equals(this.rawValue);
+    }
+
+    /**
+     * Checks if the raw value is a boolean
+     *
+     * @return true if the raw value is a boolean, false otherwise
+     */
+    public boolean isBoolean() {
+        return "true".equals(this.rawValue) || "false".equals(this.rawValue);
+    }
+
+    /**
+     * Parses the raw value as a boolean
+     *
+     * @return the raw value as a boolean
+     */
+    public boolean asBoolean() {
+        return "true".equals(this.rawValue);
     }
 
     /**

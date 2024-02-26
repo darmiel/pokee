@@ -12,6 +12,22 @@ public class TokenTypeExpectedException extends Exception {
     private final JsonTokenType[] expected;
     private final JsonTokenType actual;
 
+    /**
+     * Returns the expected token types
+     * @return the expected token types
+     */
+    public JsonTokenType[] getExpected() {
+        return expected;
+    }
+
+    /**
+     * Returns the actual token type
+     * @return the actual token type
+     */
+    public JsonTokenType getActual() {
+        return actual;
+    }
+
     public TokenTypeExpectedException(final JsonTokenType[] expected, final JsonTokenType actual) {
         this.expected = expected;
         this.actual = actual;

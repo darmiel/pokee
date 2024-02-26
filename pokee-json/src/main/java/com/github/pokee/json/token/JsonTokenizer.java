@@ -79,21 +79,26 @@ public class JsonTokenizer {
                 final String read = this.readString();
                 return new JsonToken(JsonTokenType.STRING, read, startIndex, this.index);
             }
-            case 't', 'f' -> { // TOOD: check if _actually_ true or false
+            case 't', 'f' -> {
                 final String read = this.readPrimitive();
+                if (!read.strip().equals("true") && !read.strip().equals("false")) {
+                    throw new IllegalStateException("Unexpected character: " + c);
+                }
                 return new JsonToken(JsonTokenType.BOOLEAN, read, startIndex, this.index);
             }
-            case 'n' -> { // TOOD: check if _actually_ null
+            case 'n' -> {
                 final String read = this.readPrimitive();
+                if (!read.strip().equals("null")) {
+                    System.out.println("read was '" + read + "'");
+                    throw new IllegalStateException("Unexpected character: " + c);
+                }
                 return new JsonToken(JsonTokenType.NULL, read, startIndex, this.index);
             }
             case '.', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> {
                 final String read = this.readPrimitive();
                 return new JsonToken(JsonTokenType.NUMBER, read, startIndex, this.index);
             }
-            default -> {
-                throw new IllegalStateException("Unexpected character: " + c);
-            }
+            default -> throw new IllegalStateException("Unexpected character: " + c);
         }
     }
 
@@ -144,6 +149,15 @@ public class JsonTokenizer {
         }
 
         return bob.toString();
+    }
+
+    /**
+     * Get the current index of the tokenizer
+     *
+     * @return the current index
+     */
+    public int getIndex() {
+        return index;
     }
 
 }

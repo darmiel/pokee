@@ -19,6 +19,25 @@ public class JsonArray implements JsonElement {
         this.elements.add(element);
     }
 
+    /**
+     * Returns the element at the specified index
+     *
+     * @param index The index of the element
+     * @return The element at the specified index
+     */
+    public JsonElement get(final int index) {
+        return this.elements.get(index);
+    }
+
+    /**
+     * Returns the number of elements in the array
+     *
+     * @return The number of elements in the array
+     */
+    public int size() {
+        return this.elements.size();
+    }
+
     @Override
     public String toString() {
         return "JsonArray{" +
