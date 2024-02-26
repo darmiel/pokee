@@ -1,11 +1,14 @@
 package com.github.pokee.renderer.canvas.animation;
 
+import lombok.Getter;
+
 public class BounceAnimation implements Animation {
 
     private final int startY;
     private final int endY;
 
     private boolean direction;
+    @Getter
     private int y;
 
     public BounceAnimation(final int startY, final int endY) {
@@ -32,14 +35,6 @@ public class BounceAnimation implements Animation {
     @Override
     public boolean isDone() {
         return false; // this is an infinite animation
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getEndY() {
-        return endY;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.github.pokee.renderer.canvas.display;
+package com.github.pokee.renderer.console;
 
 public class ConsolePixelCanvas extends StringPixelCanvas {
 

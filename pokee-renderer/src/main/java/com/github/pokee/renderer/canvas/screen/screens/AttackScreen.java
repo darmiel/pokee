@@ -7,7 +7,7 @@ import com.github.pokee.renderer.canvas.animation.BounceAnimation;
 import com.github.pokee.renderer.canvas.animation.DamageAnimation;
 import com.github.pokee.renderer.canvas.animation.SnowflakeAnimation;
 import com.github.pokee.renderer.canvas.canvas.Canvas;
-import com.github.pokee.renderer.canvas.draw.AnsiColor;
+import com.github.pokee.renderer.canvas.draw.ColorUtils;
 import com.github.pokee.renderer.canvas.draw.SpriteType;
 import com.github.pokee.renderer.canvas.font.Fonts;
 import com.github.pokee.renderer.canvas.screen.Screen;
@@ -49,8 +49,8 @@ public class AttackScreen extends Screen {
         final DrawablePokemon defender = new DrawablePokemon(defenderID, "defender", PokemonType.FIRE);
         this.defenderSprite = defender.getSprites()[SpriteType.FRONT.ordinal()];
 
-        this.attackerCommonColor = AnsiColor.findMostCommon(this.attackerSprite, Color.YELLOW);
-        this.defenderCommonColor = AnsiColor.findMostCommon(this.defenderSprite, Color.ORANGE);
+        this.attackerCommonColor = ColorUtils.findMostCommon(this.attackerSprite, Color.YELLOW);
+        this.defenderCommonColor = ColorUtils.findMostCommon(this.defenderSprite, Color.ORANGE);
 
         // animations
         this.attackerEnterAnimation = this.registerAnimation(BerzierAnimation.easeOut(20));
@@ -112,8 +112,8 @@ public class AttackScreen extends Screen {
                 final int y = (int) (Math.random() * canvas.getHeight() * 2) - canvas.getHeight();
 
                 final double factor = Math.pow(.9, i);
-                final Color attackerColor = AnsiColor.darker(this.attackerCommonColor, factor);
-                final Color defenderColor = AnsiColor.darker(this.defenderCommonColor, factor);
+                final Color attackerColor = ColorUtils.darker(this.attackerCommonColor, factor);
+                final Color defenderColor = ColorUtils.darker(this.defenderCommonColor, factor);
 
                 canvas.drawLine(
                         attackerX + attackerWidth / 2,

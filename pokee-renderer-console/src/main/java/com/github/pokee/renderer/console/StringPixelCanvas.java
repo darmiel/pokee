@@ -1,6 +1,6 @@
-package com.github.pokee.renderer.canvas.display;
+package com.github.pokee.renderer.console;
 
-import com.github.pokee.renderer.canvas.draw.AnsiColor;
+import com.github.pokee.renderer.canvas.display.Renderable;
 import com.github.pokee.renderer.canvas.canvas.PixelCanvas;
 
 public class StringPixelCanvas extends PixelCanvas implements Renderable<String> {
