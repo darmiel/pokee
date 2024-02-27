@@ -6,11 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to mark a field as optional
- * If the field is not present in the JSON object, the field will be set to null
- * If the annotation is not present and the field is not present in the JSON object, an exception will be thrown
+ * Annotation to mark a field as ignored.
+ * The field will not be mapped to the JSON object and will be ignored.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Optional {
+public @interface JsonIgnore {
 }
