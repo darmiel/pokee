@@ -38,6 +38,9 @@ public interface JsonElement {
      * @return this element as a JSON object
      */
     default JsonObject asObject() {
+        if (!this.isObject()) {
+            throw new IllegalStateException("This element is not a JSON object");
+        }
         return (JsonObject) this;
     }
 
@@ -47,6 +50,9 @@ public interface JsonElement {
      * @return this element as a JSON array
      */
     default JsonArray asArray() {
+        if (!this.isArray()) {
+            throw new IllegalStateException("This element is not a JSON array");
+        }
         return (JsonArray) this;
     }
 
@@ -56,6 +62,9 @@ public interface JsonElement {
      * @return this element as a JSON primitive
      */
     default JsonPrimitive asPrimitive() {
+        if (!this.isPrimitive()) {
+            throw new IllegalStateException("This element is not a JSON primitive");
+        }
         return (JsonPrimitive) this;
     }
 

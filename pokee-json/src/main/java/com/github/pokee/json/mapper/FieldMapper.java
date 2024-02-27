@@ -13,4 +13,8 @@ import java.util.function.Predicate;
  */
 public record FieldMapper<T extends Mapper>(T mapper, Predicate<Field> predicate) {
 
+    public static <T extends Mapper> FieldMapper<T> wrap(T mapper) {
+        return new FieldMapper<>(mapper, null);
+    }
+
 }

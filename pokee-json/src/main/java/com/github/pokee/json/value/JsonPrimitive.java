@@ -1,6 +1,6 @@
 package com.github.pokee.json.value;
 
-import com.github.pokee.json.mapper.JsonMapper;
+import com.github.pokee.json.mapper.JsonReaderMapper;
 
 /**
  * Represents a JSON primitive value.
@@ -8,6 +8,10 @@ import com.github.pokee.json.mapper.JsonMapper;
  * @noinspection unused
  */
 public class JsonPrimitive implements JsonElement {
+
+    public static final String NULL = "null";
+    public static final String TRUE = "true";
+    public static final String FALSE = "false";
 
     private final String rawValue;
 
@@ -33,7 +37,7 @@ public class JsonPrimitive implements JsonElement {
         if (!this.isString()) {
             throw new IllegalStateException("The raw value is not a string");
         }
-        return JsonMapper.unescapeString(this.rawValue.substring(1, this.rawValue.length() - 1));
+        return JsonReaderMapper.unescapeString(this.rawValue.substring(1, this.rawValue.length() - 1));
     }
 
     /**
@@ -94,7 +98,7 @@ public class JsonPrimitive implements JsonElement {
      * @return true if the raw value is null, false otherwise
      */
     public boolean isNull() {
-        return JsonMapper.NULL.equals(this.rawValue);
+        return JsonPrimitive.NULL.equals(this.rawValue);
     }
 
     /**
@@ -103,7 +107,7 @@ public class JsonPrimitive implements JsonElement {
      * @return true if the raw value is a boolean, false otherwise
      */
     public boolean isBoolean() {
-        return JsonMapper.TRUE.equals(this.rawValue) || JsonMapper.FALSE.equals(this.rawValue);
+        return JsonPrimitive.TRUE.equals(this.rawValue) || JsonPrimitive.FALSE.equals(this.rawValue);
     }
 
     /**
@@ -115,7 +119,7 @@ public class JsonPrimitive implements JsonElement {
         if (!this.isBoolean()) {
             throw new IllegalStateException("The raw value is not a boolean");
         }
-        return JsonMapper.TRUE.equals(this.rawValue);
+        return JsonPrimitive.TRUE.equals(this.rawValue);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.github.pokee.json;
 
 import com.github.pokee.json.mapper.FieldMapper;
+import com.github.pokee.json.mapper.Mapper;
 import com.github.pokee.json.mapper.ValueReaderMapper;
 import com.github.pokee.json.mapper.ValueWriterMapper;
 
@@ -10,18 +11,21 @@ import java.util.*;
 import java.util.function.Predicate;
 
 /**
- * Builder for PsonImpl
+ * Builder for Pson
  */
+@SuppressWarnings("unused")
 public class PsonBuilder {
 
     public static final String DEFAULT_PRETTY_PRINT_INDENT = "  ";
 
-    public static final Map<Class<?>, ValueReaderMapper> DEFAULT_VALUE_READER_MAPPERS = Map.of(
-
-    );
-
-    public static final Map<Class<?>, ValueWriterMapper> DEFAULT_VALUE_WRITER_MAPPERS = Map.of(
-
+    public static final Map<Class<?>, List<FieldMapper<ValueReaderMapper>>> DEFAULT_VALUE_READER_MAPPERS = Map.of(
+            String.class, List.of(FieldMapper.wrap((element, field) -> element.asPrimitive().asString())),
+            Integer.class, List.of(FieldMapper.wrap((element, field) -> element.asPrimitive().asInteger())),
+            int.class, List.of(FieldMapper.wrap((element, field) -> element.asPrimitive().asInteger())),
+            Double.class, List.of(FieldMapper.wrap((element, field) -> element.asPrimitive().asDouble())),
+            double.class, List.of(FieldMapper.wrap((element, field) -> element.asPrimitive().asDouble())),
+            Boolean.class, List.of(FieldMapper.wrap((element, field) -> element.asPrimitive().asBoolean())),
+            boolean.class, List.of(FieldMapper.wrap((element, field) -> element.asPrimitive().asBoolean()))
     );
 
     // null = no pretty print
@@ -29,7 +33,8 @@ public class PsonBuilder {
     private boolean serializeNulls = false;
 
     private final Map<Class<?>, List<FieldMapper<ValueWriterMapper>>> valueWriterMappers = new HashMap<>();
-    private final Map<Class<?>, ValueReaderMapper> valueReaderMappers = new HashMap<>(DEFAULT_VALUE_READER_MAPPERS);
+    private final Map<Class<?>, List<FieldMapper<ValueReaderMapper>>> valueReaderMappers
+            = new HashMap<>(DEFAULT_VALUE_READER_MAPPERS);
 
 
     public static PsonBuilder create() {
@@ -81,6 +86,40 @@ public class PsonBuilder {
     }
 
     /**
+     * Register a value writer mapper.
+     * This mapper is used to map an object to a JSON value
+     *
+     * @param mappers        the mappers
+     * @param targetClass    the class to map from
+     * @param fieldPredicate the predicate to match the field
+     * @param mapper         the mapper
+     * @param <T>            the type of the mapper
+     * @return this
+     */
+    private <T extends Mapper> PsonBuilder registerGenericMapper(
+            final Map<Class<?>, List<FieldMapper<T>>> mappers,
+            final Class<?> targetClass,
+            final Predicate<Field> fieldPredicate,
+            final T mapper
+    ) {
+        final List<FieldMapper<T>> mapperList;
+        if (mappers.containsKey(targetClass)) {
+            mapperList = mappers.get(targetClass);
+        } else {
+            mapperList = new ArrayList<>();
+            mappers.put(targetClass, mapperList);
+        }
+        // check if a mapper for the field is already registered
+        final FieldMapper<T> fieldMapper = new FieldMapper<>(mapper, fieldPredicate);
+        if (mapperList.contains(fieldMapper)) {
+            throw new IllegalArgumentException("A value mapper for " + targetClass + " is already registered");
+        }
+        mapperList.add(0, fieldMapper);
+        return this;
+    }
+
+
+    /**
      * Register a value reader mapper.
      * This mapper is used to map a JSON value to an object
      *
@@ -88,12 +127,26 @@ public class PsonBuilder {
      * @param valueReaderMapper the mapper
      * @return this
      */
-    public PsonBuilder registerValueReaderMapper(final Class<?> targetClass, final ValueReaderMapper valueReaderMapper) {
-        if (this.valueReaderMappers.containsKey(targetClass)) {
-            throw new IllegalArgumentException("A value mapper for " + targetClass + " is already registered");
-        }
-        this.valueReaderMappers.put(targetClass, valueReaderMapper);
-        return this;
+    public PsonBuilder registerValueReaderMapper(
+            final Class<?> targetClass,
+            final Predicate<Field> fieldPredicate,
+            final ValueReaderMapper valueReaderMapper
+    ) {
+        return this.registerGenericMapper(this.valueReaderMappers, targetClass, fieldPredicate, valueReaderMapper);
+    }
+
+    /**
+     * Register a value reader mapper.
+     *
+     * @param targetClass       the class to map to
+     * @param valueReaderMapper the mapper
+     * @return this
+     */
+    public PsonBuilder registerValueReaderMapper(
+            final Class<?> targetClass,
+            final ValueReaderMapper valueReaderMapper
+    ) {
+        return this.registerValueReaderMapper(targetClass, null, valueReaderMapper);
     }
 
     /**
@@ -110,22 +163,17 @@ public class PsonBuilder {
             final Predicate<Field> fieldPredicate,
             final ValueWriterMapper valueWriterMapper
     ) {
-        final List<FieldMapper<ValueWriterMapper>> writeMappers;
-        if (this.valueWriterMappers.containsKey(targetClass)) {
-            writeMappers = this.valueWriterMappers.get(targetClass);
-        } else {
-            writeMappers = new ArrayList<>();
-            this.valueWriterMappers.put(targetClass, writeMappers);
-        }
-        // check if a mapper for the field is already registered
-        final FieldMapper<ValueWriterMapper> fieldMapper = new FieldMapper<>(valueWriterMapper, fieldPredicate);
-        if (writeMappers.contains(fieldMapper)) {
-            throw new IllegalArgumentException("A value mapper for " + targetClass + " is already registered");
-        }
-        writeMappers.add(0, fieldMapper);
-        return this;
+        return this.registerGenericMapper(this.valueWriterMappers, targetClass, fieldPredicate, valueWriterMapper);
     }
 
+    /**
+     * Register a value writer mapper.
+     * This mapper is used to map an object to a JSON value
+     *
+     * @param targetClass       the class to map from
+     * @param valueWriterMapper the mapper
+     * @return this
+     */
     public PsonBuilder registerValueWriterMapper(
             final Class<?> targetClass,
             final ValueWriterMapper valueWriterMapper
@@ -138,7 +186,6 @@ public class PsonBuilder {
      *
      * @return the predicate
      */
-    @SuppressWarnings("unused")
     public static Predicate<Field> notNull() {
         return Objects::nonNull;
     }
@@ -149,7 +196,6 @@ public class PsonBuilder {
      * @param annotation the annotation
      * @return the predicate
      */
-    @SuppressWarnings("unused")
     public static Predicate<Field> hasAnnotation(final Class<? extends Annotation> annotation) {
         return PsonBuilder.notNull().and(field -> field.isAnnotationPresent(annotation));
     }
@@ -162,7 +208,6 @@ public class PsonBuilder {
      * @param <A>                 the annotation type
      * @return the predicate
      */
-    @SuppressWarnings("unused")
     public static <A extends Annotation> Predicate<Field> hasAnnotation(
             final Class<A> annotation,
             final Predicate<A> annotationPredicate

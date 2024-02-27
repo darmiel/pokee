@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class JsonMapperTest {
+public class JsonWriterMapperTest {
 
     @Test
     public void escapeString() {
@@ -107,11 +107,11 @@ public class JsonMapperTest {
                 )
 
         }) {
-            final String escaped = JsonMapper.escapeString(testCase.input);
+            final String escaped = JsonWriterMapper.escapeString(testCase.input);
             assertEquals(testCase.message + " (escape)", testCase.expected, escaped);
 
             try {
-                final String unescaped = JsonMapper.unescapeString(escaped);
+                final String unescaped = JsonReaderMapper.unescapeString(escaped);
                 assertEquals(testCase.message + " (unescape)", testCase.input, unescaped);
             } catch (final Exception e) {
                 fail(testCase.message + " (unescape): " + e.getMessage());
@@ -133,7 +133,7 @@ public class JsonMapperTest {
                 new FailCase("Hello,\\u00A7", false),
         }) {
             try {
-                final String unescaped = JsonMapper.unescapeString(failCase.escaped);
+                final String unescaped = JsonReaderMapper.unescapeString(failCase.escaped);
                 if (failCase.fail) {
                     fail("Expected to fail: " + failCase.escaped + ", but got: " + unescaped);
                 }
