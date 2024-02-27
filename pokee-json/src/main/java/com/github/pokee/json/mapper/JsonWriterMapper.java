@@ -4,102 +4,33 @@ import com.github.pokee.json.mapper.annotations.JsonIgnore;
 import com.github.pokee.json.mapper.annotations.JsonMappper;
 import com.github.pokee.json.mapper.annotations.JsonProperty;
 import com.github.pokee.json.mapper.annotations.JsonScope;
+import com.github.pokee.json.value.JsonPrimitive;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-public class JsonMapper {
-
-    public static final String NULL = "null";
-    public static final String TRUE = "true";
-    public static final String FALSE = "false";
-
-    /**
-     * A set of all wrapper types.
-     * These are the types that can be directly converted to a string.
-     */
-    public static final Set<Class<?>> WRAPPER_TYPES = new HashSet<>() {{
-        add(Boolean.class);
-        add(Character.class);
-        add(Byte.class);
-        add(Short.class);
-        add(Integer.class);
-        add(Long.class);
-        add(Float.class);
-        add(Double.class);
-        add(Void.class);
-    }};
-
-    /**
-     * A map of the characters that should be (un)escaped
-     */
-    public static final Map<Character, String> ESCAPE_MAP = new HashMap<>() {{
-        // double quote
-        put((char) 0x22, "\\\"");
-        // backslash
-        put((char) 0x5C, "\\\\");
-        // NULL character
-        put((char) 0x00, "\\u0000");
-        // START OF HEADING character
-        put((char) 0x01, "\\u0001");
-        // START OF TEXT character
-        put((char) 0x02, "\\u0002");
-        // END OF TEXT character
-        put((char) 0x03, "\\u0003");
-        // END OF TRANSMISSION character
-        put((char) 0x04, "\\u0004");
-        // ENQUIRY character
-        put((char) 0x05, "\\u0005");
-        // ACKNOWLEDGE character
-        put((char) 0x06, "\\u0006");
-        // BELL character
-        put((char) 0x07, "\\u0007");
-        // BACKSPACE character
-        put((char) 0x08, "\\b");
-        // CHARACTER TABULATION character
-        put((char) 0x09, "\\t");
-        // LINE FEED character
-        put((char) 0x0A, "\\n");
-        // LINE TABULATION character
-        put((char) 0x0B, "\\u000B");
-        // FORM FEED character
-        put((char) 0x0C, "\\f");
-        // CARRIAGE RETURN character
-        put((char) 0x0D, "\\r");
-        // SHIFT OUT character
-        put((char) 0x0E, "\\u000E");
-        // SHIFT IN character
-        put((char) 0x0F, "\\u000F");
-        // DELETE character
-        put((char) 0x7F, "\\u007F");
-    }};
+public class JsonWriterMapper {
 
 
     private final String prettyPrintIndent;
     private final boolean serializeNulls;
 
     private final Map<Class<?>, List<FieldMapper<ValueWriterMapper>>> valueWriterMapperMap;
-    private final Map<Class<?>, ValueReaderMapper> valueReaderMapperMap;
 
     private final Map<Class<? extends ValueWriterMapper>, ValueWriterMapper> instantiatedValueWriterMapperMap;
-    private final Map<Class<? extends ValueReaderMapper>, ValueReaderMapper> instantiatedValueReaderMapperMap;
 
-    public JsonMapper(
+    public JsonWriterMapper(
             final boolean serializeNulls,
             final String prettyPrintIndent,
-            final Map<Class<?>, List<FieldMapper<ValueWriterMapper>>> valueWriterMapperMap,
-            final Map<Class<?>, ValueReaderMapper> valueReaderMapperMap
+            final Map<Class<?>, List<FieldMapper<ValueWriterMapper>>> valueWriterMapperMap
     ) {
         this.serializeNulls = serializeNulls;
         this.prettyPrintIndent = prettyPrintIndent;
 
         this.valueWriterMapperMap = valueWriterMapperMap;
-        this.valueReaderMapperMap = valueReaderMapperMap;
-
         this.instantiatedValueWriterMapperMap = new HashMap<>();
-        this.instantiatedValueReaderMapperMap = new HashMap<>();
     }
 
     /**
@@ -122,7 +53,7 @@ public class JsonMapper {
     public static String escapeString(final String input) {
         final StringBuilder bob = new StringBuilder();
         for (final char character : input.toCharArray()) {
-            final String escape = ESCAPE_MAP.get(character);
+            final String escape = JsonMapperUtil.ESCAPE_MAP.get(character);
             if (escape != null) {
                 bob.append(escape);
             } else {
@@ -130,91 +61,6 @@ public class JsonMapper {
             }
         }
         return bob.toString();
-    }
-
-    /**
-     * Unescape a string
-     *
-     * @param escapedInput the escaped input string
-     * @return the unescaped string
-     * @throws IllegalArgumentException if the input string contains an invalid escape sequence
-     * @throws NumberFormatException    if the input string contains an invalid unicode escape sequence
-     */
-    public static String unescapeString(final String escapedInput) {
-        final StringBuilder bob = new StringBuilder();
-
-        loop:
-        for (int i = 0; i < escapedInput.length(); i++) {
-            final char character = escapedInput.charAt(i);
-            if (character != '\\') {
-                bob.append(character);
-                continue;
-            }
-
-            // if no more characters are available, throw an exception since the escape sequence is incomplete
-            if (i == escapedInput.length() - 1) {
-                throw new IllegalArgumentException("Invalid escape sequence");
-            }
-
-            final char next = escapedInput.charAt(i + 1);
-
-            // unescape backslash
-            if (next == '\\') {
-                bob.append('\\');
-                i++;
-                continue;
-            }
-
-            // unescape unicode characters
-            if (next == 'u') {
-                if (i + 5 >= escapedInput.length()) {
-                    throw new IllegalArgumentException("Invalid escape sequence \\u[...]");
-                }
-                final String hex = escapedInput.substring(i + 2, i + 6);
-                bob.append((char) Integer.parseInt(hex, 16));
-                i += 5;
-                continue;
-            }
-
-            // find escape sequence in ESCPAE_MAP
-            for (final Map.Entry<Character, String> entry : JsonMapper.ESCAPE_MAP.entrySet()) {
-                if (entry.getValue().equals("\\" + next)) {
-                    bob.append(entry.getKey());
-                    i++;
-                    continue loop;
-                }
-            }
-
-            throw new IllegalArgumentException("Invalid escape sequence \\" + next);
-        }
-        return bob.toString();
-    }
-
-    /**
-     * Get the value reader mapper for a field
-     *
-     * @param mapperClass           the value mapper class
-     * @param instantiatedMapperMap the instantiated value mapper map
-     * @param <T>                   the type of the value mapper
-     * @return the value reader mapper
-     */
-    public <T> T getMapperFromValueMapperClass(
-            final Class<? extends T> mapperClass,
-            final Map<Class<? extends T>, T> instantiatedMapperMap
-    ) {
-        // if the value mapper is already instantiated, return it
-        if (instantiatedMapperMap.containsKey(mapperClass)) {
-            return instantiatedMapperMap.get(mapperClass);
-        }
-        // if the value mapper is not instantiated, instantiate it and store it in the map
-        final T mapper;
-        try {
-            mapper = mapperClass.getDeclaredConstructor().newInstance();
-        } catch (final ReflectiveOperationException e) {
-            throw new IllegalStateException("Failed to instantiate value mapper: " + mapperClass, e);
-        }
-        instantiatedMapperMap.put(mapperClass, mapper);
-        return mapper;
     }
 
     /**
@@ -261,7 +107,7 @@ public class JsonMapper {
 
     public void writeString(final StringBuilder bob, final String value) {
         bob.append('"');
-        bob.append(JsonMapper.escapeString(value));
+        bob.append(JsonWriterMapper.escapeString(value));
         bob.append('"');
     }
 
@@ -326,7 +172,7 @@ public class JsonMapper {
         if (field != null && field.isAnnotationPresent(JsonMappper.class)) {
             final JsonMappper jsonMapperAnnotation = field.getAnnotation(JsonMappper.class);
             if (jsonMapperAnnotation.write() != ValueWriterMapper.class) {
-                return this.getMapperFromValueMapperClass(
+                return JsonMapperUtil.getMapperFromValueMapperClass(
                         jsonMapperAnnotation.write(),
                         this.instantiatedValueWriterMapperMap
                 );
@@ -352,7 +198,7 @@ public class JsonMapper {
      */
     public void write(final StringBuilder bob, final Field field, final Object object, final int depth) {
         if (object == null) {
-            bob.append(JsonMapper.NULL);
+            bob.append(JsonPrimitive.NULL);
             return;
         }
 
@@ -389,8 +235,8 @@ public class JsonMapper {
         }
 
         // check if primitive type
-        if (String.class.equals(clazz) || WRAPPER_TYPES.contains(clazz)) {
-            this.writeString(bob, JsonMapper.escapeString(Objects.toString(object)));
+        if (String.class.equals(clazz) || JsonMapperUtil.WRAPPER_TYPES.contains(clazz)) {
+            this.writeString(bob, JsonWriterMapper.escapeString(Objects.toString(object)));
             return;
         }
 

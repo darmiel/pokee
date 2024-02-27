@@ -19,12 +19,12 @@ public class JsonMarshalBootstrap {
     }
 
     public enum TestEnum {
-        A, B, C
+        B, C
     }
 
     public record Test(
-            @Always("hehe") String name,
-            @Always("haaaaaaaaa") String name2,
+            @Always("uu") String name,
+            String name2,
             int age,
             List<Test> inner,
             TestEnum testEnum
@@ -37,9 +37,7 @@ public class JsonMarshalBootstrap {
                 new Test("Kevin", "Kevin2", 12, null, TestEnum.B)
         ), TestEnum.B);
 
-        final Pson pson = Pson.create()
-                .prettyPrint()
-                .serializeNulls()
+        final Pson pson = Pson.createWithDefaults()
                 .registerValueWriterMapper(
                         String.class,
                         PsonBuilder.hasAnnotation(Always.class, a -> a.value().length() > 5),
@@ -47,9 +45,7 @@ public class JsonMarshalBootstrap {
                 )
                 .build();
 
-        final StringBuilder bob = new StringBuilder();
-        pson.getJsonWriter().write(bob, null, test, 0);
-        System.out.println(bob);
+        System.out.println(pson.marshal(test));
     }
 
 }

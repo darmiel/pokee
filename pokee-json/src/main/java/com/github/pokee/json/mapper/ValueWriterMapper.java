@@ -7,6 +7,6 @@ import java.lang.reflect.Field;
  */
 public interface ValueWriterMapper extends Mapper {
 
-    void writeValue(final JsonMapper writer, final StringBuilder bob, final Field field, final Object value);
+    void writeValue(final JsonWriterMapper writer, final StringBuilder bob, final Field field, final Object value);
 
 }

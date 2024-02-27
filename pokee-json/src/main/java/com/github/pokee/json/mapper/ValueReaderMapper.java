@@ -9,6 +9,6 @@ import java.lang.reflect.Field;
  */
 public interface ValueReaderMapper extends Mapper {
 
-    Object mapValue(final JsonElement element, final Field field, final String value);
+    Object mapValue(final JsonElement element, final Field field);
 
 }

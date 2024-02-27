@@ -194,7 +194,7 @@ public class JsonParser {
                     }
                     case STRING, NUMBER, BOOLEAN, NULL -> {
                         final JsonToken valueToken = this.tokenizer.nextToken();
-                        object.put(key, new JsonPrimitive(valueToken.value()));
+                        object.put(key, new JsonPrimitive(valueToken.value().strip()));
                     }
                     default -> throw new TokenTypeExpectedException(new JsonTokenType[]{
                             JsonTokenType.BEGIN_OBJECT,
