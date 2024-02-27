@@ -89,7 +89,6 @@ public class JsonTokenizer {
             case 'n' -> {
                 final String read = this.readPrimitive();
                 if (!read.strip().equals("null")) {
-                    System.out.println("read was '" + read + "'");
                     throw new IllegalStateException("Unexpected character: " + c);
                 }
                 return new JsonToken(JsonTokenType.NULL, read, startIndex, this.index);

@@ -30,12 +30,8 @@ public class JsonParser {
         final JsonToken peakedToken = this.tokenizer.peekNextToken();
 
         switch (peakedToken.type()) {
-            case BEGIN_OBJECT -> {
-                element = this.readObject();
-            }
-            case BEGIN_ARRAY -> {
-                element = this.readArray();
-            }
+            case BEGIN_OBJECT -> element = this.readObject();
+            case BEGIN_ARRAY -> element = this.readArray();
             case STRING, NUMBER, BOOLEAN, NULL -> {
                 final JsonToken token = this.tokenizer.nextToken();
                 element = new JsonPrimitive(token.value());

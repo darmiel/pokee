@@ -6,10 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to mark a field as ignored.
- * The field will not be mapped to the JSON object and will be ignored.
+ * Annotation to map a field to a property in a JSON object
+ * The value of the annotation is the key in the JSON object
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Ignored {
+public @interface JsonProperty {
+
+    String value();
+
 }

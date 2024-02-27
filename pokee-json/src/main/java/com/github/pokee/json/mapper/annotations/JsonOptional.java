@@ -6,13 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to map a field to a property in a JSON object
- * The value of the annotation is the key in the JSON object
+ * Annotation to mark a field as optional
+ * If the field is not present in the JSON object, the field will be set to null
+ * If the annotation is not present and the field is not present in the JSON object, an exception will be thrown
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Property {
-
-    String value();
-
+public @interface JsonOptional {
 }
