@@ -36,11 +36,6 @@ public class PsonBuilder {
     private final Map<Class<?>, List<FieldMapper<ValueReaderMapper>>> valueReaderMappers
             = new HashMap<>(DEFAULT_VALUE_READER_MAPPERS);
 
-
-    public static PsonBuilder create() {
-        return new PsonBuilder();
-    }
-
     PsonBuilder() {
     }
 
@@ -217,9 +212,9 @@ public class PsonBuilder {
     }
 
     /**
-     * Build the PsonImpl
+     * Build the Pson instance
      *
-     * @return PsonImpl
+     * @return the Pson instance
      */
     public Pson build() {
         return new Pson(

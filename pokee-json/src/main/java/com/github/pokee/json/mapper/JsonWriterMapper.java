@@ -13,12 +13,9 @@ import java.util.*;
 
 public class JsonWriterMapper {
 
-
     private final String prettyPrintIndent;
     private final boolean serializeNulls;
-
     private final Map<Class<?>, List<FieldMapper<ValueWriterMapper>>> valueWriterMapperMap;
-
     private final Map<Class<? extends ValueWriterMapper>, ValueWriterMapper> instantiatedValueWriterMapperMap;
 
     public JsonWriterMapper(
@@ -105,16 +102,35 @@ public class JsonWriterMapper {
         bob.append(']');
     }
 
+    /**
+     * Write a string to a string builder
+     *
+     * @param bob   the string builder
+     * @param value the string
+     */
     public void writeString(final StringBuilder bob, final String value) {
         bob.append('"');
         bob.append(JsonWriterMapper.escapeString(value));
         bob.append('"');
     }
 
+    /**
+     * Write an enum to a string builder
+     *
+     * @param bob   the string builder
+     * @param value the enum
+     */
     public void writeEnum(final StringBuilder bob, final Enum<?> value) {
         this.writeString(bob, value.name());
     }
 
+    /**
+     * Write an object to a string builder
+     *
+     * @param bob    the string builder
+     * @param object the object
+     * @param depth  the depth
+     */
     public void writeObject(final StringBuilder bob, final Object object, final int depth) {
         bob.append('{');
 
@@ -168,6 +184,13 @@ public class JsonWriterMapper {
         bob.append('}');
     }
 
+    /**
+     * Get the value writer mapper for a field
+     *
+     * @param field the field
+     * @param clazz the class of the object
+     * @return the value writer mapper
+     */
     private ValueWriterMapper getValueWriterMapper(final Field field, final Class<?> clazz) {
         if (field != null && field.isAnnotationPresent(JsonMappper.class)) {
             final JsonMappper jsonMapperAnnotation = field.getAnnotation(JsonMappper.class);

@@ -30,10 +30,22 @@ public class Pson {
     }
 
 
+    /**
+     * Create a new PsonBuilder
+     *
+     * @return the builder
+     */
     public static PsonBuilder create() {
         return new PsonBuilder();
     }
 
+    /**
+     * Create a new PsonBuilder with default settings, which include:
+     * - pretty print
+     * - serialize nulls
+     *
+     * @return the builder
+     */
     public static PsonBuilder createWithDefaults() {
         return Pson.create()
                 .prettyPrint()
