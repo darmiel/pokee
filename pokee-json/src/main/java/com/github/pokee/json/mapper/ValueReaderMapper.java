@@ -9,6 +9,13 @@ import java.lang.reflect.Field;
  */
 public interface ValueReaderMapper extends Mapper {
 
+    /**
+     * Map a JSON value to an object
+     *
+     * @param element the JSON value
+     * @param field   the field to map to
+     * @return the mapped object
+     */
     Object mapValue(final JsonElement element, final Field field);
 
 }

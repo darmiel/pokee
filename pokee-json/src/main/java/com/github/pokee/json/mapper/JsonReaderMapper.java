@@ -89,6 +89,13 @@ public class JsonReaderMapper {
         return bob.toString();
     }
 
+    /**
+     * Get the unsafe instance
+     *
+     * @return the unsafe instance
+     * @throws NoSuchFieldException   if the field is not found
+     * @throws IllegalAccessException if the field is not accessible
+     */
     private Unsafe getUnsafeIllegally() throws NoSuchFieldException, IllegalAccessException {
         if (this.unsafe != null) {
             return this.unsafe;
@@ -98,6 +105,13 @@ public class JsonReaderMapper {
         return this.unsafe = (Unsafe) field.get(null);
     }
 
+    /**
+     * Get the value reader mapper for a field
+     *
+     * @param field the field
+     * @param clazz the class of the object
+     * @return the value reader mapper
+     */
     private ValueReaderMapper getValueReaderMapper(final Field field, final Class<?> clazz) {
         if (field != null && field.isAnnotationPresent(JsonMappper.class)) {
             final JsonMappper jsonMapperAnnotation = field.getAnnotation(JsonMappper.class);
@@ -119,6 +133,14 @@ public class JsonReaderMapper {
         return null;
     }
 
+    /**
+     * Get the value for a field
+     *
+     * @param element the JSON element
+     * @param key     the key of the field
+     * @param field   the field
+     * @return the value
+     */
     @SuppressWarnings("unchecked")
     public Object getValueForField(
             final JsonElement element,
@@ -265,6 +287,13 @@ public class JsonReaderMapper {
         return object;
     }
 
+    /**
+     * Read a JSON element
+     *
+     * @param element the JSON element
+     * @param clazz   the class of the object to read
+     * @return the object
+     */
     public Object readJsonElement(final JsonElement element, final Class<?> clazz) throws TokenTypeExpectedException, ReflectiveOperationException {
         if (element.isArray()) {
             return this.readArray(element.asArray(), clazz);
