@@ -1,9 +1,6 @@
 package com.github.pokee.json;
 
-import com.github.pokee.json.mapper.FieldMapper;
-import com.github.pokee.json.mapper.Mapper;
-import com.github.pokee.json.mapper.ValueReaderMapper;
-import com.github.pokee.json.mapper.ValueWriterMapper;
+import com.github.pokee.json.mapper.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -24,15 +21,30 @@ public class PsonBuilder {
             int.class, List.of(FieldMapper.wrap((element, field) -> element.asPrimitive().asInteger())),
             Double.class, List.of(FieldMapper.wrap((element, field) -> element.asPrimitive().asDouble())),
             double.class, List.of(FieldMapper.wrap((element, field) -> element.asPrimitive().asDouble())),
+            Float.class, List.of(FieldMapper.wrap((element, field) -> (float) element.asPrimitive().asDouble())),
+            float.class, List.of(FieldMapper.wrap((element, field) -> (float) element.asPrimitive().asDouble())),
             Boolean.class, List.of(FieldMapper.wrap((element, field) -> element.asPrimitive().asBoolean())),
             boolean.class, List.of(FieldMapper.wrap((element, field) -> element.asPrimitive().asBoolean()))
     );
+
+    public static final Map<Class<?>, List<FieldMapper<ValueWriterMapper>>> DEFAULT_VALUE_WRITER_MAPPERS = Map.of(
+            String.class, List.of(FieldMapper.wrap((writer, bob, field, value) -> bob.append('"').append(JsonWriterMapper.escapeString((String) value)).append('"'))),
+            Integer.class, List.of(FieldMapper.wrap((writer, bob, field, value) -> bob.append(value))),
+            int.class, List.of(FieldMapper.wrap((writer, bob, field, value) -> bob.append(value))),
+            Double.class, List.of(FieldMapper.wrap((writer, bob, field, value) -> bob.append(value))),
+            double.class, List.of(FieldMapper.wrap((writer, bob, field, value) -> bob.append(value))),
+            Float.class, List.of(FieldMapper.wrap((writer, bob, field, value) -> bob.append(value))),
+            float.class, List.of(FieldMapper.wrap((writer, bob, field, value) -> bob.append(value))),
+            Boolean.class, List.of(FieldMapper.wrap((writer, bob, field, value) -> bob.append(value))),
+            boolean.class, List.of(FieldMapper.wrap((writer, bob, field, value) -> bob.append(value))
+    ));
 
     // null = no pretty print
     private String prettyPrintIndent = null;
     private boolean serializeNulls = false;
 
-    private final Map<Class<?>, List<FieldMapper<ValueWriterMapper>>> valueWriterMappers = new HashMap<>();
+    private final Map<Class<?>, List<FieldMapper<ValueWriterMapper>>> valueWriterMappers
+            = new HashMap<>(DEFAULT_VALUE_WRITER_MAPPERS);
     private final Map<Class<?>, List<FieldMapper<ValueReaderMapper>>> valueReaderMappers
             = new HashMap<>(DEFAULT_VALUE_READER_MAPPERS);
 
