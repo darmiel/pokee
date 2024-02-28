@@ -1,14 +1,11 @@
 package com.github.pokee.json.mapper;
 
-import com.github.pokee.json.mapper.annotations.JsonIgnore;
 import com.github.pokee.json.mapper.annotations.JsonMappper;
 import com.github.pokee.json.mapper.annotations.JsonProperty;
-import com.github.pokee.json.mapper.annotations.JsonScope;
 import com.github.pokee.json.value.JsonPrimitive;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.*;
 
 public class JsonWriterMapper {
@@ -134,22 +131,9 @@ public class JsonWriterMapper {
     public void writeObject(final StringBuilder bob, final Object object, final int depth) {
         bob.append('{');
 
-        final Class<?> clazz = object.getClass();
-        final JsonScope scope = clazz.getAnnotation(JsonScope.class);
-
-        boolean transientFields = scope != null ? scope.transientFields() : JsonScope.DEFAULT_TRANSIENT_FIELDS;
-        boolean publicFields = scope != null ? scope.publicFields() : JsonScope.DEFAULT_PUBLIC_FIELDS;
-        boolean privateFields = scope != null ? scope.privateFields() : JsonScope.DEFAULT_PRIVATE_FIELDS;
-
         int i = 0;
-        for (final Field field : clazz.getDeclaredFields()) {
-            if (field.isAnnotationPresent(JsonIgnore.class)
-                    || Modifier.isTransient(field.getModifiers()) && !transientFields
-                    || Modifier.isPublic(field.getModifiers()) && !publicFields
-                    || Modifier.isPrivate(field.getModifiers()) && !privateFields) {
-                continue;
-            }
-
+        final Map<String, Field> fields = JsonMapperUtil.getDeclaredFieldsInClassAndSuperClasses(object.getClass());
+        for (final Field field : fields.values()) {
             field.setAccessible(true);
 
             final Object value;
