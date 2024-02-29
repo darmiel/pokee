@@ -1,4 +1,7 @@
-.idea/
-target/
+.idea
+*.iml
+target
+
 pokeapi-sprites/
 sprites/
+config/
