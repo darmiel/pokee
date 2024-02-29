@@ -1,17 +1,90 @@
-package com.github.pokee.json.token;
+package com.github.pokee.json.parser;
 
 import com.github.pokee.json.exception.TokenTypeExpectedException;
-import com.github.pokee.json.value.JsonObject;
-import com.github.pokee.json.value.JsonArray;
-import com.github.pokee.json.value.JsonElement;
-import com.github.pokee.json.value.JsonPrimitive;
+import com.github.pokee.json.value.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class JsonParser {
 
     private final JsonTokenizer tokenizer;
+    private final boolean expandFunctions;
+    private final JsonFunctionRunner functionRunner;
+
+    public JsonParser(final String json, final boolean expandFunctions, final JsonFunctionRunner functionRunner) {
+        this.tokenizer = new JsonTokenizer(json);
+        this.expandFunctions = expandFunctions;
+        this.functionRunner = functionRunner;
+    }
+
+    public JsonParser(final String json, final JsonFunctionRunner functionRunner) {
+        this(json, false, functionRunner);
+    }
 
     public JsonParser(final String json) {
-        this.tokenizer = new JsonTokenizer(json);
+        this(json, JsonFunctionRunner.DEFAULT);
+    }
+
+    // TODO: docs
+    public JsonParser copyConfiguration(final String json) {
+        return new JsonParser(json, this.expandFunctions, this.functionRunner);
+    }
+
+    /**
+     * Parses the JSON string and returns the parsed JSON as a {@link JsonElement}
+     * The JSON string is expected to be a valid JSON document
+     * and the tokenizer is expected to be at the beginning of the document.
+     * <br>
+     * The tokenizer will be at the end of the document after this method returns
+     * the parsed JSON
+     *
+     * @param expectDocumentEnd whether to expect the end of the document
+     * @return the parsed JSON as a {@link JsonElement}
+     * @throws TokenTypeExpectedException if the tokenizer does not contain a valid JSON document
+     */
+    public JsonElement parse(final boolean expectDocumentEnd) throws TokenTypeExpectedException {
+        final JsonElement element;
+        final JsonToken peakedToken = this.tokenizer.peekNextToken();
+
+        switch (peakedToken.type()) {
+            case BEGIN_OBJECT -> element = this.readObject();
+            case BEGIN_ARRAY -> element = this.readArray();
+            case STRING, NUMBER, BOOLEAN, NULL -> {
+                final JsonToken token = this.tokenizer.nextToken();
+                element = new JsonPrimitive(token.value().strip());
+            }
+            case BEGIN_FUNCTION -> {
+                final JsonFunction function = this.readFunction();
+                if (this.expandFunctions) {
+                    if (this.functionRunner == null) {
+                        throw new NullPointerException("Cannot expand functions because function runner is null");
+                    }
+                    element = this.functionRunner.runFunction(this, function);
+                } else {
+                    element = function;
+                }
+            }
+            default -> throw new TokenTypeExpectedException(new JsonTokenType[]{
+                    JsonTokenType.BEGIN_OBJECT,
+                    JsonTokenType.BEGIN_ARRAY,
+                    JsonTokenType.STRING,
+                    JsonTokenType.NUMBER,
+                    JsonTokenType.BOOLEAN,
+                    JsonTokenType.NULL
+            }, peakedToken.type());
+        }
+
+        // expect the end of the document
+        if (expectDocumentEnd) {
+            final JsonToken endDocumentToken = this.tokenizer.nextToken();
+            if (endDocumentToken.type() != JsonTokenType.END_DOCUMENT) {
+                throw new TokenTypeExpectedException(JsonTokenType.END_DOCUMENT, endDocumentToken.type());
+            }
+        }
+
+        return element;
     }
 
     /**
@@ -26,33 +99,7 @@ public class JsonParser {
      * @throws TokenTypeExpectedException if the tokenizer does not contain a valid JSON document
      */
     public JsonElement parse() throws TokenTypeExpectedException {
-        final JsonElement element;
-        final JsonToken peakedToken = this.tokenizer.peekNextToken();
-
-        switch (peakedToken.type()) {
-            case BEGIN_OBJECT -> element = this.readObject();
-            case BEGIN_ARRAY -> element = this.readArray();
-            case STRING, NUMBER, BOOLEAN, NULL -> {
-                final JsonToken token = this.tokenizer.nextToken();
-                element = new JsonPrimitive(token.value());
-            }
-            default -> throw new TokenTypeExpectedException(new JsonTokenType[]{
-                    JsonTokenType.BEGIN_OBJECT,
-                    JsonTokenType.BEGIN_ARRAY,
-                    JsonTokenType.STRING,
-                    JsonTokenType.NUMBER,
-                    JsonTokenType.BOOLEAN,
-                    JsonTokenType.NULL
-            }, peakedToken.type());
-        }
-
-        // expect the end of the document
-        final JsonToken endDocumentToken = this.tokenizer.nextToken();
-        if (endDocumentToken.type() != JsonTokenType.END_DOCUMENT) {
-            throw new TokenTypeExpectedException(JsonTokenType.END_DOCUMENT, endDocumentToken.type());
-        }
-
-        return element;
+        return this.parse(true);
     }
 
     /**
@@ -96,6 +143,7 @@ public class JsonParser {
      *           }
      *         ]
      * </pre>
+     *
      * @return the array read from the tokenizer
      * @throws TokenTypeExpectedException if the tokenizer does not contain a valid array
      */
@@ -107,30 +155,7 @@ public class JsonParser {
         final JsonToken peekNextToken = this.tokenizer.peekNextToken();
         if (peekNextToken.type() != JsonTokenType.END_ARRAY) {
             while (true) {
-                final JsonToken peekValueToken = this.tokenizer.peekNextToken();
-
-                switch (peekValueToken.type()) {
-                    case BEGIN_OBJECT -> {
-                        final JsonObject nestedObject = this.readObject();
-                        array.add(nestedObject);
-                    }
-                    case BEGIN_ARRAY -> {
-                        final JsonArray nestedArray = this.readArray();
-                        array.add(nestedArray);
-                    }
-                    case STRING, NUMBER, BOOLEAN, NULL -> {
-                        final JsonToken valueToken = this.tokenizer.nextToken();
-                        array.add(new JsonPrimitive(valueToken.value()));
-                    }
-                    default -> throw new TokenTypeExpectedException(new JsonTokenType[]{
-                            JsonTokenType.BEGIN_OBJECT,
-                            JsonTokenType.BEGIN_ARRAY,
-                            JsonTokenType.STRING,
-                            JsonTokenType.NUMBER,
-                            JsonTokenType.BOOLEAN,
-                            JsonTokenType.NULL
-                    }, peekValueToken.type());
-                }
+                array.add(this.parse(false));
 
                 final JsonToken peekNextValue = this.tokenizer.peekNextToken();
                 if (peekNextValue.type() == JsonTokenType.VALUE_SEPARATOR) {
@@ -176,35 +201,10 @@ public class JsonParser {
         if (peekNextToken.type() != JsonTokenType.END_OBJECT) {
             while (true) {
                 final JsonToken keyToken = this.expect(JsonTokenType.STRING);
-
-                // remove the quotes from the key
                 final String key = keyToken.value().substring(1, keyToken.value().length() - 1);
-
                 this.expect(JsonTokenType.NAME_SEPARATOR);
 
-                final JsonToken peekValueToken = this.tokenizer.peekNextToken();
-                switch (peekValueToken.type()) {
-                    case BEGIN_OBJECT -> {
-                        final JsonObject nestedObject = this.readObject();
-                        object.put(key, nestedObject);
-                    }
-                    case BEGIN_ARRAY -> {
-                        final JsonArray nestedArray = this.readArray();
-                        object.put(key, nestedArray);
-                    }
-                    case STRING, NUMBER, BOOLEAN, NULL -> {
-                        final JsonToken valueToken = this.tokenizer.nextToken();
-                        object.put(key, new JsonPrimitive(valueToken.value().strip()));
-                    }
-                    default -> throw new TokenTypeExpectedException(new JsonTokenType[]{
-                            JsonTokenType.BEGIN_OBJECT,
-                            JsonTokenType.BEGIN_ARRAY,
-                            JsonTokenType.STRING,
-                            JsonTokenType.NUMBER,
-                            JsonTokenType.BOOLEAN,
-                            JsonTokenType.NULL
-                    }, peekValueToken.type());
-                }
+                object.put(key, this.parse(false));
 
                 final JsonToken peekNextValue = this.tokenizer.peekNextToken();
                 if (peekNextValue.type() == JsonTokenType.VALUE_SEPARATOR) {
@@ -218,6 +218,52 @@ public class JsonParser {
         this.expect(JsonTokenType.END_OBJECT);
 
         return object;
+    }
+
+    /**
+     * Read a function from the tokenizer
+     * <p>
+     * The tokenizer is expected to be at the beginning of a function
+     * and will be at the end of the function after this method returns
+     * the function.
+     * <br>
+     * The expected format is:
+     * <pre>
+     *         \@functionName(param1, param2, param3)
+     *         </pre>
+     *
+     * @return the function read from the tokenizer
+     * @throws TokenTypeExpectedException if the tokenizer does not contain a valid function
+     */
+    private JsonFunction readFunction() throws TokenTypeExpectedException {
+        this.expect(JsonTokenType.BEGIN_FUNCTION);
+        final String functionName = JsonFunctionRunner.transformFunctionName(this.tokenizer.readFunctionName());
+        this.expect(JsonTokenType.LPAREN);
+
+        final List<JsonElement> parameters = new ArrayList<>();
+
+        while (true) {
+            final JsonToken peekNextToken = this.tokenizer.peekNextToken();
+
+            // if the next token is a right parenthesis, the function has no parameters
+            if (peekNextToken.type() == JsonTokenType.RPAREN) {
+                this.expect(JsonTokenType.RPAREN);
+                break;
+            }
+
+            final JsonElement parameter = this.parse(false);
+            parameters.add(parameter);
+
+            final JsonToken peekNextValue = this.tokenizer.peekNextToken();
+            if (peekNextValue.type() == JsonTokenType.VALUE_SEPARATOR) {
+                this.expect(JsonTokenType.VALUE_SEPARATOR);
+            } else {
+                break;
+            }
+        }
+
+        this.expect(JsonTokenType.RPAREN);
+        return new JsonFunction(functionName, parameters);
     }
 
 }

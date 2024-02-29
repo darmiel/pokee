@@ -133,9 +133,42 @@ public class JsonPrimitive implements JsonElement {
 
     @Override
     public String toString() {
-        return "JsonPrimitive{" +
-                "rawValue='" + rawValue + '\'' +
-                '}';
+        if (this.isString()) {
+            return "str(" + this.asString() + ")";
+        }
+        if (this.isDouble()) {
+            return "num(" + this.asDouble() + ")";
+        }
+        if (this.isInteger()) {
+            return "int(" + this.asInteger() + ")";
+        }
+        if (this.isNull()) {
+            return "null()";
+        }
+        if (this.isBoolean()) {
+            return "bool(" + this.asBoolean() + ")";
+        }
+        return "raw-primitive(" + this.rawValue + ")";
+    }
+
+    public static JsonPrimitive fromString(final String value) {
+        return new JsonPrimitive("\"" + value + "\"");
+    }
+
+    public static JsonPrimitive fromBool(final boolean value) {
+        return new JsonPrimitive(value ? JsonPrimitive.TRUE : JsonPrimitive.FALSE);
+    }
+
+    public static JsonPrimitive fromNumber(final double value) {
+        return new JsonPrimitive(String.valueOf(value));
+    }
+
+    public static JsonPrimitive fromNumber(final int value) {
+        return new JsonPrimitive(String.valueOf(value));
+    }
+
+    public static JsonPrimitive fromNull() {
+        return new JsonPrimitive(JsonPrimitive.NULL);
     }
 
 }

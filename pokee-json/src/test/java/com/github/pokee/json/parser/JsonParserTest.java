@@ -1,4 +1,4 @@
-package com.github.pokee.json.token;
+package com.github.pokee.json.parser;
 
 import com.github.pokee.json.exception.TokenTypeExpectedException;
 import com.github.pokee.json.value.JsonArray;

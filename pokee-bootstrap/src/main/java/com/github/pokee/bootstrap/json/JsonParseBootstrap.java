@@ -6,7 +6,7 @@ import com.github.pokee.json.exception.TokenTypeExpectedException;
 import com.github.pokee.json.mapper.annotations.JsonIgnore;
 import com.github.pokee.json.mapper.annotations.JsonOptional;
 import com.github.pokee.json.mapper.annotations.JsonProperty;
-import com.github.pokee.json.token.JsonParser;
+import com.github.pokee.json.parser.JsonParser;
 
 import java.lang.reflect.InvocationTargetException;
 

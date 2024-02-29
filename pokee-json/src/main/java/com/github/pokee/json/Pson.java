@@ -2,7 +2,7 @@ package com.github.pokee.json;
 
 import com.github.pokee.json.exception.TokenTypeExpectedException;
 import com.github.pokee.json.mapper.*;
-import com.github.pokee.json.token.JsonParser;
+import com.github.pokee.json.parser.JsonParser;
 
 import java.util.List;
 import java.util.Map;
