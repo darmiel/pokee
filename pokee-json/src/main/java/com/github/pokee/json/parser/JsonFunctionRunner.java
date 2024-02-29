@@ -1,14 +1,21 @@
 package com.github.pokee.json.parser;
 
 import com.github.pokee.json.exception.TokenTypeExpectedException;
+import com.github.pokee.json.functions.FunctionCallback;
+import com.github.pokee.json.functions.load.EnvironmentAsJsonFunction;
+import com.github.pokee.json.functions.load.EnvironmentFunction;
+import com.github.pokee.json.functions.load.FileAsJsonFunction;
+import com.github.pokee.json.functions.load.FileFunction;
+import com.github.pokee.json.functions.logic.BooleanFunctions;
+import com.github.pokee.json.functions.logic.EqualsFunctions;
+import com.github.pokee.json.functions.logic.IfFunction;
+import com.github.pokee.json.functions.string.StripFunction;
+import com.github.pokee.json.functions.string.TransformerFunctions;
 import com.github.pokee.json.value.JsonElement;
 import com.github.pokee.json.value.JsonFunction;
 import com.github.pokee.json.value.JsonObject;
 import com.github.pokee.json.value.JsonPrimitive;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,116 +24,53 @@ import java.util.Map;
  */
 public class JsonFunctionRunner {
 
+    public static final String DEFAULT_OPTION = "default";
+    public static final String OPTIONAL_OPTION = "optional";
+
     /**
-     * If the value is present and parseJson is true, it parses the value as JSON
-     * If the value is present and parseJson is false, it returns the value as a string
-     * If the value is not present, and optional is true, it returns null
-     * If the value is not present, and optional is false, it throws an exception
+     * If the function has a default parameter, return it, otherwise throw an exception
      *
-     * @param value        the input value
-     * @param options      the function options
-     * @param parser       the parser
-     * @param errorMessage the error message that will be thrown if the value is not present and optional is false
-     * @return the parsed value
-     * @throws TokenTypeExpectedException if the value is not present and optional is false
+     * @param options      the options
+     * @param errorMessage the error message
+     * @return the default parameter
      */
-    private static JsonElement defaultOptionalParseJson(
-            final String value,
-            final JsonObject options,
-            final JsonParser parser,
-            final String errorMessage
-    ) throws TokenTypeExpectedException {
-        if (value == null) {
-            if (options.has("default")) {
-                return options.get("default");
-            }
-            if (options.has("optional") && options.get("optional").asPrimitive().asBoolean()) {
-                return JsonPrimitive.fromNull();
-            }
-            throw new IllegalArgumentException(errorMessage);
+    public static JsonElement getOrDefault(final JsonObject options, final String errorMessage) {
+        if (options.has(DEFAULT_OPTION)) {
+            return options.get(DEFAULT_OPTION);
         }
-        if (options.has("parseJson") && options.get("parseJson").asPrimitive().asBoolean()) {
-            return parser.copyConfiguration(value).parse();
+        if (options.has(OPTIONAL_OPTION) && options.get(OPTIONAL_OPTION).asPrimitive().asBoolean()) {
+            return JsonPrimitive.fromNull();
         }
-        return JsonPrimitive.fromString(value);
+        throw new IllegalArgumentException(errorMessage);
     }
 
     /**
-     * This function returns the value of an environment variable
-     * <p>
-     * The first parameter is the name of the environment variable
-     * The second parameter is an object with the following optional fields:
-     * - optional: boolean (default: false)
-     * - default: any (default: null)
-     * - parseJson: boolean (default: false)
-     * If the environment variable is not found, and optional is true, it returns null
-     * If the environment variable is not found, and optional is false, it throws an exception
-     * If the environment variable is found, and parseJson is true, it parses the value as JSON
-     * If the environment variable is found, and parseJson is false, it returns the value as a string
-     * </p>
+     * Returns a JsonFunctionRunner with the default functions
+     *
+     * @return the JsonFunctionRunner
      */
-    public static final FunctionCallback ENV_FUNCTION = (parser, function) -> {
-        if (function.getParameterCount() == 0) {
-            throw new RuntimeException("env function requires at least one parameter (variable_name: string)");
-        }
-        final String variableName = function.getParameter(0).asPrimitive().asString();
-        final JsonObject options = function.getParameterCount() >
-                1 ? function.getParameter(1).asObject()
-                : new JsonObject();
-
-        return JsonFunctionRunner.defaultOptionalParseJson(
-                System.getenv(variableName),
-                options,
-                parser,
-                "Environment variable not found: " + variableName
-        );
-    };
-
-    /**
-     * This function returns the contents of a file
-     * <p>
-     * The first parameter is the path to the file
-     * The second parameter is an object with the following optional fields:
-     * - optional: boolean (default: false)
-     * - default: any (default: null)
-     * - parseJson: boolean (default: false)
-     * If the file is not found, and optional is true, it returns null
-     * If the file is not found, and optional is false, it throws an exception
-     * If the file is found, and parseJson is true, it parses the contents as JSON
-     * If the file is found, and parseJson is false, it returns the contents as a string
-     * </p>
-     */
-    public static final FunctionCallback FILE_FUNCTION = (parser, function) -> {
-        if (function.getParameterCount() == 0) {
-            throw new RuntimeException("file function requires at least one parameter (path: string)");
-        }
-        final String path = function.getParameter(0).asPrimitive().asString();
-        final JsonObject options = function.getParameterCount() > 1
-                ? function.getParameter(1).asObject()
-                : new JsonObject();
-
-        // read contents from file
-        final String contents;
-        try {
-            contents = String.join("\n", Files.readAllLines(Paths.get(path)));
-        } catch (IOException e) {
-            throw new RuntimeException("File not found: " + path);
-        }
-
-        return JsonFunctionRunner.defaultOptionalParseJson(
-                contents,
-                options,
-                parser,
-                "File not found: " + path
-        );
-    };
-
-    /**
-     * The default JsonFunctionRunner contains the env and file functions
-     */
-    public static final JsonFunctionRunner DEFAULT = new JsonFunctionRunner(new HashMap<>())
-            .registerFunctionCallback("env", ENV_FUNCTION)
-            .registerFunctionCallback("file", FILE_FUNCTION);
+    public static JsonFunctionRunner defaultFunctionRunner() {
+        return new JsonFunctionRunner(new HashMap<>())
+                // Load functions
+                .registerFunctionCallback(EnvironmentFunction.NAME, EnvironmentFunction.INSTANCE)
+                .registerFunctionCallback(EnvironmentAsJsonFunction.NAME, EnvironmentAsJsonFunction.INSTANCE)
+                .registerFunctionCallback(FileFunction.NAME, FileFunction.INSTANCE)
+                .registerFunctionCallback(FileAsJsonFunction.NAME, FileAsJsonFunction.INSTANCE)
+                // String functions
+                .registerFunctionCallback(StripFunction.NAME, StripFunction.INSTANCE)
+                .registerFunctionCallback(TransformerFunctions.ToUpper.NAME, TransformerFunctions.ToUpper.INSTANCE)
+                .registerFunctionCallback(TransformerFunctions.ToLower.NAME, TransformerFunctions.ToLower.INSTANCE)
+                // Logic functions
+                .registerFunctionCallback(IfFunction.NAME, IfFunction.INSTANCE)
+                .registerFunctionCallback(BooleanFunctions.IsTrueFunction.NAME, BooleanFunctions.IsTrueFunction.INSTANCE)
+                .registerFunctionCallback(BooleanFunctions.IsFalseFunction.NAME, BooleanFunctions.IsFalseFunction.INSTANCE)
+                .registerFunctionCallback(EqualsFunctions.EqualsFunction.NAME, EqualsFunctions.EqualsFunction.INSTANCE)
+                .registerFunctionCallback(EqualsFunctions.GreaterThan.NAME, EqualsFunctions.GreaterThan.INSTANCE)
+                .registerFunctionCallback(EqualsFunctions.GreaterThanOrEquals.NAME, EqualsFunctions.GreaterThanOrEquals.INSTANCE)
+                .registerFunctionCallback(EqualsFunctions.LessThan.NAME, EqualsFunctions.LessThan.INSTANCE)
+                .registerFunctionCallback(EqualsFunctions.LessThanOrEquals.NAME, EqualsFunctions.LessThanOrEquals.INSTANCE)
+                ;
+    }
 
     private final Map<String, FunctionCallback> functionCallbackMap;
 
@@ -194,15 +138,6 @@ public class JsonFunctionRunner {
             throw new RuntimeException("Unknown function: " + function.getFunctionName());
         }
         return callback.run(parser, function);
-    }
-
-    /**
-     * Copy the JsonFunctionRunner
-     *
-     * @return the copy of the JsonFunctionRunner
-     */
-    public JsonFunctionRunner copy() {
-        return new JsonFunctionRunner(new HashMap<>(this.functionCallbackMap));
     }
 
 }

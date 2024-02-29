@@ -2,7 +2,11 @@ package com.github.pokee.json;
 
 import com.github.pokee.json.exception.TokenTypeExpectedException;
 import com.github.pokee.json.mapper.*;
+import com.github.pokee.json.parser.JsonFunctionRunner;
 import com.github.pokee.json.parser.JsonParser;
+import com.github.pokee.json.value.JsonArray;
+import com.github.pokee.json.value.JsonElement;
+import com.github.pokee.json.value.JsonObject;
 
 import java.util.List;
 import java.util.Map;
@@ -13,11 +17,17 @@ public class Pson {
     private final JsonWriterMapper jsonWriterMapper;
     private final JsonReaderMapper jsonReaderMapper;
 
+    // functions
+    private final JsonFunctionRunner jsonFunctionRunner;
+    private final boolean expandFunctions;
+
     Pson(
             final boolean serializeNulls,
             final String prettyPrintIndent,
             final Map<Class<?>, List<FieldMapper<ValueWriterMapper>>> valueWriterMapperMap,
-            final Map<Class<?>, List<FieldMapper<ValueReaderMapper>>> valueReaderMapperMap
+            final Map<Class<?>, List<FieldMapper<ValueReaderMapper>>> valueReaderMapperMap,
+            final JsonFunctionRunner jsonFunctionRunner,
+            final boolean expandFunctions
     ) {
         this.jsonWriterMapper = new JsonWriterMapper(
                 serializeNulls,
@@ -27,6 +37,8 @@ public class Pson {
         this.jsonReaderMapper = new JsonReaderMapper(
                 valueReaderMapperMap
         );
+        this.jsonFunctionRunner = jsonFunctionRunner;
+        this.expandFunctions = expandFunctions;
     }
 
 
@@ -52,6 +64,10 @@ public class Pson {
                 .serializeNulls();
     }
 
+    private JsonParser createParser(final String json) {
+        return new JsonParser(json, this.expandFunctions, this.jsonFunctionRunner);
+    }
+
     /**
      * Marshal an object to a JSON string
      *
@@ -75,6 +91,22 @@ public class Pson {
     }
 
     /**
+     * Unmarshal a JSON string to a JsonElement
+     *
+     * @param json the JSON string
+     * @return the JsonElement
+     * @throws IllegalStateException if the JSON could not be unmarshalled
+     */
+    public JsonElement unmarshal(final String json) {
+        final JsonParser parser = this.createParser(json);
+        try {
+            return parser.parse();
+        } catch (TokenTypeExpectedException e) {
+            throw new IllegalStateException("Failed to unmarshal JSON", e);
+        }
+    }
+
+    /**
      * Unmarshal a JSON string to an object
      *
      * @param json  the JSON string
@@ -84,13 +116,14 @@ public class Pson {
      * @throws IllegalStateException if the object could not be unmarshalled
      */
     public <T> T unmarshalObject(final String json, final Class<T> clazz) {
-        final JsonParser jsonParser = new JsonParser(json);
         try {
-            return this.jsonReaderMapper.readObject(jsonParser.parse().asObject(), clazz);
+            final JsonObject jsonObject = this.unmarshal(json).asObject();
+            return this.jsonReaderMapper.readObject(jsonObject, clazz);
         } catch (TokenTypeExpectedException | ReflectiveOperationException e) {
             throw new IllegalStateException("Failed to unmarshal object", e);
         }
     }
+
 
     /**
      * Unmarshal a JSON string to a map
@@ -100,9 +133,9 @@ public class Pson {
      * @throws IllegalStateException if the map could not be unmarshalled
      */
     public <T> T[] unmarshalArray(final String json, final Class<T> clazz) {
-        final JsonParser jsonParser = new JsonParser(json);
         try {
-            return this.jsonReaderMapper.readArray(jsonParser.parse().asArray(), clazz);
+            final JsonArray jsonArray = this.unmarshal(json).asArray();
+            return this.jsonReaderMapper.readArray(jsonArray, clazz);
         } catch (TokenTypeExpectedException | ReflectiveOperationException e) {
             throw new IllegalStateException("Failed to unmarshal array", e);
         }
@@ -117,9 +150,9 @@ public class Pson {
      * @throws IllegalStateException if the list could not be unmarshalled
      */
     public <T> List<T> unmarshalList(final String json, final Class<T> clazz) {
-        final JsonParser jsonParser = new JsonParser(json);
         try {
-            return this.jsonReaderMapper.readArrayAsList(jsonParser.parse().asArray(), clazz);
+            final JsonArray jsonArray = this.unmarshal(json).asArray();
+            return this.jsonReaderMapper.readArrayAsList(jsonArray, clazz);
         } catch (TokenTypeExpectedException | ReflectiveOperationException e) {
             throw new IllegalStateException("Failed to unmarshal list", e);
         }

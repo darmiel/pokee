@@ -13,23 +13,65 @@ public class JsonParser {
     private final boolean expandFunctions;
     private final JsonFunctionRunner functionRunner;
 
+    /**
+     * Creates a new parser with the given JSON string
+     *
+     * @param json            the JSON string
+     * @param expandFunctions whether to expand functions
+     * @param functionRunner  the function runner
+     */
     public JsonParser(final String json, final boolean expandFunctions, final JsonFunctionRunner functionRunner) {
         this.tokenizer = new JsonTokenizer(json);
         this.expandFunctions = expandFunctions;
         this.functionRunner = functionRunner;
     }
 
+    /**
+     * Creates a new parser with the given JSON string
+     *
+     * @param json           the JSON string
+     * @param functionRunner the function runner
+     */
     public JsonParser(final String json, final JsonFunctionRunner functionRunner) {
         this(json, false, functionRunner);
     }
 
-    public JsonParser(final String json) {
-        this(json, JsonFunctionRunner.DEFAULT);
+    /**
+     * Creates a new parser with the given JSON string using the default function runner.
+     *
+     * @param json            the JSON string
+     * @param expandFunctions whether to expand functions
+     */
+    public JsonParser(final String json, final boolean expandFunctions) {
+        this(json, expandFunctions, JsonFunctionRunner.defaultFunctionRunner());
     }
 
-    // TODO: docs
+    /**
+     * Creates a new parser with the given JSON string using the default function runner
+     *
+     * @param json the JSON string
+     */
+    public JsonParser(final String json) {
+        this(json, JsonFunctionRunner.defaultFunctionRunner());
+    }
+
+    /**
+     * Returns a copy of the parser with the given JSON string
+     *
+     * @param json the JSON string
+     * @return a copy of the parser with the given JSON string
+     */
     public JsonParser copyConfiguration(final String json) {
         return new JsonParser(json, this.expandFunctions, this.functionRunner);
+    }
+
+    /**
+     * Returns the function runner
+     *
+     * @return the function runner
+     */
+    public JsonFunctionRunner getFunctionRunner() {
+        return functionRunner;
     }
 
     /**
@@ -247,7 +289,6 @@ public class JsonParser {
 
             // if the next token is a right parenthesis, the function has no parameters
             if (peekNextToken.type() == JsonTokenType.RPAREN) {
-                this.expect(JsonTokenType.RPAREN);
                 break;
             }
 

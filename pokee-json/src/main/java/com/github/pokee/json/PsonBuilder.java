@@ -1,6 +1,8 @@
 package com.github.pokee.json;
 
+import com.github.pokee.json.functions.FunctionCallback;
 import com.github.pokee.json.mapper.*;
+import com.github.pokee.json.parser.JsonFunctionRunner;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -37,11 +39,17 @@ public class PsonBuilder {
             float.class, List.of(FieldMapper.wrap((writer, bob, field, value) -> bob.append(value))),
             Boolean.class, List.of(FieldMapper.wrap((writer, bob, field, value) -> bob.append(value))),
             boolean.class, List.of(FieldMapper.wrap((writer, bob, field, value) -> bob.append(value))
-    ));
+            ));
 
+    /// Writing
     // null = no pretty print
     private String prettyPrintIndent = null;
     private boolean serializeNulls = false;
+
+    /// Reading
+    // functions
+    private final JsonFunctionRunner jsonFunctionRunner;
+    private boolean expandFunctions = true;
 
     private final Map<Class<?>, List<FieldMapper<ValueWriterMapper>>> valueWriterMappers
             = new HashMap<>(DEFAULT_VALUE_WRITER_MAPPERS);
@@ -49,6 +57,7 @@ public class PsonBuilder {
             = new HashMap<>(DEFAULT_VALUE_READER_MAPPERS);
 
     PsonBuilder() {
+        this.jsonFunctionRunner = JsonFunctionRunner.defaultFunctionRunner();
     }
 
     /**
@@ -90,6 +99,26 @@ public class PsonBuilder {
     public PsonBuilder serializeNulls() {
         this.serializeNulls = true;
         return this;
+    }
+
+    /**
+     * Expand functions
+     *
+     * @param expandFunctions expand functions
+     * @return this
+     */
+    public PsonBuilder expandFunctions(final boolean expandFunctions) {
+        this.expandFunctions = expandFunctions;
+        return this;
+    }
+
+    /**
+     * Expand functions
+     *
+     * @return this
+     */
+    public PsonBuilder expandFunctions() {
+        return this.expandFunctions(true);
     }
 
     /**
@@ -189,6 +218,21 @@ public class PsonBuilder {
     }
 
     /**
+     * Register a function callback
+     *
+     * @param functionName     the name of the function
+     * @param functionCallback the function callback
+     * @return this
+     */
+    public PsonBuilder registerFunctionCallback(
+            final String functionName,
+            final FunctionCallback functionCallback
+    ) {
+        this.jsonFunctionRunner.registerFunctionCallback(functionName, functionCallback);
+        return this;
+    }
+
+    /**
      * Predicate to check if a field is not null
      *
      * @return the predicate
@@ -233,7 +277,9 @@ public class PsonBuilder {
                 this.serializeNulls,
                 this.prettyPrintIndent,
                 this.valueWriterMappers,
-                this.valueReaderMappers
+                this.valueReaderMappers,
+                this.jsonFunctionRunner,
+                this.expandFunctions
         );
     }
 

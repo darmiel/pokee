@@ -173,7 +173,7 @@ public class JsonTokenizer {
 
         while (this.index < this.json.length()) {
             final char currentChar = this.json.charAt(this.index);
-            if (currentChar == ',' || currentChar == '}' || currentChar == ']') {
+            if (currentChar == ',' || currentChar == '}' || currentChar == ']' || currentChar == ')') {
                 break;
             }
             bob.append(currentChar);
