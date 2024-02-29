@@ -3,6 +3,7 @@ package com.github.pokee.json.value;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Represents a JSON object
@@ -43,6 +44,15 @@ public class JsonObject implements JsonElement, ToStringDepth {
      */
     public boolean has(final String key) {
         return this.entries.containsKey(key);
+    }
+
+    /**
+     * Get the entries of the object
+     *
+     * @return The entries
+     */
+    public Set<Map.Entry<String, JsonElement>> entries() {
+        return this.entries.entrySet();
     }
 
     @Override
