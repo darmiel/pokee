@@ -2,11 +2,12 @@ package com.github.pokee.json.value;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents a JSON object
  */
-public class JsonObject implements JsonElement {
+public class JsonObject implements JsonElement, ToStringDepth {
 
     private final Map<String, JsonElement> entries;
 
@@ -45,10 +46,22 @@ public class JsonObject implements JsonElement {
     }
 
     @Override
+    public String toString(int depth) {
+        final StringBuilder bob = new StringBuilder();
+        bob.append("JsonObject {\n");
+        for (final Map.Entry<String, JsonElement> entry : this.entries.entrySet()) {
+            final String entryValue = entry.getValue() instanceof final ToStringDepth toStringDepth
+                    ? toStringDepth.toString(depth + 1)
+                    : Objects.toString(entry.getValue());
+            bob.append("  ".repeat(depth + 1)).append(entry.getKey()).append(": ").append(entryValue).append(",\n");
+        }
+        bob.append("  ".repeat(depth)).append("}");
+        return bob.toString();
+    }
+
+    @Override
     public String toString() {
-        return "JsonObject{" +
-                "entries=" + entries +
-                '}';
+        return this.toString(0);
     }
 
 }

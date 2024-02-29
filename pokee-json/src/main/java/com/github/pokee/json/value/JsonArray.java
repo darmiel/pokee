@@ -2,11 +2,12 @@ package com.github.pokee.json.value;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a JSON array
  */
-public class JsonArray implements JsonElement {
+public class JsonArray implements JsonElement, ToStringDepth {
 
     private final List<JsonElement> elements = new ArrayList<>();
 
@@ -36,6 +37,20 @@ public class JsonArray implements JsonElement {
      */
     public int size() {
         return this.elements.size();
+    }
+
+    @Override
+    public String toString(int depth) {
+        final StringBuilder bob = new StringBuilder();
+        bob.append("JsonArray [\n");
+        for (JsonElement entry : this.elements) {
+            final String entryValue = entry instanceof final ToStringDepth toStringDepth
+                    ? toStringDepth.toString(depth + 1)
+                    : Objects.toString(entry);
+            bob.append("  ".repeat(depth + 1)).append(entryValue).append(",\n");
+        }
+        bob.append("  ".repeat(depth)).append("]");
+        return bob.toString();
     }
 
     @Override

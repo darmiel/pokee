@@ -1,4 +1,4 @@
-package com.github.pokee.json.token;
+package com.github.pokee.json.parser;
 
 public class JsonTokenizer {
 
@@ -97,8 +97,41 @@ public class JsonTokenizer {
                 final String read = this.readPrimitive();
                 return new JsonToken(JsonTokenType.NUMBER, read, startIndex, this.index);
             }
+            case '@' -> {
+                this.index++;
+                return new JsonToken(JsonTokenType.BEGIN_FUNCTION, "@", startIndex, this.index);
+            }
+            case '(' -> {
+                this.index++;
+                return new JsonToken(JsonTokenType.LPAREN, "(", startIndex, this.index);
+            }
+            case ')' -> {
+                this.index++;
+                return new JsonToken(JsonTokenType.RPAREN, ")", startIndex, this.index);
+            }
             default -> throw new IllegalStateException("Unexpected character: " + c);
         }
+    }
+
+    /**
+     * Read a function name from the tokenizer
+     *
+     * @return the function name read from the tokenizer
+     */
+    public String readFunctionName() {
+        final StringBuilder bob = new StringBuilder();
+        while (this.index < this.json.length()) {
+            final char currentChar = this.json.charAt(this.index);
+            if (currentChar == '(') {
+                return bob.toString();
+            }
+            if (currentChar == ' ') {
+                throw new IllegalStateException("Unexpected whitespace in function name");
+            }
+            bob.append(currentChar);
+            this.index++;
+        }
+        throw new IllegalStateException("Unterminated function name");
     }
 
     /**

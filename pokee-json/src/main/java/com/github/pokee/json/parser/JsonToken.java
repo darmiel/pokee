@@ -1,4 +1,4 @@
-package com.github.pokee.json.token;
+package com.github.pokee.json.parser;
 
 /**
  * Represents a token in a JSON document

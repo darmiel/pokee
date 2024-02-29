@@ -1,4 +1,4 @@
-package com.github.pokee.json.token;
+package com.github.pokee.json.parser;
 
 public enum JsonTokenType {
 
@@ -21,6 +21,11 @@ public enum JsonTokenType {
     STRING,
     NUMBER,
     BOOLEAN,
-    NULL
+    NULL,
+
+    // functions
+    BEGIN_FUNCTION,
+    LPAREN,
+    RPAREN,
 
 }

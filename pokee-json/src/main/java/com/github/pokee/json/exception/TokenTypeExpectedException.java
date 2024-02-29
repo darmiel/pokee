@@ -1,6 +1,6 @@
 package com.github.pokee.json.exception;
 
-import com.github.pokee.json.token.JsonTokenType;
+import com.github.pokee.json.parser.JsonTokenType;
 
 import java.util.Arrays;
 
