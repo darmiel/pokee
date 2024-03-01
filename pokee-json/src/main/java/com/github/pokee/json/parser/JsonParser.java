@@ -66,15 +66,6 @@ public class JsonParser {
     }
 
     /**
-     * Returns the function runner
-     *
-     * @return the function runner
-     */
-    public JsonFunctionRunner getFunctionRunner() {
-        return functionRunner;
-    }
-
-    /**
      * Parses the JSON string and returns the parsed JSON as a {@link JsonElement}
      * The JSON string is expected to be a valid JSON document
      * and the tokenizer is expected to be at the beginning of the document.
@@ -88,14 +79,14 @@ public class JsonParser {
      */
     public JsonElement parse(final boolean expectDocumentEnd) throws TokenTypeExpectedException {
         final JsonElement element;
-        final JsonToken peakedToken = this.tokenizer.peekNextToken();
+        final JsonToken peekedToken = this.tokenizer.peekNextToken();
 
-        switch (peakedToken.type()) {
+        switch (peekedToken.type()) {
             case BEGIN_OBJECT -> element = this.readObject();
             case BEGIN_ARRAY -> element = this.readArray();
             case STRING, NUMBER, BOOLEAN, NULL -> {
-                final JsonToken token = this.tokenizer.nextToken();
-                element = new JsonPrimitive(token.value().strip());
+                peekedToken.apply(this.tokenizer);
+                element = new JsonPrimitive(peekedToken.value().strip());
             }
             case BEGIN_FUNCTION -> {
                 final JsonFunction function = this.readFunction();
@@ -115,7 +106,7 @@ public class JsonParser {
                     JsonTokenType.NUMBER,
                     JsonTokenType.BOOLEAN,
                     JsonTokenType.NULL
-            }, peakedToken.type());
+            }, peekedToken.type());
         }
 
         // expect the end of the document

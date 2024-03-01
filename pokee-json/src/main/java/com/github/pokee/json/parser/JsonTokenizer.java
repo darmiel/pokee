@@ -109,6 +109,17 @@ public class JsonTokenizer {
                 this.index++;
                 return new JsonToken(JsonTokenType.RPAREN, ")", startIndex, this.index);
             }
+            case '/' -> {
+                // strip comment prefix
+                while (this.index < this.json.length() && this.json.charAt(this.index) == '/') {
+                    this.index++;
+                }
+                // read until end of line
+                while (this.index < this.json.length() && this.json.charAt(this.index) != '\n') {
+                    this.index++;
+                }
+                return this.nextToken();
+            }
             default -> throw new IllegalStateException("Unexpected character: " + c);
         }
     }
