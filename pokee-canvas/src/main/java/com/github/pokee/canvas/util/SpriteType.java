@@ -1,5 +1,8 @@
 package com.github.pokee.canvas.util;
 
+import lombok.Getter;
+
+@Getter
 public enum SpriteType {
 
     BACK("back"),
@@ -10,7 +13,4 @@ public enum SpriteType {
         this.dirName = dirName;
     }
 
-    public String getDirName() {
-        return dirName;
-    }
 }

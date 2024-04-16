@@ -1,15 +1,12 @@
 package com.github.pokee.bootstrap.json;
 
 import com.github.pokee.pson.Pson;
-import com.github.pokee.pson.exception.TokenTypeExpectedException;
 import com.github.pokee.pson.value.JsonElement;
-
-import java.io.IOException;
 
 public class JsonFunctionBootstrap {
 
-    public static void main(String[] args) throws TokenTypeExpectedException, IOException {
-        String json = """
+    public static void main(String[] args) {
+        final String json = """
                 {
                     // this is a comment!
                     "secret": @env("SECRET"), // this is also a comment

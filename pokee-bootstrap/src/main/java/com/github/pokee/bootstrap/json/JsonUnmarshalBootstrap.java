@@ -8,10 +8,6 @@ import java.util.List;
 
 public class JsonUnmarshalBootstrap {
 
-    @SuppressWarnings("unused")
-    record Test(String name, int age) {
-    }
-
     @SuppressWarnings("InnerClassMayBeStatic")
     class Test2 {
         private final String name;

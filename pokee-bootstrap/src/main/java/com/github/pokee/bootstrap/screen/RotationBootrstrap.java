@@ -1,4 +1,4 @@
-package com.github.pokee.bootstrap.json;
+package com.github.pokee.bootstrap.screen;
 
 import com.github.pokee.canvas.Canvas;
 import com.github.pokee.canvas.PixelCanvas;

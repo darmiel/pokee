@@ -48,8 +48,8 @@ public class AttackScreen extends Screen {
         final DrawablePokemon defender = new DrawablePokemon(defenderID);
         this.defenderSprite = defender.getSprite(SpriteType.FRONT);
 
-        this.attackerCommonColor = ColorUtils.findMostCommon(this.attackerSprite, Color.YELLOW);
-        this.defenderCommonColor = ColorUtils.findMostCommon(this.defenderSprite, Color.ORANGE);
+        this.attackerCommonColor = ColorUtils.findMostCommon(this.attackerSprite);
+        this.defenderCommonColor = ColorUtils.findMostCommon(this.defenderSprite);
 
         // animations
         this.attackerEnterAnimation = this.registerAnimation(BerzierAnimation.easeOut(20));
