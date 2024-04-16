@@ -9,6 +9,9 @@ import com.github.pokee.json.value.JsonPrimitive;
 
 public class EqualsFunctions {
 
+    /**
+     * Function to compare two elements for equality.
+     */
     public static class EqualsFunction implements FunctionCallback {
 
         public static final String NAME = "eq";

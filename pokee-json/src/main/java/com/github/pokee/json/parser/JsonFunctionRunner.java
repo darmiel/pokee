@@ -7,6 +7,7 @@ import com.github.pokee.json.functions.load.EnvironmentFunction;
 import com.github.pokee.json.functions.load.FileAsJsonFunction;
 import com.github.pokee.json.functions.load.FileFunction;
 import com.github.pokee.json.functions.logic.BooleanFunctions;
+import com.github.pokee.json.functions.logic.DefaultFunction;
 import com.github.pokee.json.functions.logic.EqualsFunctions;
 import com.github.pokee.json.functions.logic.IfFunction;
 import com.github.pokee.json.functions.string.StripFunction;
@@ -69,6 +70,7 @@ public class JsonFunctionRunner {
                 .registerFunctionCallback(EqualsFunctions.GreaterThanOrEquals.NAME, EqualsFunctions.GreaterThanOrEquals.INSTANCE)
                 .registerFunctionCallback(EqualsFunctions.LessThan.NAME, EqualsFunctions.LessThan.INSTANCE)
                 .registerFunctionCallback(EqualsFunctions.LessThanOrEquals.NAME, EqualsFunctions.LessThanOrEquals.INSTANCE)
+                .registerFunctionCallback(DefaultFunction.NAME, DefaultFunction.INSTANCE)
                 ;
     }
 
