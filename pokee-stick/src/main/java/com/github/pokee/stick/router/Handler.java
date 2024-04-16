@@ -1,4 +1,4 @@
-package com.github.pokee.stick.handler;
+package com.github.pokee.stick.router;
 
 import com.github.pokee.stick.request.Request;
 import com.github.pokee.stick.response.Response;
