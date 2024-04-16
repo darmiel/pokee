@@ -1,20 +1,27 @@
 package com.github.pokee.stick.response;
 
 import com.github.pokee.pson.Pson;
-import com.github.pokee.stick.util.ProxyWrapper;
+import com.github.pokee.pson.mapper.mappers.UUIDMapper;
 
-public class ResponsePsonProxy extends ProxyWrapper<Pson> {
+import java.util.UUID;
 
-    @Override
-    public Pson createProxy() {
-        return Pson.create()
-                .prettyPrint()
-                .expandFunctions(false)
-                .build();
+public class ResponsePsonProxy {
+
+    private static Pson proxyInstance = null;
+
+    public static Pson get() {
+        if (ResponsePsonProxy.proxyInstance == null) {
+            ResponsePsonProxy.proxyInstance = Pson.create()
+                    .prettyPrint()
+                    .expandFunctions(false)
+                    .registerMapper(UUID.class, UUIDMapper.INSTANCE)
+                    .build();
+        }
+        return ResponsePsonProxy.proxyInstance;
     }
 
     public String marshal(final Object object) {
-        return this.get().marshal(object);
+        return ResponsePsonProxy.get().marshal(object);
     }
 
 }

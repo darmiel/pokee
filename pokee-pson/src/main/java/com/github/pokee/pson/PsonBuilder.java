@@ -218,6 +218,37 @@ public class PsonBuilder {
     }
 
     /**
+     * Register a mapper for a specific class
+     *
+     * @param targetClass the class to map from
+     * @param mapper      the mapper
+     * @return this
+     */
+    public PsonBuilder registerMapper(
+            final Class<?> targetClass,
+            final Predicate<Field> fieldPredicate,
+            final ValueReaderWriterMapper mapper
+    ) {
+        return this
+                .registerValueReaderMapper(targetClass, fieldPredicate, mapper)
+                .registerValueWriterMapper(targetClass, fieldPredicate, mapper);
+    }
+
+    /**
+     * Register a mapper for a specific class
+     *
+     * @param targetClass the class to map from
+     * @param mapper      the mapper
+     * @return this
+     */
+    public PsonBuilder registerMapper(
+            final Class<?> targetClass,
+            final ValueReaderWriterMapper mapper
+    ) {
+        return this.registerMapper(targetClass, null, mapper);
+    }
+
+    /**
      * Register a function callback
      *
      * @param functionName     the name of the function
