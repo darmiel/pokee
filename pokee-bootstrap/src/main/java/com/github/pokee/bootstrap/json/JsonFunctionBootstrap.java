@@ -1,23 +1,23 @@
 package com.github.pokee.bootstrap.json;
 
-import com.github.pokee.json.Pson;
-import com.github.pokee.json.exception.TokenTypeExpectedException;
-import com.github.pokee.json.value.JsonElement;
+import com.github.pokee.pson.Pson;
+import com.github.pokee.pson.exception.TokenTypeExpectedException;
+import com.github.pokee.pson.value.JsonElement;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class JsonFunctionBootstrap {
 
     public static void main(String[] args) throws TokenTypeExpectedException, IOException {
         String json = """
                 {
-                    "secret": @env("SECRET"),
-                    "person": @file("person.json", {"optional": true, "parseJson": true})
+                    // this is a comment!
+                    "secret": @env("SECRET"), // this is also a comment
+                    // and this
+                    "person": @file("person.json", {"optional": true, "json": true}), // hehe
+                    // hi!
+                    "test" : " o k "
                 }""";
-
-        json = String.join("\n", Files.readAllLines(Paths.get("config/config.pson")));
 
         final Pson pson = Pson.createWithDefaults()
                 .expandFunctions()

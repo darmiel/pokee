@@ -1,7 +1,7 @@
 package com.github.pokee.bootstrap.json;
 
-import com.github.pokee.json.Pson;
-import com.github.pokee.json.mapper.annotations.JsonOptional;
+import com.github.pokee.pson.Pson;
+import com.github.pokee.pson.mapper.annotations.JsonOptional;
 
 import java.util.Arrays;
 import java.util.List;

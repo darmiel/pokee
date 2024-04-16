@@ -70,10 +70,9 @@
         </pluginManagement>
     </build>
     <modules>
-        <module>pokee-json</module>
-        <module>pokee-renderer</module>
+        <module>pokee-pson</module>
+        <module>pokee-canvas</module>
         <module>pokee-commons</module>
         <module>pokee-bootstrap</module>
-        <module>pokee-game-platformer</module>
     </modules>
 </project>

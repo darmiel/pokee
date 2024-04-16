@@ -1,7 +1,7 @@
 package com.github.pokee.bootstrap.json;
 
-import com.github.pokee.json.Pson;
-import com.github.pokee.json.PsonBuilder;
+import com.github.pokee.pson.Pson;
+import com.github.pokee.pson.PsonBuilder;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

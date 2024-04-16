@@ -1,12 +1,12 @@
 package com.github.pokee.bootstrap.json;
 
-import com.github.pokee.json.Pson;
-import com.github.pokee.json.exception.MissingRequiredFieldException;
-import com.github.pokee.json.exception.TokenTypeExpectedException;
-import com.github.pokee.json.mapper.annotations.JsonIgnore;
-import com.github.pokee.json.mapper.annotations.JsonOptional;
-import com.github.pokee.json.mapper.annotations.JsonProperty;
-import com.github.pokee.json.parser.JsonParser;
+import com.github.pokee.pson.Pson;
+import com.github.pokee.pson.exception.MissingRequiredFieldException;
+import com.github.pokee.pson.exception.TokenTypeExpectedException;
+import com.github.pokee.pson.mapper.annotations.JsonIgnore;
+import com.github.pokee.pson.mapper.annotations.JsonOptional;
+import com.github.pokee.pson.mapper.annotations.JsonProperty;
+import com.github.pokee.pson.parser.JsonParser;
 
 import java.lang.reflect.InvocationTargetException;
 
