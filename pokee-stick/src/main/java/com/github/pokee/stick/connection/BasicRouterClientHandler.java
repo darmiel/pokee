@@ -5,21 +5,22 @@ import com.github.pokee.stick.request.Request;
 import com.github.pokee.stick.response.Response;
 import com.github.pokee.stick.response.ResponseBuilder;
 import com.github.pokee.stick.response.writers.ResponseWriter;
+import com.github.pokee.stick.router.Context;
 import com.github.pokee.stick.router.Handler;
-import com.github.pokee.stick.router.Router;
-import com.github.pokee.stick.router.RouterRunner;
+import com.github.pokee.stick.router.ParameterizableRouter;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.List;
 
 public class BasicRouterClientHandler implements ClientHandler {
 
-    private final Router router;
+    private final ParameterizableRouter router;
 
-    public BasicRouterClientHandler(Router router) {
+    public BasicRouterClientHandler(ParameterizableRouter router) {
         this.router = router;
     }
 
@@ -37,22 +38,27 @@ public class BasicRouterClientHandler implements ClientHandler {
                 throw new UnsupportedOperationException("Unsupported version for writing: " + request.version());
             }
 
-            Response response = null;
+            final Context context = this.router.createContext(request);
+            final List<Handler> handlers = context.getHandlers();
 
-            // TODO: middlewares etc.
-            // find handlers for the request
-            final RouterRunner runner = this.router.findRoutes(request.method(), request.path());
-            for (Handler handler : runner.handlers()) {
-                if ((response = handler.handle(request)) != null) { // TODO: change this in the future
-                    System.out.println("Params for handler: " + runner.parameters());
-                    break;
+            Response response;
+            if (!handlers.isEmpty()) {
+                for (final Handler handler : handlers) {
+                    handler.handle(context);
                 }
-            }
-
-            if (response == null) {
+                response = context.getResponse();
+            } else {
                 response = new ResponseBuilder()
                         .status(StatusCode.NOT_FOUND)
                         .text("Cannot " + request.method() + " " + request.path())
+                        .build();
+            }
+
+            // if the handler didn't return a response, return a 204 No Content
+            if (response == null) {
+                response = new ResponseBuilder()
+                        .status(StatusCode.NO_CONTENT)
+                        .text("No content returned")
                         .build();
             }
 

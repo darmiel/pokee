@@ -7,6 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents a node in a routing tree, storing mappings from URL parts to child nodes
+ * and HTTP methods to handlers.
+ */
 public class RouteNode {
 
     private final Map<String, RouteNode> children;
@@ -15,6 +19,13 @@ public class RouteNode {
     private final String part;
     private final boolean isParameter;
 
+    /**
+     * Constructs a new RouteNode with the specified URL part and a flag indicating whether
+     * it represents a parameterized segment.
+     *
+     * @param part        The part of the route associated with this node.
+     * @param isParameter Indicates whether the part is a parameter.
+     */
     public RouteNode(final String part, final boolean isParameter) {
         this.children = new HashMap<>();
         this.handlers = new HashMap<>();
@@ -24,10 +35,11 @@ public class RouteNode {
     }
 
     /**
-     * Add a child to the node.
+     * Adds or retrieves a child node for a given part of the URL. If the part already exists,
+     * the existing node is returned.
      *
      * @param part The part of the URL to add as a child.
-     * @return The child node.
+     * @return The child node corresponding to the part.
      */
     public RouteNode addChild(final String part) {
         if (this.children.containsKey(part)) {
@@ -44,57 +56,55 @@ public class RouteNode {
     }
 
     /**
-     * Get the child node for the given part.
+     * Retrieves the child node corresponding to a given part of the URL.
      *
      * @param part The part to get the child node for.
-     * @return The child node for the given part.
+     * @return The child node, or null if no such node exists.
      */
     public RouteNode getChild(final String part) {
         return this.children.get(part);
     }
-
     /**
-     * Add a handler to the node.
+     * Adds a handler for a specific HTTP method to this node.
      *
-     * @param method  The method to add the handler for.
-     * @param handler The handler to add.
+     * @param method  The HTTP method for which to add the handler.
+     * @param handler The handler to process requests for the given method.
      */
     public void addHandler(final Method method, final Handler handler) {
         this.handlers.computeIfAbsent(method, k -> new ArrayList<>()).add(handler);
     }
-
     /**
-     * Get the handlers for the given method.
+     * Retrieves the list of handlers associated with a given HTTP method at this node.
      *
-     * @param method The method to get the handlers for.
-     * @return The handlers for the given method.
+     * @param method The HTTP method for which handlers are requested.
+     * @return A list of handlers, or null if no handlers are available for the method.
      */
     public List<Handler> getHandlers(final Method method) {
         return this.handlers.get(method);
     }
 
     /**
-     * Get the children of the node.
+     * Returns a map of all children nodes.
      *
-     * @return The children of the node.
+     * @return A map where each key is a part of the URL and each value is the corresponding RouteNode.
      */
     Map<String, RouteNode> getChildren() {
         return this.children;
     }
 
     /**
-     * Check if the node is a parameter.
+     * Checks if this node represents a parameterized part of the route.
      *
-     * @return Whether the node is a parameter.
+     * @return true if this node is parameterized, otherwise false.
      */
     public boolean isParameter() {
         return this.isParameter;
     }
 
     /**
-     * Get the part of the node.
+     * Returns the part of the URL associated with this node.
      *
-     * @return The part of the node.
+     * @return The part of the URL.
      */
     public String getPart() {
         return this.part;

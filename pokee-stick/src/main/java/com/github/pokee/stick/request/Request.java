@@ -1,16 +1,17 @@
 package com.github.pokee.stick.request;
 
+import com.github.pokee.stick.Method;
+import com.github.pokee.stick.Version;
 import com.github.pokee.stick.exception.RequestParseException;
 import com.github.pokee.stick.headers.Headers;
 import com.github.pokee.stick.request.parsers.RequestParser;
-import com.github.pokee.stick.Method;
-import com.github.pokee.stick.Version;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
 public record Request(Method method,
                       String path,
+                      String query,
                       Version version,
                       Headers headers,
                       BufferedReader reader) {
@@ -36,7 +37,9 @@ public record Request(Method method,
         return parser.parse(header, reader);
     }
 
-
+    /**
+     * @return the request formatted as a string
+     */
     @Override
     public String toString() {
         return method + " " + path + " " + version;

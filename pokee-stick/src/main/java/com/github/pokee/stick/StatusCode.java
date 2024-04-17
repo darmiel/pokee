@@ -1,5 +1,9 @@
 package com.github.pokee.stick;
 
+/**
+ * Enumerates HTTP status codes used in server responses, providing both the numeric
+ * status code and its textual description.
+ */
 public enum StatusCode {
     OK(200, "OK"),
     CREATED(201, "Created"),
@@ -18,16 +22,33 @@ public enum StatusCode {
     private final int code;
     private final String description;
 
+    /**
+     * Constructs a new status code enum constant with the specified numeric and textual representation.
+     *
+     * @param code        the numeric status code
+     * @param description the textual description of the status code
+     */
     StatusCode(int code, String description) {
         this.code = code;
         this.description = description;
     }
 
+    /**
+     * Returns the numeric status code.
+     *
+     * @return the numeric code of this status
+     */
     public int code() {
-        return code;
+        return this.code;
     }
 
+    /**
+     * Returns the textual description of the status code.
+     *
+     * @return the description of this status
+     */
     public String description() {
-        return description;
+        return this.description;
     }
+
 }

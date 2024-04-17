@@ -8,16 +8,34 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A response writer for HTTP/1.0 responses. This class handles the formatting
+ * and output of HTTP responses according to the HTTP/1.0 specification.
+ */
 public class ResponseWriterVersion1_0 implements ResponseWriter {
 
+    /**
+     * Returns the delimiter used to separate headers and lines in the HTTP response.
+     *
+     * @return The delimiter string.
+     */
     protected String getDelimiter() {
         return "\r\n";
     }
 
+    /**
+     * Returns the HTTP version this writer handles.
+     *
+     * @return The HTTP version.
+     */
     protected Version getVersion() {
         return Version.VERSION_1_0;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void write(final Response response, final BufferedOutputStream boss) throws IOException {
         final StringBuilder bob = new StringBuilder();

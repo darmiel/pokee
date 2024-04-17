@@ -1,23 +1,37 @@
 package com.github.pokee.stick.headers;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.*;
 
+/**
+ * Represents the collection of HTTP headers, allowing for modification and retrieval of header values.
+ * This class provides methods to add, set, and query headers in a case-insensitive manner.
+ */
 public class Headers {
 
     protected final Map<String, List<String>> headers;
 
+    /**
+     * Constructs a new Headers instance initialized with the provided headers.
+     *
+     * @param headers a map containing initial header values.
+     */
     public Headers(final Map<String, List<String>> headers) {
         this.headers = headers;
     }
 
+    /**
+     * Constructs an empty Headers instance.
+     */
     public Headers() {
         this.headers = new HashMap<>();
     }
 
+    /**
+     * Retrieves a header key adjusted for case sensitivity.
+     *
+     * @param key the header key to find
+     * @return the actual key from the map if present, regardless of case; otherwise, null
+     */
     protected String getKey(final String key) {
         for (String k : this.headers.keySet()) {
             if (k.equalsIgnoreCase(key)) {
@@ -27,11 +41,25 @@ public class Headers {
         return null;
     }
 
+    /**
+     * Retrieves a header key adjusted for case sensitivity, or returns a default key if not found.
+     *
+     * @param key        the header key to find
+     * @param defaultKey the default key to return if no matching key is found
+     * @return the actual key from the map if present, regardless of case; otherwise, the default key
+     */
     protected String getKey(final String key, final String defaultKey) {
         final String mapKey = this.getKey(key);
         return mapKey != null ? mapKey : defaultKey;
     }
 
+
+    /**
+     * Creates a mutable list containing a single value.
+     *
+     * @param value the value to be placed in the list
+     * @return a new list containing the provided value
+     */
     protected List<String> mutableSingleton(final String value) {
         final List<String> list = new ArrayList<>();
         list.add(value);
@@ -39,44 +67,50 @@ public class Headers {
     }
 
     /**
-     * Get the value of a header
+     * Checks if a header is present.
      *
      * @param key the header key
-     * @return the header value
+     * @return true if the header is present, otherwise false
      */
-    public boolean contains(final String key) {
+    public boolean has(final String key) {
         return this.getKey(key) != null;
     }
 
     /**
-     * Add a header
+     * Adds a value to a header. If the header does not exist, it is created.
      *
      * @param key   the header key
-     * @param value the header value
+     * @param value the header value to add
      */
     public void add(final String key, final String value) {
         headers.computeIfAbsent(this.getKey(key, key), k -> new ArrayList<>()).add(value);
     }
 
+
     /**
-     * Set a header
+     * Sets a header value, replacing any existing values for that header.
      *
      * @param key   the header key
-     * @param value the header value
+     * @param value the new value for the header
      */
     public void set(final String key, final String value) {
         this.headers.put(this.getKey(key, key), this.mutableSingleton(value));
     }
 
+    /**
+     * Returns a string representation of the headers.
+     *
+     * @return a string representation of the headers
+     */
     @Override
     public String toString() {
         return headers.toString();
     }
 
     /**
-     * Pretty print the headers
+     * Provides a formatted string of all headers, enhancing readability.
      *
-     * @return the pretty printed headers
+     * @return a formatted string representation of the headers
      */
     public String prettyPrint() {
         final StringBuilder bob = new StringBuilder();
@@ -95,15 +129,21 @@ public class Headers {
         return bob.toString();
     }
 
+
     /**
-     * Return an immutable version of the headers
+     * Converts the headers to an immutable structure.
      *
-     * @return the immutable headers
+     * @return an immutable headers object
      */
     public ImmutableHeaders toImmutable() {
         return new ImmutableHeaders(this);
     }
 
+    /**
+     * Provides access to the header entries as a set.
+     *
+     * @return a set of map entries representing the headers
+     */
     public Set<Map.Entry<String, List<String>>> entries() {
         return this.headers.entrySet();
     }
