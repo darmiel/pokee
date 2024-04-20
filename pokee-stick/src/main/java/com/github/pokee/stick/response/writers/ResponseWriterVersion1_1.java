@@ -1,6 +1,6 @@
 package com.github.pokee.stick.response.writers;
 
-import com.github.pokee.stick.Version;
+import com.github.pokee.stick.request.Version;
 
 /**
  * A response writer for HTTP/1.1 responses. It uses the HTTP/1.0 specification to format and output HTTP responses

@@ -1,4 +1,4 @@
-# PSON Pokee JSON Parser
+# PSON - Pokee JSON Parser
 
 > [!WARNING]
 > The `mapper` package does some _very_ illegal unsafe things to achieve parsing JSON to objects.

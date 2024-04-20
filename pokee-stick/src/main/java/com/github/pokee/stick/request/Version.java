@@ -1,4 +1,4 @@
-package com.github.pokee.stick;
+package com.github.pokee.stick.request;
 
 import com.github.pokee.stick.request.parsers.RequestParser;
 import com.github.pokee.stick.request.parsers.RequestParserVersion1_0;

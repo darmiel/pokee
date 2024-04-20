@@ -1,8 +1,5 @@
 package com.github.pokee.stick.request;
 
-import com.github.pokee.stick.Method;
-import com.github.pokee.stick.Version;
-
 /**
  * Represents the initial line of an HTTP request, containing the method, path, and version.
  */

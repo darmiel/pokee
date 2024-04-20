@@ -1,6 +1,6 @@
 package com.github.pokee.stick.router;
 
-import com.github.pokee.stick.Method;
+import com.github.pokee.stick.request.Method;
 
 import java.util.ArrayList;
 import java.util.HashMap;

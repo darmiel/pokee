@@ -1,6 +1,6 @@
 package com.github.pokee.stick.router;
 
-import com.github.pokee.stick.Method;
+import com.github.pokee.stick.request.Method;
 import com.github.pokee.stick.exception.NoRouteMatchedException;
 import com.github.pokee.stick.request.Request;
 

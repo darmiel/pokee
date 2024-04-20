@@ -1,4 +1,4 @@
-package com.github.pokee.stick;
+package com.github.pokee.stick.util;
 
 /**
  * Provides constants for various MIME types used to specify the content type of files and data in HTTP headers.

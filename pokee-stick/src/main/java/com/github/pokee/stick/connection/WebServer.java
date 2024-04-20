@@ -1,5 +1,8 @@
 package com.github.pokee.stick.connection;
 
+import com.github.pokee.stick.connection.handler.ClientHandler;
+import com.github.pokee.stick.connection.handler.ThreadedClientHandler;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 

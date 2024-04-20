@@ -1,4 +1,4 @@
-package com.github.pokee.stick;
+package com.github.pokee.stick.request;
 
 import com.github.pokee.stick.util.Enums;
 

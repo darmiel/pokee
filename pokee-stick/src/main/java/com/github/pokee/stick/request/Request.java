@@ -1,7 +1,5 @@
 package com.github.pokee.stick.request;
 
-import com.github.pokee.stick.Method;
-import com.github.pokee.stick.Version;
 import com.github.pokee.stick.exception.RequestParseException;
 import com.github.pokee.stick.headers.Headers;
 import com.github.pokee.stick.request.parsers.RequestParser;

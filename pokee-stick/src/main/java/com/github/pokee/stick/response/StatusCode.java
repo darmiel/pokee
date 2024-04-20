@@ -1,4 +1,4 @@
-package com.github.pokee.stick;
+package com.github.pokee.stick.response;
 
 /**
  * Enumerates HTTP status codes used in server responses, providing both the numeric

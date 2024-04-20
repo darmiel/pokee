@@ -2,8 +2,7 @@ package com.github.pokee.stick.response;
 
 import com.github.pokee.pson.Pson;
 import com.github.pokee.pson.mapper.mappers.UUIDMapper;
-import com.github.pokee.stick.ContentTypes;
-import com.github.pokee.stick.StatusCode;
+import com.github.pokee.stick.util.ContentTypes;
 import com.github.pokee.stick.headers.Headers;
 
 import java.util.UUID;

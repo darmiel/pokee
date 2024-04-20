@@ -1,6 +1,6 @@
 package com.github.pokee.stick.response.writers;
 
-import com.github.pokee.stick.Version;
+import com.github.pokee.stick.request.Version;
 import com.github.pokee.stick.response.Response;
 
 import java.io.BufferedOutputStream;
