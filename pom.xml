@@ -71,7 +71,6 @@
 
     <modules>
         <module>pokee-pson</module>
-        <module>pokee-canvas</module>
         <module>pokee-commons</module>
         <module>pokee-bootstrap</module>
         <module>pokee-stick</module>

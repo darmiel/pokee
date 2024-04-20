@@ -24,12 +24,6 @@
     <dependencies>
         <dependency>
             <groupId>io.d2a</groupId>
-            <artifactId>pokee-canvas</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.d2a</groupId>
             <artifactId>pokee-pson</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
