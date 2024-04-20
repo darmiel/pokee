@@ -7,6 +7,8 @@ import com.github.pokee.pswf.response.ResponseBuilder;
 import com.github.pokee.pswf.response.ResponseLike;
 import com.github.pokee.pswf.response.StatusCode;
 import com.github.pokee.pswf.router.*;
+import com.github.pokee.pswf.router.handler.Handler;
+import com.github.pokee.pswf.util.router.ClassRouter;
 
 import java.util.function.Function;
 
@@ -150,6 +152,11 @@ public class WebServerBuilder {
         public WebServerBuilderWithRouter patch(final String path,
                                                 final Function<Context, ResponseLike> handlerBuilder) {
             return this.register(Method.PATCH, path, handlerBuilder);
+        }
+
+        public WebServerBuilderWithRouter clazz(final Object classInstance) {
+            ClassRouter.registerRoutes(this.router, classInstance);
+            return this;
         }
 
         /**

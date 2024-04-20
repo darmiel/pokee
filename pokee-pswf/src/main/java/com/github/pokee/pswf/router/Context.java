@@ -1,7 +1,9 @@
 package com.github.pokee.pswf.router;
 
+import com.github.pokee.pswf.exception.request.RequestException;
 import com.github.pokee.pswf.request.Request;
 import com.github.pokee.pswf.response.Response;
+import com.github.pokee.pswf.router.handler.Handler;
 import com.github.pokee.pswf.util.UrlSearchParams;
 
 import java.util.HashMap;
@@ -89,6 +91,47 @@ public class Context {
         return this.parameters.getOrDefault(key, defaultValue);
     }
 
+    private int anyInt(final String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (final NumberFormatException numberFormatException) {
+            throw new RequestException("Parameter is not an integer");
+        }
+    }
+
+    private int anyInt(final String value, final int defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (final NumberFormatException numberFormatException) {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * Retrieves a parameter by key from the route parameters and parses it as an integer.
+     *
+     * @param key The key for the parameter.
+     * @return The integer value of the parameter.
+     * @throws RequestException If the parameter is not an integer.
+     */
+    public int paramInt(final String key) {
+        return this.anyInt(this.parameters.get(key));
+    }
+
+    /**
+     * Retrieves a parameter by key from the route parameters and parses it as an integer.
+     *
+     * @param key          The key for the parameter.
+     * @param defaultValue The default value to return if the parameter is not found.
+     * @return The integer value of the parameter.
+     */
+    public int paramInt(final String key, final int defaultValue) {
+        return this.anyInt(key, defaultValue);
+    }
+
     /**
      * Checks if a particular parameter is present in this context.
      *
@@ -133,6 +176,28 @@ public class Context {
             return defaultValue;
         }
         return this.getQuery().get(key);
+    }
+
+    /**
+     * Retrieves a query parameter by key from the request's query string and parses it as an integer.
+     *
+     * @param key The key for the query parameter.
+     * @return The integer value of the query parameter.
+     * @throws RequestException If the query parameter is not an integer.
+     */
+    public int queryInt(final String key) {
+        return this.anyInt(this.getQuery().get(key));
+    }
+
+    /**
+     * Retrieves a query parameter by key from the request's query string and parses it as an integer.
+     *
+     * @param key          The key for the query parameter.
+     * @param defaultValue The default value to return if the query parameter is not found.
+     * @return The integer value of the query parameter.
+     */
+    public int queryInt(final String key, final int defaultValue) {
+        return this.anyInt(this.getQuery().get(key), defaultValue);
     }
 
     /**

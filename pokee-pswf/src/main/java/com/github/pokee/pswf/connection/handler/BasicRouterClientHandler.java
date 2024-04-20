@@ -7,8 +7,8 @@ import com.github.pokee.pswf.response.Response;
 import com.github.pokee.pswf.response.writers.ResponseWriter;
 import com.github.pokee.pswf.router.Context;
 import com.github.pokee.pswf.router.ErrorHandler;
-import com.github.pokee.pswf.router.Handler;
 import com.github.pokee.pswf.router.Router;
+import com.github.pokee.pswf.router.handler.Handler;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;

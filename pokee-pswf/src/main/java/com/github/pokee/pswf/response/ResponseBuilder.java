@@ -5,7 +5,9 @@ import com.github.pokee.pson.mapper.mappers.UUIDMapper;
 import com.github.pokee.pswf.headers.Headers;
 import com.github.pokee.pswf.util.ContentTypes;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * A builder class for creating {@link Response} objects, allowing for easy setting of
@@ -159,6 +161,37 @@ public class ResponseBuilder implements ResponseLike {
      */
     public ResponseBuilder json(final Object object) {
         return this.json(ResponseBuilder.PSON.marshal(object));
+    }
+
+    /**
+     * Apply all the given consumers to this builder.
+     *
+     * @param consumers the consumers to apply
+     * @return this builder instance for chaining
+     */
+    @SafeVarargs
+    public final ResponseBuilder all(final Consumer<ResponseBuilder>... consumers) {
+        for (final Consumer<ResponseBuilder> consumer : consumers) {
+            if (consumer != null) {
+                consumer.accept(this);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Apply all the given consumers to this builder.
+     *
+     * @param consumers the consumers to apply
+     * @return this builder instance for chaining
+     */
+    public final ResponseBuilder all(final List<Consumer<ResponseBuilder>> consumers) {
+        for (final Consumer<ResponseBuilder> consumer : consumers) {
+            if (consumer != null) {
+                consumer.accept(this);
+            }
+        }
+        return this;
     }
 
     /**
