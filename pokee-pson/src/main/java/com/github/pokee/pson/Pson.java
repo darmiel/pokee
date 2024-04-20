@@ -211,6 +211,22 @@ public class Pson {
     }
 
     /**
+     * Unmarshal a JSON file to an array of objects of a specified type.
+     *
+     * @param file  the file containing the JSON data
+     * @param clazz the class of the array elements
+     * @param <T>   the type of the array elements
+     * @return the array of objects of type T
+     * @throws IOException           if the file could not be read
+     * @throws IllegalStateException if the JSON could not be unmarshalled
+     */
+    public <T> T[] unmarshalArrayFromFile(final File file, final Class<T> clazz) throws IOException {
+        final String json = new String(Files.readAllBytes(file.toPath()));
+        return this.unmarshalArray(json, clazz);
+    }
+
+
+    /**
      * Unmarshal a JSON string to a list
      *
      * @param json  the JSON string
@@ -226,5 +242,21 @@ public class Pson {
             throw new IllegalStateException("Failed to unmarshal list", e);
         }
     }
+
+    /**
+     * Unmarshal a JSON file to a list of objects of a specified type.
+     *
+     * @param file  the file containing the JSON data
+     * @param clazz the class of the list elements
+     * @param <T>   the type of the list elements
+     * @return the list of objects of type T
+     * @throws IOException           if the file could not be read
+     * @throws IllegalStateException if the JSON could not be unmarshalled
+     */
+    public <T> List<T> unmarshalListFromFile(final File file, final Class<T> clazz) throws IOException {
+        final String json = new String(Files.readAllBytes(file.toPath()));
+        return this.unmarshalList(json, clazz);
+    }
+
 
 }
