@@ -22,8 +22,14 @@ public class IfFunction implements FunctionCallback {
      * @return true if the element is truthy
      */
     public static boolean getTruthy(final JsonElement element) {
+        if (element == null) {
+            return false;
+        }
         if (element.isPrimitive()) {
             final JsonPrimitive primitive = element.asPrimitive();
+            if (primitive.isNull()) {
+                return false;
+            }
             if (primitive.isBoolean()) {
                 return primitive.asBoolean();
             }

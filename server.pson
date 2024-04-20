@@ -1,0 +1,7 @@
+{
+    // the port to listen on
+    "port": @env("SERVER_PORT", {
+        "default": 8080,
+        "as": "int"
+    })
+}

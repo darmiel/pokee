@@ -2,7 +2,7 @@ package com.github.pokee.stick.response;
 
 import com.github.pokee.pson.Pson;
 import com.github.pokee.pson.mapper.mappers.UUIDMapper;
-import com.github.pokee.stick.ContentType;
+import com.github.pokee.stick.ContentTypes;
 import com.github.pokee.stick.StatusCode;
 import com.github.pokee.stick.headers.Headers;
 
@@ -12,7 +12,7 @@ import java.util.UUID;
  * A builder class for creating {@link Response} objects, allowing for easy setting of
  * HTTP status codes, headers, and the body content.
  */
-public class ResponseBuilder {
+public class ResponseBuilder implements ResponseLike {
 
     public static final Pson PSON = Pson.create()
             .prettyPrint()
@@ -129,7 +129,7 @@ public class ResponseBuilder {
      * @return the response builder
      */
     public ResponseBuilder text(final String textBody) {
-        return this.contentType(ContentType.TEXT).body(textBody.getBytes());
+        return this.contentType(ContentTypes.TEXT).body(textBody.getBytes());
     }
 
     /**
@@ -139,7 +139,7 @@ public class ResponseBuilder {
      * @return the response builder
      */
     public ResponseBuilder html(final String htmlBody) {
-        return this.contentType(ContentType.HTML).body(htmlBody.getBytes());
+        return this.contentType(ContentTypes.HTML).body(htmlBody.getBytes());
     }
 
     /**
@@ -149,7 +149,7 @@ public class ResponseBuilder {
      * @return the response builder
      */
     public ResponseBuilder json(final String jsonBody) {
-        return this.contentType(ContentType.JSON).body(jsonBody.getBytes());
+        return this.contentType(ContentTypes.JSON).body(jsonBody.getBytes());
     }
 
     /**
@@ -169,6 +169,11 @@ public class ResponseBuilder {
      */
     public Response build() {
         return new Response(this.statusCode, this.statusMessage, this.headers, this.body);
+    }
+
+    @Override
+    public Response extractResponse() {
+        return this.build();
     }
 
 }

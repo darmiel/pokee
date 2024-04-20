@@ -1,7 +1,6 @@
 package com.github.pokee.stick.router;
 
-import com.github.pokee.stick.response.Response;
-import com.github.pokee.stick.response.ResponseBuilder;
+import com.github.pokee.stick.response.ResponseLike;
 
 import java.util.function.Function;
 
@@ -19,20 +18,8 @@ public interface Handler {
      * @param handler A function that takes a Context and returns a Response.
      * @return A Handler that sets the response in the context.
      */
-    static Handler wrap(final Function<Context, Response> handler) {
-        return context -> context.response = handler.apply(context);
-    }
-
-    /**
-     * Wraps a function that constructs a {@link ResponseBuilder} for building a response.
-     * This method allows the handler to build a response using a fluent API before setting it
-     * in the context.
-     *
-     * @param handlerBuilder A function that takes a Context and returns a ResponseBuilder.
-     * @return A Handler that constructs and sets the response in the context upon execution.
-     */
-    static Handler wrapBuilder(final Function<Context, ResponseBuilder> handlerBuilder) {
-        return context -> context.response = handlerBuilder.apply(context).build();
+    static Handler wrap(final Function<Context, ResponseLike> handler) {
+        return context -> context.response = handler.apply(context).extractResponse();
     }
 
     /**

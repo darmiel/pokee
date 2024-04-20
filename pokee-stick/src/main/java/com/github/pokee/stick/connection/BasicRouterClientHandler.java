@@ -1,13 +1,14 @@
 package com.github.pokee.stick.connection;
 
-import com.github.pokee.stick.StatusCode;
+import com.github.pokee.stick.exception.NoHandlerForRouteException;
+import com.github.pokee.stick.exception.request.NoContentException;
 import com.github.pokee.stick.request.Request;
 import com.github.pokee.stick.response.Response;
-import com.github.pokee.stick.response.ResponseBuilder;
 import com.github.pokee.stick.response.writers.ResponseWriter;
 import com.github.pokee.stick.router.Context;
+import com.github.pokee.stick.router.ErrorHandler;
 import com.github.pokee.stick.router.Handler;
-import com.github.pokee.stick.router.ParameterizableRouter;
+import com.github.pokee.stick.router.Router;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -18,10 +19,28 @@ import java.util.List;
 
 public class BasicRouterClientHandler implements ClientHandler {
 
-    private final ParameterizableRouter router;
+    private final ErrorHandler errorHandler;
 
-    public BasicRouterClientHandler(ParameterizableRouter router) {
+    private final Router router;
+
+    public BasicRouterClientHandler(final Router router, final ErrorHandler errorHandler) {
         this.router = router;
+        this.errorHandler = errorHandler;
+    }
+
+    private Response getResponseForContext(final Context context) throws NoContentException {
+        final List<Handler> handlers = context.getHandlers();
+        if (handlers.isEmpty()) {
+            throw new NoHandlerForRouteException();
+        }
+        for (final Handler handler : handlers) {
+            handler.handle(context);
+        }
+        final Response response = context.getResponse();
+        if (response == null) {
+            throw new NoContentException();
+        }
+        return response;
     }
 
     @Override
@@ -38,36 +57,20 @@ public class BasicRouterClientHandler implements ClientHandler {
                 throw new UnsupportedOperationException("Unsupported version for writing: " + request.version());
             }
 
-            final Context context = this.router.createContext(request);
-            final List<Handler> handlers = context.getHandlers();
-
             Response response;
-            if (!handlers.isEmpty()) {
-                for (final Handler handler : handlers) {
-                    handler.handle(context);
+            try {
+                final Context context = this.router.createContext(request);
+                if ((response = this.getResponseForContext(context)) == null) {
+                    response = this.errorHandler.handle(request, new NoHandlerForRouteException());
                 }
-                response = context.getResponse();
-            } else {
-                response = new ResponseBuilder()
-                        .status(StatusCode.NOT_FOUND)
-                        .text("Cannot " + request.method() + " " + request.path())
-                        .build();
-            }
-
-            // if the handler didn't return a response, return a 204 No Content
-            if (response == null) {
-                response = new ResponseBuilder()
-                        .status(StatusCode.NO_CONTENT)
-                        .text("No content returned")
-                        .build();
+            } catch (final Throwable throwable) {
+                response = this.errorHandler.handle(request, throwable);
             }
 
             responseWriter.write(response, writer);
             writer.flush();
-        } catch (final IOException exception) {
-            System.out.println("Error communicating with the client: " + exception.getMessage());
         } finally {
-            System.out.println("Bye!");
+            System.out.println("Bye " + socket.getInetAddress());
         }
     }
 

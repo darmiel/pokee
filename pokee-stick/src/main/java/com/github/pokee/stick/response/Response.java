@@ -9,6 +9,10 @@ import com.github.pokee.stick.headers.Headers;
 public record Response(int statusCode,  // The HTTP status code.
                        String statusMessage,  // The descriptive message associated with the status code.
                        Headers headers,  // The HTTP headers for the response.
-                       byte[] body) {   // The body of the response as a byte array.
+                       byte[] body) implements ResponseLike {
+    @Override
+    public Response extractResponse() {
+        return this;
+    }
 
 }

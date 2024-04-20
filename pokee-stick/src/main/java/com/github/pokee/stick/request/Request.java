@@ -16,7 +16,6 @@ public record Request(Method method,
                       Headers headers,
                       BufferedReader reader) {
 
-
     /**
      * Read a request from a buffered reader
      *

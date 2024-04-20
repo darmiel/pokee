@@ -2,6 +2,7 @@ package com.github.pokee.pson.parser;
 
 import com.github.pokee.pson.exception.TokenTypeExpectedException;
 import com.github.pokee.pson.functions.FunctionCallback;
+import com.github.pokee.pson.functions.convert.ParseIntFunction;
 import com.github.pokee.pson.functions.load.EnvironmentAsJsonFunction;
 import com.github.pokee.pson.functions.load.EnvironmentFunction;
 import com.github.pokee.pson.functions.load.FileAsJsonFunction;
@@ -71,6 +72,8 @@ public class JsonFunctionRunner {
                 .registerFunctionCallback(EqualsFunctions.LessThan.NAME, EqualsFunctions.LessThan.INSTANCE)
                 .registerFunctionCallback(EqualsFunctions.LessThanOrEquals.NAME, EqualsFunctions.LessThanOrEquals.INSTANCE)
                 .registerFunctionCallback(DefaultFunction.NAME, DefaultFunction.INSTANCE)
+                // Convert functions
+                .registerFunctionCallback(ParseIntFunction.NAME, ParseIntFunction.INSTANCE)
                 ;
     }
 

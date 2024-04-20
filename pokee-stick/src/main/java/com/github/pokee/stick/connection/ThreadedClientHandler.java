@@ -19,8 +19,6 @@ public class ThreadedClientHandler extends Thread {
             this.clientHandler.handle(this.clientSocket);
         } catch (final IOException exception) {
             System.out.println("Error communicating with the client: " + exception.getMessage());
-        } finally {
-            System.out.println("Bye!");
         }
     }
 

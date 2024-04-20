@@ -30,6 +30,7 @@ public class EnvironmentFunction implements FunctionCallback {
     public static final EnvironmentFunction INSTANCE = new EnvironmentFunction();
 
     public static final String JSON_OPTION = "json";
+    public static final String AS_OPTION = "as";
 
     public static JsonElement run(
             final JsonFunction function,
@@ -54,7 +55,16 @@ public class EnvironmentFunction implements FunctionCallback {
             if (options.has(JSON_OPTION) && options.get(JSON_OPTION).asPrimitive().asBoolean()) {
                 return parser.copyConfiguration(value).parse();
             }
-
+            if (options.has(AS_OPTION)) {
+                return switch (options.get(AS_OPTION).asPrimitive().asString().toLowerCase()) {
+                    case "int", "integer" -> JsonPrimitive.fromNumber(Integer.parseInt(value));
+                    case "float", "double" -> JsonPrimitive.fromNumber(Double.parseDouble(value));
+                    case "bool", "boolean" -> JsonPrimitive.fromBool(Boolean.parseBoolean(value));
+                    default -> throw new IllegalStateException(
+                            "Unknown as option: " + options.get(AS_OPTION).asPrimitive().asString()
+                    );
+                };
+            }
             return JsonPrimitive.fromString(value);
         });
     }

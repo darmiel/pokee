@@ -3,7 +3,7 @@ package com.github.pokee.stick;
 /**
  * Provides constants for various MIME types used to specify the content type of files and data in HTTP headers.
  */
-public class ContentType {
+public class ContentTypes {
 
     /**
      * MIME type for HTML documents.

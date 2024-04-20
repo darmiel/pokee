@@ -2,12 +2,17 @@ package com.github.pokee.pson;
 
 import com.github.pokee.pson.exception.TokenTypeExpectedException;
 import com.github.pokee.pson.mapper.*;
+import com.github.pokee.pson.mapper.annotations.PsonSource;
 import com.github.pokee.pson.parser.JsonFunctionRunner;
 import com.github.pokee.pson.parser.JsonParser;
 import com.github.pokee.pson.value.JsonArray;
 import com.github.pokee.pson.value.JsonElement;
 import com.github.pokee.pson.value.JsonObject;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -107,6 +112,49 @@ public class Pson {
     }
 
     /**
+     * Unmarshal a file to an object
+     *
+     * @param fileName the name of the file
+     * @param clazz    the class of the object
+     * @param <T>      the type of the object
+     * @return the object
+     * @throws IllegalStateException if the object could not be unmarshalled
+     * @throws IOException           if the file could not be read
+     */
+    public <T> T unmarshalObjectFromFile(final String fileName, final Class<T> clazz) throws IOException {
+        return this.unmarshalObjectFromFile(new File(fileName), clazz);
+    }
+
+    /**
+     * Unmarshal a file to an object
+     *
+     * @param file  the file
+     * @param clazz the class of the object
+     * @param <T>   the type of the object
+     * @return the object
+     * @throws IllegalStateException if the object could not be unmarshalled
+     * @throws IOException           if the file could not be read
+     */
+    public <T> T unmarshalObjectFromFile(final File file, final Class<T> clazz) throws IOException {
+        return this.unmarshalObjectFromFile(file.toPath(), clazz);
+    }
+
+    /**
+     * Unmarshal a file to an object
+     *
+     * @param path  the path of the file
+     * @param clazz the class of the object
+     * @param <T>   the type of the object
+     * @return the object
+     * @throws IllegalStateException if the object could not be unmarshalled
+     * @throws IOException           if the file could not be read
+     */
+    public <T> T unmarshalObjectFromFile(final Path path, final Class<T> clazz) throws IOException {
+        return this.unmarshalObject(String.join("\n", Files.readAllLines(path)), clazz);
+    }
+
+
+    /**
      * Unmarshal a JSON string to an object
      *
      * @param json  the JSON string
@@ -122,6 +170,27 @@ public class Pson {
         } catch (TokenTypeExpectedException | ReflectiveOperationException e) {
             throw new IllegalStateException("Failed to unmarshal object", e);
         }
+    }
+
+    /**
+     * Unmarshal a JSON string to an object
+     *
+     * @param clazz the class of the object
+     * @return the unmarshalled object
+     * @throws IllegalArgumentException if the class is not annotated with @PsonSource
+     */
+    public <T> T unmarshalObject(final Class<T> clazz) throws IOException {
+        if (!clazz.isAnnotationPresent(PsonSource.class)) {
+            throw new IllegalArgumentException("Class must be annotated with @PsonSource");
+        }
+        final PsonSource source = clazz.getAnnotation(PsonSource.class);
+        if (!source.raw().isBlank()) {
+            return this.unmarshalObject(source.raw(), clazz);
+        }
+        if (!source.file().isBlank()) {
+            return this.unmarshalObjectFromFile(source.file(), clazz);
+        }
+        throw new IllegalArgumentException("Class must have either raw or file set in @PsonSource");
     }
 
 
