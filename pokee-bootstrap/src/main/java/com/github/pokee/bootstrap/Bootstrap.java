@@ -3,9 +3,9 @@ package com.github.pokee.bootstrap;
 import com.github.pokee.bootstrap.config.WebServerConfig;
 import com.github.pokee.bootstrap.handlers.JsonErrorHandler;
 import com.github.pokee.pson.Pson;
-import com.github.pokee.stick.connection.WebServer;
-import com.github.pokee.stick.connection.WebServerBuilder;
-import com.github.pokee.stick.response.ResponseBuilder;
+import com.github.pokee.pswf.connection.WebServer;
+import com.github.pokee.pswf.connection.WebServerBuilder;
+import com.github.pokee.pswf.response.ResponseBuilder;
 
 import java.io.IOException;
 

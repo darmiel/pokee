@@ -71,9 +71,9 @@
 
     <modules>
         <module>pokee-pson</module>
+        <module>pokee-pswf</module>
         <module>pokee-commons</module>
         <module>pokee-bootstrap</module>
-        <module>pokee-stick</module>
     </modules>
 
 </project>

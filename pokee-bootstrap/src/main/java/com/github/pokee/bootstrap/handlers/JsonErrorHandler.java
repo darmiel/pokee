@@ -1,11 +1,11 @@
 package com.github.pokee.bootstrap.handlers;
 
 import com.github.pokee.pson.mapper.annotations.JsonProperty;
-import com.github.pokee.stick.response.StatusCode;
-import com.github.pokee.stick.request.Request;
-import com.github.pokee.stick.response.Response;
-import com.github.pokee.stick.response.ResponseBuilder;
-import com.github.pokee.stick.router.ErrorHandler;
+import com.github.pokee.pswf.request.Request;
+import com.github.pokee.pswf.response.Response;
+import com.github.pokee.pswf.response.ResponseBuilder;
+import com.github.pokee.pswf.response.StatusCode;
+import com.github.pokee.pswf.router.ErrorHandler;
 
 /**
  * An error handler that returns a JSON response.
