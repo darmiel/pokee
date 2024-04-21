@@ -41,13 +41,13 @@ public class Lexer {
 
     private void getAndAdvance(final TokenType tokenType, final String value) {
         this.currentIndex++;
-        this.currentToken = new Token(tokenType, value);
+        this.currentToken = new Token(tokenType, value, this.currentIndex - 1, this.currentIndex);
     }
 
     public boolean nextToken() {
         this.skipWhitespaces();
         if (this.isEndOfQuery()) {
-            this.currentToken = new Token(TokenType.EOF, "");
+            this.currentToken = new Token(TokenType.EOF, "", this.currentIndex, this.currentIndex);
             return false;
         }
 
@@ -72,18 +72,18 @@ public class Lexer {
                 this.currentIndex++;
                 if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == '&') {
                     this.currentIndex++;
-                    this.currentToken = new Token(TokenType.BOOL_AND, "&&");
+                    this.currentToken = new Token(TokenType.BOOL_AND, "&&", this.currentIndex - 2, this.currentIndex);
                 } else {
-                    this.currentToken = new Token(TokenType.BIT_AND, "&");
+                    this.currentToken = new Token(TokenType.BIT_AND, "&", this.currentIndex - 1, this.currentIndex);
                 }
             }
             case '|' -> {
                 this.currentIndex++;
                 if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == '|') {
                     this.currentIndex++;
-                    this.currentToken = new Token(TokenType.BOOL_OR, "||");
+                    this.currentToken = new Token(TokenType.BOOL_OR, "||", this.currentIndex - 2, this.currentIndex);
                 } else {
-                    this.currentToken = new Token(TokenType.BIT_OR, "|");
+                    this.currentToken = new Token(TokenType.BIT_OR, "|", this.currentIndex - 1, this.currentIndex);
                 }
             }
 
@@ -99,16 +99,20 @@ public class Lexer {
                 this.currentIndex++;
                 if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == '>') {
                     this.currentIndex++;
-                    this.currentToken = new Token(TokenType.RIGHT_ARROW, "->");
+                    this.currentToken = new Token(TokenType.RIGHT_ARROW, "->", this.currentIndex - 2, this.currentIndex);
                 } else {
-                    this.currentToken = new Token(TokenType.MINUS, "-");
+                    this.currentToken = new Token(TokenType.MINUS, "-", this.currentIndex - 1, this.currentIndex);
                 }
             }
             case '/' -> this.getAndAdvance(TokenType.DIVIDE, "/");
             case '%' -> this.getAndAdvance(TokenType.MODULO, "%");
 
             // value tokens
-            case '"' -> this.currentToken = new Token(TokenType.STRING_LITERAL, this.readStringLiteral());
+            case '"' -> {
+                final int startIndex = this.currentIndex;
+                final String value = this.readStringLiteral();
+                this.currentToken = new Token(TokenType.STRING_LITERAL, value, startIndex, this.currentIndex);
+            }
 
             // comparison operators
             case '<' -> {
@@ -116,29 +120,29 @@ public class Lexer {
                 if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == '<') {
                     // << is a bit shift left
                     this.currentIndex++;
-                    this.currentToken = new Token(TokenType.BIT_SHIFT_LEFT, "<<");
+                    this.currentToken = new Token(TokenType.BIT_SHIFT_LEFT, "<<", this.currentIndex - 2, this.currentIndex);
                 } else if (this.query.charAt(this.currentIndex) == '>') {
                     // <> is not equals
                     this.currentIndex++;
-                    this.currentToken = new Token(TokenType.CMP_NOT_EQUALS, "<>");
+                    this.currentToken = new Token(TokenType.CMP_NOT_EQUALS, "<>", this.currentIndex - 2, this.currentIndex);
                 } else if (this.query.charAt(this.currentIndex) == '=') {
                     // <= is lower or equals
                     this.currentIndex++;
-                    this.currentToken = new Token(TokenType.CMP_LOWER_OR_EQUALS, "<=");
+                    this.currentToken = new Token(TokenType.CMP_LOWER_OR_EQUALS, "<=", this.currentIndex - 2, this.currentIndex);
                 } else if (this.query.charAt(this.currentIndex) == '-') {
                     // <- is a left arrow
                     this.currentIndex++;
 
                     if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == '>') {
                         this.currentIndex++;
-                        this.currentToken = new Token(TokenType.LEFT_RIGHT_ARROW, "<->");
+                        this.currentToken = new Token(TokenType.LEFT_RIGHT_ARROW, "<->", this.currentIndex - 3, this.currentIndex);
                         break;
                     }
 
-                    this.currentToken = new Token(TokenType.LEFT_ARROW, "<-");
+                    this.currentToken = new Token(TokenType.LEFT_ARROW, "<-", this.currentIndex - 2, this.currentIndex);
                 } else {
                     // < is lower than
-                    this.currentToken = new Token(TokenType.CMP_LOWER_THAN, "<");
+                    this.currentToken = new Token(TokenType.CMP_LOWER_THAN, "<", this.currentIndex - 1, this.currentIndex);
                 }
             }
             case '>' -> {
@@ -146,21 +150,21 @@ public class Lexer {
                 if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == '>') {
                     // >> is a bit shift right
                     this.currentIndex++;
-                    this.currentToken = new Token(TokenType.BIT_SHIFT_RIGHT, ">>");
+                    this.currentToken = new Token(TokenType.BIT_SHIFT_RIGHT, ">>", this.currentIndex - 2, this.currentIndex);
                 } else if (this.query.charAt(this.currentIndex) == '=') {
                     // >= is greater or equals
                     this.currentIndex++;
-                    this.currentToken = new Token(TokenType.CMP_GREATER_OR_EQUALS, ">=");
+                    this.currentToken = new Token(TokenType.CMP_GREATER_OR_EQUALS, ">=", this.currentIndex - 2, this.currentIndex);
                 } else {
                     // > is greater than
-                    this.currentToken = new Token(TokenType.CMP_GREATER_THAN, ">");
+                    this.currentToken = new Token(TokenType.CMP_GREATER_THAN, ">", this.currentIndex - 1, this.currentIndex);
                 }
             }
             case '=' -> {
                 this.currentIndex++;
                 if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == '=') {
                     this.currentIndex++;
-                    this.currentToken = new Token(TokenType.CMP_EQUALS, "==");
+                    this.currentToken = new Token(TokenType.CMP_EQUALS, "==", this.currentIndex - 2, this.currentIndex);
                 } else {
                     throw new RuntimeException("Unrecognized character: " + currentChar);
                 }
@@ -169,18 +173,21 @@ public class Lexer {
             default -> {
                 // a digit should always be a number
                 if (Character.isDigit(currentChar)) {
-                    this.currentToken = new Token(TokenType.NUMBER, this.readNumber());
+                    final int startIndex = this.currentIndex;
+                    final String number = this.readNumber();
+                    this.currentToken = new Token(TokenType.NUMBER, number, startIndex, this.currentIndex);
                     break;
                 }
 
                 // an identifier should always start with a letter
                 if (Character.isLetter(currentChar)) {
+                    final int startIndex = this.currentIndex;
                     final String identifier = this.readIdentifier();
 
                     // an identifier can be upper or lower case
                     final TokenType keywordType = this.keywords.get(identifier.toLowerCase());
                     if (keywordType != null) {
-                        this.currentToken = new Token(keywordType, identifier);
+                        this.currentToken = new Token(keywordType, identifier, startIndex, this.currentIndex);
                         break;
                     }
 
@@ -189,25 +196,25 @@ public class Lexer {
                             this.currentIndex++;
                             if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == ':') {
                                 this.currentIndex++;
-                                this.currentToken = new Token(TokenType.NAMESPACE_NAME, identifier);
+                                this.currentToken = new Token(TokenType.NAMESPACE_NAME, identifier, startIndex, this.currentIndex);
                                 break;
                             }
                             throw new RuntimeException("Unrecognized character: " + currentChar);
                         }
                         // an identifier followed by '[' should be recognized as a query name
                         if (this.query.charAt(this.currentIndex) == '[') {
-                            this.currentToken = new Token(TokenType.QUERY_NAME, identifier);
+                            this.currentToken = new Token(TokenType.QUERY_NAME, identifier, startIndex, this.currentIndex);
                             break;
                         }
                         // an identifier followed by '(' should be recognized as a function
                         if (this.query.charAt(this.currentIndex) == '(') {
-                            this.currentToken = new Token(TokenType.FUNCTION_NAME, identifier);
+                            this.currentToken = new Token(TokenType.FUNCTION_NAME, identifier, startIndex, this.currentIndex);
                             break;
                         }
                     }
 
                     // otherwise we have a simple, plain and dumb identifier.
-                    this.currentToken = new Token(TokenType.IDENTIFIER, identifier);
+                    this.currentToken = new Token(TokenType.IDENTIFIER, identifier, startIndex, this.currentIndex);
                     break;
                 }
 

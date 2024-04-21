@@ -31,24 +31,20 @@ public class Psql {
         System.out.println(parser.parseUseAliasContext());
     }
 
-    public static void main3(String[] args) throws ParseException {
-        final String query = """
-                query my_query
-                    P::A AS e
-                    filter [];
-                """;
+    public static void main(String[] args) throws ParseException {
+        final String query = "query";
         final Lexer lexer = new Lexer(query);
         final Parser parser = new Parser(lexer);
         System.out.println(parser.parseQueryContext());
     }
-
-    public static void main(String[] args) throws ParseException {
-        final String query = """
-                    P::name.startsWith()
-                """;
-        final Lexer lexer = new Lexer(query);
-        final Parser parser = new Parser(lexer);
-        System.out.println(parser.parseFunction());
-    }
-
+//
+//    public static void main(String[] args) throws ParseException {
+//        final String query = """
+//                    P::name.startsWith()
+//                """;
+//        final Lexer lexer = new Lexer(query);
+//        final Parser parser = new Parser(lexer);
+//        System.out.println(parser.parseFunction());
+//    }
+//
 }

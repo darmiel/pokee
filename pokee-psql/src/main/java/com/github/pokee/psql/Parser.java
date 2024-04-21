@@ -70,7 +70,7 @@ public class Parser {
         final String actualValue = this.lexer.getCurrentToken().value();
 
 
-        int lineStartIndex = this.lexer.getQuery().lastIndexOf('\n') - 1;
+        int lineStartIndex = 0;
         int lineEndIndex = this.lexer.getQuery().length();
 
         boolean first = true;
@@ -189,9 +189,23 @@ public class Parser {
         return terminalNode;
     }
 
-    public StatementContext parseStatement() throws ParseException {
-        this.lexer.nextToken();
+    public List<StatementContext> parseProgram() throws ParseException {
+        final List<StatementContext> statements = new ArrayList<>();
+        while (lexer.nextToken()) {
+            System.out.println("Start Statement Parser: " + lexer.getCurrentToken().type());
+            statements.add(this.parseStatement());
+            System.out.println("  End Statement Parser: " + lexer.getCurrentToken().type());
+        }
+        return statements;
+    }
 
+    /**
+     * Parses a statement from the lexer and returns a StatementContext instance.
+     *
+     * @return A StatementContext instance representing the parsed statement.
+     */
+    public StatementContext parseStatement() throws ParseException {
+        System.out.println("Parsing statement: " + this.lexer.getCurrentToken().type());
         switch (this.lexer.getCurrentToken().type()) {
             case USE -> {
                 final UseAliasContext useAliasContext = this.parseUseAliasContext();
@@ -201,7 +215,7 @@ public class Parser {
                 final QueryContext queryContext = this.parseQueryContext();
                 return new StatementContext(null, queryContext);
             }
-            default -> this.throwExpectedToken("A statement should either be `use` or `query`.",
+            default -> this.throwExpectedToken("A statement should either be `use` or `query`. Current: " + this.current().type(),
                     TokenType.USE, TokenType.QUERY);
         }
 
@@ -221,7 +235,6 @@ public class Parser {
         switch (this.advance().current().type()) {
             case SEMICOLON -> {
                 // if a semicolon is found, it means no alias is specified, the namespace is just imported.
-                this.advance(); // skip the semicolon
                 return new UseAliasContext(original, null);
             }
             case AS -> {
@@ -250,13 +263,15 @@ public class Parser {
         switch (this.current().type()) {
             case STAR:
                 projectionNodeList.add(new ProjectionNode(namespace, null, null, true));
+                this.advance();
                 break;
             case LBRACE:
                 this.advance();
                 this.parseProjectionNodesInBraces(projectionNodeList, namespace);
                 break;
             case IDENTIFIER:
-                this.parseProjectionNodesFromIdentifiers(projectionNodeList, namespace);
+                final ProjectionNode node = this.parseProjectionNode(namespace);
+                projectionNodeList.add(node);
                 break;
             default:
                 this.throwExpectedToken(
@@ -287,27 +302,6 @@ public class Parser {
             }
         }
         this.advance(); // Move past the RBRACE
-    }
-
-    /**
-     * Parses individual identifiers as projection fields until a semicolon or another control token is encountered.
-     *
-     * @param projectionNodeList The list to which new projection nodes are added.
-     * @param namespace          The current namespace terminal node.
-     * @throws ParseException if unexpected tokens are found.
-     */
-    private void parseProjectionNodesFromIdentifiers(final List<ProjectionNode> projectionNodeList,
-                                                     final TerminalNode namespace) throws ParseException {
-        while (this.current().type() == TokenType.IDENTIFIER) {
-            final ProjectionNode node = this.parseProjectionNode(namespace);
-            projectionNodeList.add(node);
-
-            if (this.current().type() == TokenType.COMMA) {
-                this.advance();
-            } else if (this.current().type() != TokenType.SEMICOLON) {
-                break;
-            }
-        }
     }
 
     /**
@@ -418,22 +412,17 @@ public class Parser {
                 Expected a query name after `query`.
                 This name will be used to identify the result of the query in the output.""");
         final TerminalNode queryName = this.createTerminalNodeFromCurrentToken();
-        System.out.println("Query Name: " + queryName.getText());
         this.advance();
 
         final List<ProjectionNode> projectionNodeList = this.parseProjectionNodes();
+        System.out.println(projectionNodeList);
 
         // make sure if there is an `all` projection node, it is the only one
         if (projectionNodeList.stream().anyMatch(ProjectionNode::isAll) && projectionNodeList.size() > 1) {
             this.throwExpectedToken("You can only use `*` once in a query.");
         }
 
-        System.out.println(projectionNodeList);
-
-
-        System.out.println(this.current().type());
-
-        return null;
+        return new QueryContext();
     }
 
 }

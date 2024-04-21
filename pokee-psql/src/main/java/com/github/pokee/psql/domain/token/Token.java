@@ -8,6 +8,6 @@ import com.github.pokee.psql.domain.token.support.TokenType;
  * @param type  TokenType
  * @param value String
  */
-public record Token(TokenType type, String value) {
+public record Token(TokenType type, String value, int startIndex, int endIndex) {
 
 }
