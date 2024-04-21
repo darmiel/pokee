@@ -12,6 +12,8 @@ import com.github.pokee.pswf.response.ResponseLike;
 import com.github.pokee.pswf.response.StatusCode;
 import com.github.pokee.pswf.util.ContentTypes;
 
+import java.util.List;
+
 @RoutePrefix("/hello")
 public class HelloWorldHandler {
 
@@ -24,6 +26,8 @@ public class HelloWorldHandler {
     public String sayHello() {
         return "Hello World!";
     }
+
+    ///
 
     /**
      * A simple hello world endpoint that serializes the response to JSON
@@ -38,6 +42,21 @@ public class HelloWorldHandler {
     }
 
     /**
+     * A simple hello world endpoint that serializes the response to JSON
+     *
+     * @return A simple hello world message.
+     */
+    @GET("/:name/multi")
+    public List<HelloResponse> sayHelloMulti(@Param("name") final String name) {
+        return List.of(new HelloResponse(name, 0), new HelloResponse(name, 0));
+    }
+
+    public record HelloResponse(@JsonProperty("Hello") String target, @JsonProperty("Age") int age) {
+    }
+
+    ///
+
+    /**
      * A simple hello world endpoint that returns a raw response
      *
      * @return A simple hello world message.
@@ -50,6 +69,8 @@ public class HelloWorldHandler {
                 .build();
     }
 
+    ///
+
     /**
      * A simple hello world endpoint that gets the response from {@link ResponseLike}
      *
@@ -58,9 +79,6 @@ public class HelloWorldHandler {
     @GET("/world")
     public HelloWorldResponse sayHelloWorld() {
         return new HelloWorldResponse();
-    }
-
-    public record HelloResponse(@JsonProperty("Hello") String target, @JsonProperty("Age") int age) {
     }
 
     public record HelloWorldResponse() implements ResponseLike {
