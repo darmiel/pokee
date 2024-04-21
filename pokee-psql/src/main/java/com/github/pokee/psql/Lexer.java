@@ -21,13 +21,22 @@ public class Lexer {
             "use", TokenType.USE,
             "as", TokenType.AS,
             "filter", TokenType.FILTER,
-            "map", TokenType.MAP
+            "map", TokenType.MAP,
+            "query", TokenType.QUERY
     );
 
     public Lexer(final String query) {
         this.query = query;
         this.queryLength = query.length();
         this.currentIndex = 0;
+    }
+
+    public void reset() {
+        this.currentIndex = 0;
+    }
+
+    public String getQuery() {
+        return query;
     }
 
     private void getAndAdvance(final TokenType tokenType, final String value) {

@@ -13,28 +13,28 @@ public enum TokenType {
     NUMBER,
 
     // simple symbols
-    LPAREN, //
-    RPAREN, //
-    LBRACKET, //
-    RBRACKET, //
-    LBRACE, //
-    RBRACE, //
-    STAR, //
-    COMMA, //
-    DOT, //
-    SEMICOLON, //
+    LPAREN,
+    RPAREN,
+    LBRACKET,
+    RBRACKET,
+    LBRACE,
+    RBRACE,
+    STAR,
+    COMMA,
+    DOT,
+    SEMICOLON,
 
     // logic operators
-    BOOL_AND, //
-    BOOL_OR, //
+    BOOL_AND,
+    BOOL_OR,
 
     // math operators
-    BIT_AND, //
-    BIT_OR, //
-    BIT_XOR, //
-    BIT_NOT, //
-    BIT_SHIFT_LEFT, //
-    BIT_SHIFT_RIGHT, //
+    BIT_AND,
+    BIT_OR,
+    BIT_XOR,
+    BIT_NOT,
+    BIT_SHIFT_LEFT,
+    BIT_SHIFT_RIGHT,
     PLUS,
     MINUS,
     DIVIDE,
@@ -46,15 +46,17 @@ public enum TokenType {
     LEFT_RIGHT_ARROW,
 
     // comparison operators
-    CMP_EQUALS, //
-    CMP_NOT_EQUALS, //
-    CMP_LOWER_THAN, //
-    CMP_LOWER_OR_EQUALS, //
-    CMP_GREATER_THAN, //
-    CMP_GREATER_OR_EQUALS, //
+    CMP_EQUALS,
+    CMP_NOT_EQUALS,
+    CMP_LOWER_THAN,
+    CMP_LOWER_OR_EQUALS,
+    CMP_GREATER_THAN,
+    CMP_GREATER_OR_EQUALS,
 
+    // other keywords
     FILTER,
     MAP,
+    QUERY,
     EOF,
 
 }
