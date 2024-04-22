@@ -2,8 +2,12 @@ package com.github.pokee.psql;
 
 import com.github.pokee.psql.domain.token.Token;
 import com.github.pokee.psql.domain.token.support.TokenType;
-import com.github.pokee.psql.domain.tree.nodes.grammar.impl.*;
 import com.github.pokee.psql.domain.tree.nodes.common.TerminalNode;
+import com.github.pokee.psql.domain.tree.nodes.expression.*;
+import com.github.pokee.psql.domain.tree.nodes.grammar.impl.ProjectionNode;
+import com.github.pokee.psql.domain.tree.nodes.grammar.impl.QueryContext;
+import com.github.pokee.psql.domain.tree.nodes.grammar.impl.StatementContext;
+import com.github.pokee.psql.domain.tree.nodes.grammar.impl.UseAliasContext;
 import com.github.pokee.psql.exception.ParseException;
 
 import java.util.ArrayList;
@@ -169,6 +173,15 @@ public class Parser {
     }
 
     /**
+     * Returns the next token from the lexer without advancing the position.
+     *
+     * @return The next token.
+     */
+    private Token peek() {
+        return this.lexer.peekToken();
+    }
+
+    /**
      * Returns the current token from the lexer without advancing the position.
      *
      * @return The current token.
@@ -192,9 +205,7 @@ public class Parser {
     public List<StatementContext> parseProgram() throws ParseException {
         final List<StatementContext> statements = new ArrayList<>();
         while (lexer.nextToken()) {
-            System.out.println("Start Statement Parser: " + lexer.getCurrentToken().type());
             statements.add(this.parseStatement());
-            System.out.println("  End Statement Parser: " + lexer.getCurrentToken().type());
         }
         return statements;
     }
@@ -215,8 +226,9 @@ public class Parser {
                 final QueryContext queryContext = this.parseQueryContext();
                 return new StatementContext(null, queryContext);
             }
-            default -> this.throwExpectedToken("A statement should either be `use` or `query`. Current: " + this.current().type(),
-                    TokenType.USE, TokenType.QUERY);
+            default ->
+                    this.throwExpectedToken("A statement should either be `use` or `query`. Current: " + this.current().type(),
+                            TokenType.USE, TokenType.QUERY);
         }
 
         return null;
@@ -372,7 +384,64 @@ public class Parser {
         return arguments;
     }
 
-    public FunctionNode parseFunction() throws ParseException {
+    public ExpressionNode parseExpressionNode() throws ParseException {
+        return this.parseLogicalOrExpression();
+    }
+
+    private ExpressionNode parseLogicalOrExpression() throws ParseException {
+        ExpressionNode lhs = this.parseLogicalAndExpression();
+        while (this.current().type() == TokenType.BOOL_OR) {
+            this.advance(); // move past the operator
+
+            final ExpressionNode rhs = this.parseLogicalAndExpression();
+            lhs = new BinaryExpressionNode(lhs, rhs, TokenType.BOOL_OR);
+        }
+        return lhs;
+    }
+
+    private ExpressionNode parseLogicalAndExpression() throws ParseException {
+        ExpressionNode lhs = this.parseEqualityExpression();
+        while (this.current().type() == TokenType.BOOL_AND) {
+            this.advance(); // move past the operator
+
+            final ExpressionNode rhs = this.parseEqualityExpression();
+            lhs = new BinaryExpressionNode(lhs, rhs, TokenType.BOOL_AND);
+        }
+        return lhs;
+    }
+
+    private ExpressionNode parseEqualityExpression() throws ParseException {
+        ExpressionNode lhs = this.parseRelationalExpression();
+        while (this.current().type() == TokenType.CMP_EQUALS || this.current().type() == TokenType.CMP_NOT_EQUALS) {
+            final TokenType operator = this.current().type();
+            this.advance(); // move past the operator
+
+            final ExpressionNode rhs = this.parseRelationalExpression();
+            lhs = new BinaryExpressionNode(lhs, rhs, operator);
+        }
+        return lhs;
+    }
+
+    private ExpressionNode parseRelationalExpression() throws ParseException {
+        ExpressionNode lhs = this.parsePrimaryExpression();
+        while (this.current().type().isCompareOperator()) {
+            final TokenType operator = this.current().type();
+            this.advance(); // move past the operator
+
+            final ExpressionNode rhs = this.parsePrimaryExpression();
+            lhs = new BinaryExpressionNode(lhs, rhs, operator);
+        }
+        return lhs;
+    }
+
+    private ExpressionNode parseLiteralExpression() throws ParseException {
+        final TokenType type = this.current().type();
+        final TerminalNode terminalNode = this.createTerminalNodeFromCurrentToken();
+        this.advance();
+        return new LiteralExpressionNode(type, terminalNode);
+    }
+
+    private ExpressionNode parseFunctionOrIdentifierExpression() throws ParseException {
         this.expect(TokenType.NAMESPACE_NAME, """
                 Expected a namespace name to start an expression.
                 Use an identifier you have previously used in a `use` statement.
@@ -380,28 +449,59 @@ public class Parser {
         final TerminalNode namespace = this.createTerminalNodeFromCurrentToken();
         this.advance();
 
-        System.out.println("Namespace: " + namespace.getText());
-
         this.expect(TokenType.IDENTIFIER, "Expected a target field after the namespace name.");
         final TerminalNode target = this.createTerminalNodeFromCurrentToken();
-        this.advance();
 
-        System.out.println("Target: " + target.getText());
+        final Token peek = this.peek();
 
-        this.expect(TokenType.DOT, "Expected a dot after the target field to specify the function.").advance()
-                .expect(TokenType.FUNCTION_NAME, "Expected a function name after the dot.");
-        final TerminalNode functionName = this.createTerminalNodeFromCurrentToken();
-        this.advance();
+        // a dot indicates a function call
+        if (peek.type() == TokenType.DOT) {
+            this.advance() // go to the dot
+                    .advance() // go to the function name
+                    .expect(TokenType.FUNCTION_NAME, "Expected a function name after the dot.");
 
-        System.out.println("Function Name: " + functionName.getText());
+            final TerminalNode functionName = this.createTerminalNodeFromCurrentToken();
+            this.advance();
 
-        this.expect(TokenType.LPAREN, "Expected an opening parenthesis after the function name.").advance();
-        final List<TerminalNode> arguments = this.parseFunctionArguments();
-        this.expect(TokenType.RPAREN, "Expected a closing parenthesis after the function arguments.").advance();
+            this.expect(TokenType.LPAREN, "Expected an opening parenthesis after the function name.").advance();
+            final List<TerminalNode> arguments = this.parseFunctionArguments();
+            this.expect(TokenType.RPAREN, "Expected a closing parenthesis after the function arguments.").advance();
 
-        System.out.println("Arguments: " + arguments);
+            return new FunctionCallExpressionNode(namespace, target, functionName.getText(), arguments);
+        }
 
-        return new FunctionNode(namespace, target, functionName.getText(), arguments);
+        // if there is a compare operator, treat the current expression as an identifier
+        if (peek.type().isCompareOperator()) {
+            this.advance(); // move to the compare operator
+            return new IdentifierExpressionNode(namespace, target);
+        }
+
+        this.throwExpectedToken("""
+                Expected either a function call or a comparison after the namespace and target field.
+                You can call a function using `P::name.startsWith("Pika")` or compare fields using `P::name == "Pikachu`.""");
+        return null;
+    }
+
+    public ExpressionNode parsePrimaryExpression() throws ParseException {
+        switch (this.current().type()) {
+            case LPAREN -> {
+                this.advance();
+
+                final ExpressionNode expression = this.parseExpressionNode();
+                this.expect(TokenType.RPAREN, "Expected a closing parenthesis after the expression.");
+                this.advance(); // move past the closing parenthesis
+
+                return expression;
+            }
+            case NAMESPACE_NAME -> {
+                return this.parseFunctionOrIdentifierExpression();
+            }
+        }
+        if (this.current().type().isLiteral()) {
+            return this.parseLiteralExpression();
+        }
+        this.throwExpectedToken("Expected either a namespace or an opening parenthesis to start an expression.");
+        return null;
     }
 
     public QueryContext parseQueryContext() throws ParseException {
@@ -421,6 +521,8 @@ public class Parser {
         if (projectionNodeList.stream().anyMatch(ProjectionNode::isAll) && projectionNodeList.size() > 1) {
             this.throwExpectedToken("You can only use `*` once in a query.");
         }
+
+        System.out.println(this.current().type());
 
         return new QueryContext();
     }

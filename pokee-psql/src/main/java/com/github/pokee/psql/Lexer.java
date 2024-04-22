@@ -31,10 +31,6 @@ public class Lexer {
         this.currentIndex = 0;
     }
 
-    public void reset() {
-        this.currentIndex = 0;
-    }
-
     public String getQuery() {
         return query;
     }
@@ -42,6 +38,21 @@ public class Lexer {
     private void getAndAdvance(final TokenType tokenType, final String value) {
         this.currentIndex++;
         this.currentToken = new Token(tokenType, value, this.currentIndex - 1, this.currentIndex);
+    }
+
+    public Token peekToken() {
+        final int currentIndex = this.currentIndex;
+        final Token currentToken = this.currentToken;
+        final Token previousToken = this.previousToken;
+
+        this.nextToken();
+
+        final Token peekedToken = this.currentToken;
+        this.currentIndex = currentIndex;
+        this.currentToken = currentToken;
+        this.previousToken = previousToken;
+
+        return peekedToken;
     }
 
     public boolean nextToken() {
@@ -95,15 +106,7 @@ public class Lexer {
 
             // +, -, / and % are simple math operators
             case '+' -> this.getAndAdvance(TokenType.PLUS, "+");
-            case '-' -> {
-                this.currentIndex++;
-                if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == '>') {
-                    this.currentIndex++;
-                    this.currentToken = new Token(TokenType.RIGHT_ARROW, "->", this.currentIndex - 2, this.currentIndex);
-                } else {
-                    this.currentToken = new Token(TokenType.MINUS, "-", this.currentIndex - 1, this.currentIndex);
-                }
-            }
+            case '-' -> this.getAndAdvance(TokenType.MINUS, "-");
             case '/' -> this.getAndAdvance(TokenType.DIVIDE, "/");
             case '%' -> this.getAndAdvance(TokenType.MODULO, "%");
 
@@ -128,21 +131,10 @@ public class Lexer {
                 } else if (this.query.charAt(this.currentIndex) == '=') {
                     // <= is lower or equals
                     this.currentIndex++;
-                    this.currentToken = new Token(TokenType.CMP_LOWER_OR_EQUALS, "<=", this.currentIndex - 2, this.currentIndex);
-                } else if (this.query.charAt(this.currentIndex) == '-') {
-                    // <- is a left arrow
-                    this.currentIndex++;
-
-                    if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == '>') {
-                        this.currentIndex++;
-                        this.currentToken = new Token(TokenType.LEFT_RIGHT_ARROW, "<->", this.currentIndex - 3, this.currentIndex);
-                        break;
-                    }
-
-                    this.currentToken = new Token(TokenType.LEFT_ARROW, "<-", this.currentIndex - 2, this.currentIndex);
+                    this.currentToken = new Token(TokenType.CMP_LESS_OR_EQUALS, "<=", this.currentIndex - 2, this.currentIndex);
                 } else {
                     // < is lower than
-                    this.currentToken = new Token(TokenType.CMP_LOWER_THAN, "<", this.currentIndex - 1, this.currentIndex);
+                    this.currentToken = new Token(TokenType.CMP_LESS_THAN, "<", this.currentIndex - 1, this.currentIndex);
                 }
             }
             case '>' -> {
@@ -270,10 +262,6 @@ public class Lexer {
 
     public Token getCurrentToken() {
         return currentToken;
-    }
-
-    public Token getPreviousToken() {
-        return previousToken;
     }
 
 }
