@@ -5,26 +5,37 @@ import com.github.pokee.psql.visitor.Visitor;
 
 public class StatementContext extends ParserRuleContext {
 
-    private final UseAliasContext useAliasContext;
+    private final UseStatementContext useStatementContext;
     private final QueryContext queryContext;
 
-    public StatementContext(final UseAliasContext useAliasContext, final QueryContext queryContext) {
-        this.useAliasContext = useAliasContext;
-        this.queryContext = queryContext;
+    private final LanguageContext languageContext;
 
-        if (this.useAliasContext != null) {
-            this.addChild(this.useAliasContext);
-        } else {
+    public StatementContext(final UseStatementContext useStatementContext, final QueryContext queryContext, final LanguageContext languageContext) {
+        this.useStatementContext = useStatementContext;
+        this.queryContext = queryContext;
+        this.languageContext = languageContext;
+
+        if (this.useStatementContext != null) {
+            this.addChild(this.useStatementContext);
+        } else if (this.queryContext != null) {
             this.addChild(this.queryContext);
+        } else if (this.languageContext != null) {
+            this.addChild(this.languageContext);
+        } else {
+            throw new IllegalArgumentException("Statement must have either a use statement or a query context");
         }
     }
 
-    public UseAliasContext getUseAliasContext() {
-        return useAliasContext;
+    public UseStatementContext getUseAliasContext() {
+        return useStatementContext;
     }
 
     public QueryContext getQueryContext() {
         return queryContext;
+    }
+
+    public LanguageContext getLanguageContext() {
+        return languageContext;
     }
 
     @Override
@@ -35,8 +46,10 @@ public class StatementContext extends ParserRuleContext {
     @Override
     public String toString() {
         return "StatementContext{" +
-                "useAliasContext=" + useAliasContext +
+                "useStatementContext=" + useStatementContext +
                 ", queryContext=" + queryContext +
+                ", languageContext=" + languageContext +
                 '}';
     }
+
 }

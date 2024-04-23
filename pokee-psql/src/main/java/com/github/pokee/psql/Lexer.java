@@ -22,7 +22,10 @@ public class Lexer {
             "as", TokenType.AS,
             "filter", TokenType.FILTER,
             "map", TokenType.MAP,
-            "query", TokenType.QUERY
+            "query", TokenType.QUERY,
+            "lang", TokenType.LANGUAGE,
+            "true", TokenType.BOOL_TRUE,
+            "false", TokenType.BOOL_FALSE
     );
 
     public Lexer(final String query) {
@@ -193,11 +196,7 @@ public class Lexer {
                             }
                             throw new RuntimeException("Unrecognized character: " + currentChar);
                         }
-                        // an identifier followed by '[' should be recognized as a query name
-                        if (this.query.charAt(this.currentIndex) == '[') {
-                            this.currentToken = new Token(TokenType.QUERY_NAME, identifier, startIndex, this.currentIndex);
-                            break;
-                        }
+
                         // an identifier followed by '(' should be recognized as a function
                         if (this.query.charAt(this.currentIndex) == '(') {
                             this.currentToken = new Token(TokenType.FUNCTION_NAME, identifier, startIndex, this.currentIndex);

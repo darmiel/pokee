@@ -62,7 +62,7 @@ public class TerminalNode implements ParseTree {
 
     @Override
     public <T> T accept(final Visitor<? extends T> visitor) {
-        return visitor.visitTerminal(this);
+        return visitor.visitTerminalNode(this);
     }
 
     @Override

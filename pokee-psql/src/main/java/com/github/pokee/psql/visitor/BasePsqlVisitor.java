@@ -1,6 +1,7 @@
 package com.github.pokee.psql.visitor;
 
 import com.github.pokee.psql.domain.tree.ParseTree;
+import com.github.pokee.psql.domain.tree.nodes.common.NamespacedFieldNode;
 import com.github.pokee.psql.domain.tree.nodes.common.TerminalNode;
 import com.github.pokee.psql.domain.tree.nodes.expression.BinaryExpressionNode;
 import com.github.pokee.psql.domain.tree.nodes.expression.FunctionCallExpressionNode;
@@ -8,16 +9,16 @@ import com.github.pokee.psql.domain.tree.nodes.expression.IdentifierExpressionNo
 import com.github.pokee.psql.domain.tree.nodes.expression.LiteralExpressionNode;
 import com.github.pokee.psql.domain.tree.nodes.grammar.impl.*;
 
-public class SimplerLangBaseVisitor<T> implements Visitor<T> {
+public class BasePsqlVisitor<T> implements Visitor<T> {
 
     @Override
-    public T visitTerminal(final TerminalNode terminalNode) {
+    public T visitTerminalNode(final TerminalNode terminalNode) {
         return this.visitChildren(terminalNode);
     }
 
     @Override
-    public T visitUseAlias(final UseAliasContext useAliasContext) {
-        return this.visitChildren(useAliasContext);
+    public T visitUseStatement(final UseStatementContext useStatementContext) {
+        return this.visitChildren(useStatementContext);
     }
 
     @Override
@@ -58,6 +59,16 @@ public class SimplerLangBaseVisitor<T> implements Visitor<T> {
     @Override
     public T visitProgram(final ProgramContext programContext) {
         return this.visitChildren(programContext);
+    }
+
+    @Override
+    public T visitNamespacedFieldNode(final NamespacedFieldNode namespacedFieldNode) {
+        return this.visitChildren(namespacedFieldNode);
+    }
+
+    @Override
+    public T visitLanguage(final LanguageContext languageContext) {
+        return this.visitChildren(languageContext);
     }
 
     public T visitChildren(final ParseTree node) {

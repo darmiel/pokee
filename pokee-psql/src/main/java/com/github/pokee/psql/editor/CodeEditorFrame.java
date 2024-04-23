@@ -1,4 +1,4 @@
-package com.github.pokee.psql.ide;
+package com.github.pokee.psql.editor;
 
 import com.github.pokee.psql.Lexer;
 import com.github.pokee.psql.Parser;
@@ -8,7 +8,7 @@ import com.github.pokee.psql.domain.tree.nodes.grammar.impl.ProgramContext;
 import com.github.pokee.psql.domain.tree.nodes.grammar.impl.StatementContext;
 import com.github.pokee.psql.exception.ParseException;
 import com.github.pokee.psql.exception.SemanticException;
-import com.github.pokee.psql.visitor.SemanticAnalyzer;
+import com.github.pokee.psql.visitor.SemanticAnalyzerVisitor;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -17,14 +17,14 @@ import javax.swing.text.*;
 import java.awt.*;
 import java.util.List;
 
-public class PsqlFrame extends JFrame {
+public class CodeEditorFrame extends JFrame {
 
     private final JTextPane textArea;
     private final JTextArea statusBar;
 
     private final Highlighter.HighlightPainter errorHighlighter;
 
-    public PsqlFrame() {
+    public CodeEditorFrame() {
         super("PSQL IDE");
 
         this.textArea = new JTextPane();
@@ -34,7 +34,7 @@ public class PsqlFrame extends JFrame {
             public void insertUpdate(DocumentEvent e) {
                 SwingUtilities.invokeLater(() -> {
                     try {
-                        checkDocument(e.getDocument());
+                        validateAndHighlightDocument(e.getDocument());
                     } catch (BadLocationException ex) {
                         System.out.println("Error checking document: " + ex.getMessage());
                     }
@@ -45,7 +45,7 @@ public class PsqlFrame extends JFrame {
             public void removeUpdate(DocumentEvent e) {
                 SwingUtilities.invokeLater(() -> {
                     try {
-                        checkDocument(e.getDocument());
+                        validateAndHighlightDocument(e.getDocument());
                     } catch (BadLocationException ex) {
                         System.out.println("Error checking document: " + ex.getMessage());
                     }
@@ -72,7 +72,7 @@ public class PsqlFrame extends JFrame {
         this.setLayout(new BorderLayout());
 
         final JScrollPane scrollPane = new JScrollPane(this.textArea);
-        final TextLineNumber lineNumberComponent = new TextLineNumber(this.textArea);
+        final TextLineNumberComponent lineNumberComponent = new TextLineNumberComponent(this.textArea);
         scrollPane.setRowHeaderView(lineNumberComponent);
 
         final JLabel header = new JLabel("PS-PSQL-IDE");
@@ -117,12 +117,17 @@ public class PsqlFrame extends JFrame {
         StyleConstants.setForeground(errorStyle, Color.RED);
     }
 
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            final CodeEditorFrame ide = new CodeEditorFrame();
+        });
+    }
 
     private String getStyleKeyForTokenType(final TokenType type) {
         if (type == TokenType.NAMESPACE_NAME) {
             return "namespace";
         }
-        if (type == TokenType.QUERY_NAME || type == TokenType.FUNCTION_NAME) {
+        if (type == TokenType.FUNCTION_NAME) {
             return "function";
         }
         if (type.isLiteral()) {
@@ -137,7 +142,7 @@ public class PsqlFrame extends JFrame {
         return "regular";
     }
 
-    public void checkDocument(final Document document) throws BadLocationException {
+    public void validateAndHighlightDocument(final Document document) throws BadLocationException {
         final String text = document.getText(0, document.getLength());
 
         // lexer syntax highlighting
@@ -197,7 +202,7 @@ public class PsqlFrame extends JFrame {
 
         // semantic analysis
         try {
-            trees.accept(new SemanticAnalyzer(SemanticAnalyzer.EXAMPLE_NAMESPACE_PROJECTIONS));
+            trees.accept(new SemanticAnalyzerVisitor(SemanticAnalyzerVisitor.EXAMPLE_NAMESPACE_PROJECTIONS, List.of("de", "en")));
             this.statusBar.setForeground(Color.GREEN);
             this.statusBar.setText("Semantic analysis passed!\n\n" + this.statusBar.getText());
         } catch (final SemanticException semanticException) {
@@ -211,13 +216,6 @@ public class PsqlFrame extends JFrame {
             }
             this.statusBar.setText(bob.toString());
         }
-    }
-
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            final PsqlFrame ide = new PsqlFrame();
-        });
     }
 
 

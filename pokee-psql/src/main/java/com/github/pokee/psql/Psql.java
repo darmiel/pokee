@@ -2,7 +2,9 @@ package com.github.pokee.psql;
 
 import com.github.pokee.psql.domain.tree.nodes.grammar.impl.ProgramContext;
 import com.github.pokee.psql.exception.ParseException;
-import com.github.pokee.psql.visitor.SemanticAnalyzer;
+import com.github.pokee.psql.visitor.SemanticAnalyzerVisitor;
+
+import java.util.List;
 
 public class Psql {
 
@@ -49,7 +51,7 @@ public class Psql {
         System.out.println(program);
 
         // run semantic analysis
-        program.accept(new SemanticAnalyzer(SemanticAnalyzer.EXAMPLE_NAMESPACE_PROJECTIONS));
+        program.accept(new SemanticAnalyzerVisitor(SemanticAnalyzerVisitor.EXAMPLE_NAMESPACE_PROJECTIONS, List.of("de", "en")));
 
     }
 //

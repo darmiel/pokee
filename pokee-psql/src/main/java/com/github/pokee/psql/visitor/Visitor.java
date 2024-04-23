@@ -1,5 +1,6 @@
 package com.github.pokee.psql.visitor;
 
+import com.github.pokee.psql.domain.tree.nodes.common.NamespacedFieldNode;
 import com.github.pokee.psql.domain.tree.nodes.common.TerminalNode;
 import com.github.pokee.psql.domain.tree.nodes.expression.BinaryExpressionNode;
 import com.github.pokee.psql.domain.tree.nodes.expression.FunctionCallExpressionNode;
@@ -9,9 +10,9 @@ import com.github.pokee.psql.domain.tree.nodes.grammar.impl.*;
 
 public interface Visitor<T> {
 
-    T visitTerminal(final TerminalNode terminalNode);
+    T visitTerminalNode(final TerminalNode terminalNode);
 
-    T visitUseAlias(final UseAliasContext useAliasContext);
+    T visitUseStatement(final UseStatementContext useStatementContext);
 
     T visitStatement(final StatementContext statementContext);
 
@@ -28,4 +29,8 @@ public interface Visitor<T> {
     T visitIdentifierExpressionNode(final IdentifierExpressionNode identifierExpressionNode);
 
     T visitProgram(final ProgramContext programContext);
+
+    T visitNamespacedFieldNode(final NamespacedFieldNode namespacedFieldNode);
+
+    T visitLanguage(final LanguageContext languageContext);
 }

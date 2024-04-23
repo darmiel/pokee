@@ -215,12 +215,16 @@ public class Parser {
     public StatementContext parseStatement() throws ParseException {
         switch (this.lexer.getCurrentToken().type()) {
             case USE -> {
-                final UseAliasContext useAliasContext = this.parseUseAliasContext();
-                return new StatementContext(useAliasContext, null);
+                final UseStatementContext useStatementContext = this.parseUseAliasContext();
+                return new StatementContext(useStatementContext, null, null);
             }
             case QUERY -> {
                 final QueryContext queryContext = this.parseQueryContext();
-                return new StatementContext(null, queryContext);
+                return new StatementContext(null, queryContext, null);
+            }
+            case LANGUAGE -> {
+                final LanguageContext languageContext = this.parseLanguage();
+                return new StatementContext(null, null, languageContext);
             }
             default ->
                     this.throwExpectedToken("A statement should either be `use` or `query`. Current: " + this.current().type(),
@@ -235,7 +239,7 @@ public class Parser {
      *
      * @return A UseAliasContext instance representing the parsed `use` statement.
      */
-    public UseAliasContext parseUseAliasContext() throws ParseException {
+    public UseStatementContext parseUseAliasContext() throws ParseException {
         this.expect(TokenType.USE, "A use-statement should start with `use`.").advance()
                 .expect(TokenType.IDENTIFIER, "You must specify a namespace to use.");
         final TerminalNode original = this.createTerminalNodeFromCurrentToken();
@@ -243,14 +247,14 @@ public class Parser {
         switch (this.advance().current().type()) {
             case SEMICOLON -> {
                 // if a semicolon is found, it means no alias is specified, the namespace is just imported.
-                return new UseAliasContext(original, null);
+                return new UseStatementContext(original, null);
             }
             case AS -> {
                 // if an `as` is found, it means an alias is specified for the namespace.
                 this.advance().expect(TokenType.IDENTIFIER, "You must specify an alias after `as`.");
                 final TerminalNode alias = this.createTerminalNodeFromCurrentToken();
                 this.advance().expect(TokenType.SEMICOLON, "You must end the statement with a semicolon.");
-                return new UseAliasContext(original, alias);
+                return new UseStatementContext(original, alias);
             }
             default -> this.throwExpectedToken("Expected either `;` or `as` to specify an alias.",
                     TokenType.SEMICOLON, TokenType.AS);
@@ -531,6 +535,21 @@ public class Parser {
         }
 
         return new QueryContext(queryName, projectionNodeList, filterExpressions);
+    }
+
+    public LanguageContext parseLanguage() throws ParseException {
+        this.expect(TokenType.LANGUAGE, "Expected `language` to start a language statement.").advance();
+        this.expect(TokenType.IDENTIFIER, "Expected a language name after `language`.");
+
+        final TerminalNode language = this.createTerminalNodeFromCurrentToken();
+        this.advance();
+
+        if (this.current().type() != TokenType.SEMICOLON && this.current().type() != TokenType.EOF) {
+            this.throwExpectedToken("Expected either `;` or the end of the language statement.");
+            return null;
+        }
+
+        return new LanguageContext(language);
     }
 
 }

@@ -4,12 +4,12 @@ import com.github.pokee.psql.domain.tree.nodes.common.TerminalNode;
 import com.github.pokee.psql.domain.tree.nodes.grammar.ParserRuleContext;
 import com.github.pokee.psql.visitor.Visitor;
 
-public class UseAliasContext extends ParserRuleContext {
+public class UseStatementContext extends ParserRuleContext {
 
     private final TerminalNode original;
     private final TerminalNode alias;
 
-    public UseAliasContext(final TerminalNode original, final TerminalNode alias) {
+    public UseStatementContext(final TerminalNode original, final TerminalNode alias) {
         this.original = original;
         this.alias = alias;
 
@@ -29,7 +29,7 @@ public class UseAliasContext extends ParserRuleContext {
 
     @Override
     public <T> T accept(final Visitor<? extends T> visitor) {
-        return visitor.visitUseAlias(this);
+        return visitor.visitUseStatement(this);
     }
 
     @Override

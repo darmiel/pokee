@@ -1,4 +1,4 @@
-package com.github.pokee.psql.ide;
+package com.github.pokee.psql.editor;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -6,12 +6,12 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-class TextLineNumber extends JPanel implements DocumentListener {
+class TextLineNumberComponent extends JPanel implements DocumentListener {
 
     private final JTextPane textPane;
     private final Font font;
 
-    public TextLineNumber(JTextPane textPane) {
+    public TextLineNumberComponent(JTextPane textPane) {
         this.textPane = textPane;
         this.textPane.getDocument().addDocumentListener(this);
 

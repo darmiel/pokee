@@ -4,7 +4,6 @@ public enum TokenType {
 
     // value tokens
     IDENTIFIER(TokenTypeType.IDENTIFIER),
-    QUERY_NAME(TokenTypeType.IDENTIFIER),
     FUNCTION_NAME(TokenTypeType.IDENTIFIER),
     NAMESPACE_NAME(TokenTypeType.IDENTIFIER),
     USE(TokenTypeType.KEYWORD),
@@ -54,6 +53,7 @@ public enum TokenType {
     FILTER(TokenTypeType.KEYWORD),
     MAP(TokenTypeType.KEYWORD),
     QUERY(TokenTypeType.KEYWORD),
+    LANGUAGE(TokenTypeType.KEYWORD),
     EOF(TokenTypeType.EOF);
 
     private final TokenTypeType type;
