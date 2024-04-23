@@ -1,6 +1,8 @@
 package com.github.pokee.psql;
 
+import com.github.pokee.psql.domain.tree.nodes.grammar.impl.ProgramContext;
 import com.github.pokee.psql.exception.ParseException;
+import com.github.pokee.psql.visitor.SemanticAnalyzer;
 
 public class Psql {
 
@@ -32,10 +34,23 @@ public class Psql {
     }
 
     public static void main(String[] args) throws ParseException {
-        final String query = "query";
+        final String query = """
+                use Pokemon as P;
+                use Pokemon as F;
+                            
+                query test P::*;
+                query test2 Feee::*;
+                """;
         final Lexer lexer = new Lexer(query);
+
+        // parse program
         final Parser parser = new Parser(lexer);
-        System.out.println(parser.parseQueryContext());
+        final ProgramContext program = parser.parseProgram();
+        System.out.println(program);
+
+        // run semantic analysis
+        program.accept(new SemanticAnalyzer(SemanticAnalyzer.EXAMPLE_NAMESPACE_PROJECTIONS));
+
     }
 //
 //    public static void main(String[] args) throws ParseException {

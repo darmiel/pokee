@@ -19,6 +19,14 @@ public class ProjectionNode extends ParserRuleContext {
         this.field = field;
         this.alias = alias;
         this.isAll = isAll;
+
+        this.addChild(namespace);
+        if (field != null) {
+            this.addChild(field);
+        }
+        if (alias != null) {
+            this.addChild(alias);
+        }
     }
 
     public TerminalNode getNamespace() {

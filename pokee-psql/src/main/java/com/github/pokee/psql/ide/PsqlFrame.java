@@ -4,14 +4,18 @@ import com.github.pokee.psql.Lexer;
 import com.github.pokee.psql.Parser;
 import com.github.pokee.psql.domain.token.Token;
 import com.github.pokee.psql.domain.token.support.TokenType;
-import com.github.pokee.psql.domain.tree.nodes.expression.ExpressionNode;
+import com.github.pokee.psql.domain.tree.nodes.grammar.impl.ProgramContext;
+import com.github.pokee.psql.domain.tree.nodes.grammar.impl.StatementContext;
 import com.github.pokee.psql.exception.ParseException;
+import com.github.pokee.psql.exception.SemanticException;
+import com.github.pokee.psql.visitor.SemanticAnalyzer;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 import java.awt.*;
+import java.util.List;
 
 public class PsqlFrame extends JFrame {
 
@@ -63,7 +67,7 @@ public class PsqlFrame extends JFrame {
         this.statusBar.setBackground(Color.BLACK);
         this.statusBar.setForeground(Color.WHITE);
 
-        this.errorHighlighter = new DefaultHighlighter.DefaultHighlightPainter(Color.RED.brighter());
+        this.errorHighlighter = new DefaultHighlighter.DefaultHighlightPainter(new Color(255, 0, 0, 50));
 
         this.setLayout(new BorderLayout());
 
@@ -71,8 +75,11 @@ public class PsqlFrame extends JFrame {
         final TextLineNumber lineNumberComponent = new TextLineNumber(this.textArea);
         scrollPane.setRowHeaderView(lineNumberComponent);
 
+        final JLabel header = new JLabel("PS-PSQL-IDE");
+        header.setFont(new Font("SansSerif", Font.BOLD, 24));
+        header.setHorizontalAlignment(SwingConstants.CENTER);
+        this.add(header, BorderLayout.NORTH);
         this.add(scrollPane, BorderLayout.CENTER);
-
         this.add(new JScrollPane(statusBar), BorderLayout.SOUTH);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -156,37 +163,53 @@ public class PsqlFrame extends JFrame {
 
         System.out.println("\n\n");
 
+        final ProgramContext trees;
         try {
             this.textArea.getHighlighter().removeAllHighlights();
 
             final Lexer lexer = new Lexer(text);
-            lexer.nextToken();
 
             final Parser parser = new Parser(lexer);
 
-            final ExpressionNode node = parser.parseExpressionNode();
-            this.statusBar.setForeground(Color.GREEN);
-            this.statusBar.setText(node.toString());
+            trees = parser.parseProgram();
+            final List<StatementContext> statements = trees.getStatements();
 
-//            final List<StatementContext> trees = parser.parseProgram();
-//            this.statusBar.setForeground(Color.GREEN);
-//
-//            final StringBuilder bob = new StringBuilder();
-//            bob.append("Parsed ").append(trees.size()).append(" trees\n");
-//
-//            for (int i = 0; i < trees.size(); i++) {
-//                final StatementContext tree = trees.get(i);
-//                bob.append("# ").append(i).append(":\n").append(tree.toStringTree()).append("\n");
-//            }
-//
-//            this.statusBar.setForeground(Color.GREEN);
-//            this.statusBar.setText(bob.toString());
+            this.statusBar.setForeground(Color.GREEN);
+
+            final StringBuilder bob = new StringBuilder();
+            bob.append("Parsed ").append(statements.size()).append(" trees\n");
+
+            for (int i = 0; i < statements.size(); i++) {
+                final StatementContext tree = statements.get(i);
+                bob.append("# ").append(i).append(":\n").append(tree.toString()).append("\n");
+            }
+
+            this.statusBar.setForeground(Color.GREEN);
+            this.statusBar.setText(bob.toString());
         } catch (final ParseException e) {
             this.textArea.getHighlighter().removeAllHighlights();
             this.textArea.getHighlighter().addHighlight(e.getIndex() - 1, e.getIndex() + 1, errorHighlighter);
 
             this.statusBar.setForeground(Color.RED);
             this.statusBar.setText(" Error parsing document: " + e.getMessage());
+            return;
+        }
+
+        // semantic analysis
+        try {
+            trees.accept(new SemanticAnalyzer(SemanticAnalyzer.EXAMPLE_NAMESPACE_PROJECTIONS));
+            this.statusBar.setForeground(Color.GREEN);
+            this.statusBar.setText("Semantic analysis passed!\n\n" + this.statusBar.getText());
+        } catch (final SemanticException semanticException) {
+            this.statusBar.setForeground(Color.MAGENTA);
+
+            // max. 100 chars per line
+            final String[] lines = semanticException.getMessage().split("(?<=\\G.{100})");
+            final StringBuilder bob = new StringBuilder();
+            for (final String line : lines) {
+                bob.append(line).append("\n");
+            }
+            this.statusBar.setText(bob.toString());
         }
     }
 

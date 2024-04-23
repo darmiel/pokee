@@ -15,6 +15,9 @@ public class BinaryExpressionNode extends ExpressionNode {
         this.lhs = lhs;
         this.rhs = rhs;
         this.operator = operator;
+
+        this.addChild(lhs);
+        this.addChild(rhs);
     }
 
     public ExpressionNode getRhs() {

@@ -13,6 +13,8 @@ public class LiteralExpressionNode extends ExpressionNode {
                                  final TerminalNode literal) {
         this.type = type;
         this.literal = literal;
+
+        this.addChild(literal);
     }
 
     public TokenType getType() {

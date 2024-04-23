@@ -12,6 +12,9 @@ public class IdentifierExpressionNode extends ExpressionNode {
                                     final TerminalNode literal) {
         this.namespace = namespace;
         this.literal = literal;
+
+        this.addChild(namespace);
+        this.addChild(literal);
     }
 
     public TerminalNode getNamespace() {

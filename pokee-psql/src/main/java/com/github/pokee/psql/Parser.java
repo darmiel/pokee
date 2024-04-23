@@ -4,10 +4,7 @@ import com.github.pokee.psql.domain.token.Token;
 import com.github.pokee.psql.domain.token.support.TokenType;
 import com.github.pokee.psql.domain.tree.nodes.common.TerminalNode;
 import com.github.pokee.psql.domain.tree.nodes.expression.*;
-import com.github.pokee.psql.domain.tree.nodes.grammar.impl.ProjectionNode;
-import com.github.pokee.psql.domain.tree.nodes.grammar.impl.QueryContext;
-import com.github.pokee.psql.domain.tree.nodes.grammar.impl.StatementContext;
-import com.github.pokee.psql.domain.tree.nodes.grammar.impl.UseAliasContext;
+import com.github.pokee.psql.domain.tree.nodes.grammar.impl.*;
 import com.github.pokee.psql.exception.ParseException;
 
 import java.util.ArrayList;
@@ -202,12 +199,12 @@ public class Parser {
         return terminalNode;
     }
 
-    public List<StatementContext> parseProgram() throws ParseException {
+    public ProgramContext parseProgram() throws ParseException {
         final List<StatementContext> statements = new ArrayList<>();
         while (lexer.nextToken()) {
             statements.add(this.parseStatement());
         }
-        return statements;
+        return new ProgramContext(statements);
     }
 
     /**
@@ -216,7 +213,6 @@ public class Parser {
      * @return A StatementContext instance representing the parsed statement.
      */
     public StatementContext parseStatement() throws ParseException {
-        System.out.println("Parsing statement: " + this.lexer.getCurrentToken().type());
         switch (this.lexer.getCurrentToken().type()) {
             case USE -> {
                 final UseAliasContext useAliasContext = this.parseUseAliasContext();
@@ -522,9 +518,19 @@ public class Parser {
             this.throwExpectedToken("You can only use `*` once in a query.");
         }
 
-        System.out.println(this.current().type());
+        final List<ExpressionNode> filterExpressions = new ArrayList<>();
+        while (this.current().type() == TokenType.FILTER) {
+            this.expect(TokenType.FILTER, "Expected `filter` to start a filter statement.").advance();
+            final ExpressionNode filterExpression = this.parseExpressionNode();
+            filterExpressions.add(filterExpression);
+        }
 
-        return new QueryContext();
+        if (this.current().type() != TokenType.EOF && this.current().type() != TokenType.SEMICOLON) {
+            this.throwExpectedToken("Expected either `;` or the end of the query.");
+            return null;
+        }
+
+        return new QueryContext(queryName, projectionNodeList, filterExpressions);
     }
 
 }

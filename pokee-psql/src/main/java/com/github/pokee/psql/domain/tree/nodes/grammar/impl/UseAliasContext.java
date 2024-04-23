@@ -12,6 +12,11 @@ public class UseAliasContext extends ParserRuleContext {
     public UseAliasContext(final TerminalNode original, final TerminalNode alias) {
         this.original = original;
         this.alias = alias;
+
+        this.addChild(original);
+        if (alias != null) {
+            this.addChild(alias);
+        }
     }
 
     public TerminalNode getOriginal() {

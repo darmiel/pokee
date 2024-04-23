@@ -5,10 +5,7 @@ import com.github.pokee.psql.domain.tree.nodes.expression.BinaryExpressionNode;
 import com.github.pokee.psql.domain.tree.nodes.expression.FunctionCallExpressionNode;
 import com.github.pokee.psql.domain.tree.nodes.expression.IdentifierExpressionNode;
 import com.github.pokee.psql.domain.tree.nodes.expression.LiteralExpressionNode;
-import com.github.pokee.psql.domain.tree.nodes.grammar.impl.ProjectionNode;
-import com.github.pokee.psql.domain.tree.nodes.grammar.impl.QueryContext;
-import com.github.pokee.psql.domain.tree.nodes.grammar.impl.StatementContext;
-import com.github.pokee.psql.domain.tree.nodes.grammar.impl.UseAliasContext;
+import com.github.pokee.psql.domain.tree.nodes.grammar.impl.*;
 
 public interface Visitor<T> {
 
@@ -29,4 +26,6 @@ public interface Visitor<T> {
     T visitLiteralExpressionNode(final LiteralExpressionNode literalExpressionNode);
 
     T visitIdentifierExpressionNode(final IdentifierExpressionNode identifierExpressionNode);
+
+    T visitProgram(final ProgramContext programContext);
 }

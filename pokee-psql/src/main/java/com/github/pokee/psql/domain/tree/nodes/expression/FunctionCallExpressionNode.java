@@ -20,6 +20,10 @@ public class FunctionCallExpressionNode extends ExpressionNode {
         this.target = target;
         this.functionName = functionName;
         this.arguments = arguments;
+
+        this.addChild(targetNamespace);
+        this.addChild(target);
+        arguments.forEach(this::addChild);
     }
 
     public TerminalNode getTargetNamespace() {

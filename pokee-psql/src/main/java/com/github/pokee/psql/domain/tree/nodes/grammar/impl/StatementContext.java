@@ -32,4 +32,11 @@ public class StatementContext extends ParserRuleContext {
         return visitor.visitStatement(this);
     }
 
+    @Override
+    public String toString() {
+        return "StatementContext{" +
+                "useAliasContext=" + useAliasContext +
+                ", queryContext=" + queryContext +
+                '}';
+    }
 }
