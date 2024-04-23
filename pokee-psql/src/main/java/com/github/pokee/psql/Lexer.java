@@ -2,6 +2,7 @@ package com.github.pokee.psql;
 
 import com.github.pokee.psql.domain.token.Token;
 import com.github.pokee.psql.domain.token.support.TokenType;
+import com.github.pokee.psql.exception.LexerException;
 
 import java.util.Map;
 
@@ -32,6 +33,12 @@ public class Lexer {
         this.query = query;
         this.queryLength = query.length();
         this.currentIndex = 0;
+    }
+
+    public void reset() {
+        this.currentIndex = 0;
+        this.currentToken = null;
+        this.previousToken = null;
     }
 
     public String getQuery() {
@@ -161,7 +168,7 @@ public class Lexer {
                     this.currentIndex++;
                     this.currentToken = new Token(TokenType.CMP_EQUALS, "==", this.currentIndex - 2, this.currentIndex);
                 } else {
-                    throw new RuntimeException("Unrecognized character: " + currentChar);
+                    throw new LexerException("Unrecognized character: " + currentChar);
                 }
             }
 
@@ -194,7 +201,7 @@ public class Lexer {
                                 this.currentToken = new Token(TokenType.NAMESPACE_NAME, identifier, startIndex, this.currentIndex);
                                 break;
                             }
-                            throw new RuntimeException("Unrecognized character: " + currentChar);
+                            throw new LexerException("Unrecognized character: " + currentChar);
                         }
 
                         // an identifier followed by '(' should be recognized as a function
@@ -209,7 +216,7 @@ public class Lexer {
                     break;
                 }
 
-                throw new RuntimeException("Unrecognized character: " + currentChar);
+                throw new LexerException("Unrecognized character: " + currentChar);
             }
         }
         return true;

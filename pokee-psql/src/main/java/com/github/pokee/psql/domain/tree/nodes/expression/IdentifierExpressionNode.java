@@ -1,28 +1,20 @@
 package com.github.pokee.psql.domain.tree.nodes.expression;
 
-import com.github.pokee.psql.domain.tree.nodes.common.TerminalNode;
+import com.github.pokee.psql.domain.tree.nodes.common.NamespacedFieldNode;
 import com.github.pokee.psql.visitor.Visitor;
 
 public class IdentifierExpressionNode extends ExpressionNode {
 
-    private final TerminalNode namespace;
-    private final TerminalNode literal;
+    private final NamespacedFieldNode target;
 
-    public IdentifierExpressionNode(final TerminalNode namespace,
-                                    final TerminalNode literal) {
-        this.namespace = namespace;
-        this.literal = literal;
+    public IdentifierExpressionNode(final NamespacedFieldNode target) {
+        this.target = target;
 
-        this.addChild(namespace);
-        this.addChild(literal);
+        this.addChild(target);
     }
 
-    public TerminalNode getNamespace() {
-        return namespace;
-    }
-
-    public TerminalNode getLiteral() {
-        return literal;
+    public NamespacedFieldNode getTarget() {
+        return target;
     }
 
     @Override
@@ -32,7 +24,7 @@ public class IdentifierExpressionNode extends ExpressionNode {
 
     @Override
     public String toString() {
-        return this.namespace + "::" + this.literal;
+        return this.target.getText();
     }
 
 }

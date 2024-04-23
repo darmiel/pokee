@@ -7,13 +7,19 @@ public class NamespacedFieldNode extends ParserRuleContext {
 
     private final TerminalNode namespace;
     private final TerminalNode field;
+    private final boolean isWildcard;
 
     public NamespacedFieldNode(final TerminalNode namespace, final TerminalNode field) {
         this.namespace = namespace;
         this.field = field;
 
         this.addChild(namespace);
-        this.addChild(field);
+        if (this.field != null) {
+            this.addChild(field);
+            this.isWildcard = false;
+        } else {
+            this.isWildcard = true;
+        }
     }
 
     public TerminalNode getNamespace() {
@@ -24,9 +30,18 @@ public class NamespacedFieldNode extends ParserRuleContext {
         return field;
     }
 
+    public boolean isWildcard() {
+        return isWildcard;
+    }
+
     @Override
     public <T> T accept(final Visitor<? extends T> visitor) {
         return visitor.visitNamespacedFieldNode(this);
+    }
+
+    @Override
+    public String toString() {
+        return this.namespace.getText() + "::" + (this.field == null ? "*" : this.field.getText());
     }
 
 }

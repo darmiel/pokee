@@ -41,11 +41,18 @@ public class SemanticAnalyzerVisitor extends BasePsqlVisitor<Void> {
         this.queryNames = new HashSet<>();
     }
 
-    @Override
-    public Void visitUseStatement(final UseStatementContext useStatementContext) {
+    /**
+     * Visit a use statement and update the namespace imports
+     *
+     * @param namespaceImports    the current namespace imports
+     * @param useStatementContext the use statement context
+     */
+    public static void visitUseStatement(final Map<String, Map<String, Class<?>>> availableNamespaces,
+                                         final Map<String, String> namespaceImports,
+                                         final UseStatementContext useStatementContext) {
         // check if the imported namespace is valid
         final String originalNamespace = useStatementContext.getOriginal().getText();
-        if (!this.namespaceProjections.containsKey(originalNamespace)) {
+        if (!availableNamespaces.containsKey(originalNamespace)) {
             throw new SemanticException("Namespace " + originalNamespace + " is not valid");
         }
 
@@ -53,11 +60,15 @@ public class SemanticAnalyzerVisitor extends BasePsqlVisitor<Void> {
         final String importName = useStatementContext.getAlias() != null
                 ? useStatementContext.getAlias().getText()
                 : originalNamespace;
-        if (this.namespaceImports.containsKey(importName)) {
+        if (namespaceImports.containsKey(importName)) {
             throw new SemanticException("Alias " + importName + " is already used");
         }
-        this.namespaceImports.put(importName, originalNamespace);
+        namespaceImports.put(importName, originalNamespace);
+    }
 
+    @Override
+    public Void visitUseStatement(final UseStatementContext useStatementContext) {
+        SemanticAnalyzerVisitor.visitUseStatement(this.namespaceProjections, this.namespaceImports, useStatementContext);
         return super.visitUseStatement(useStatementContext);
     }
 
@@ -95,7 +106,7 @@ public class SemanticAnalyzerVisitor extends BasePsqlVisitor<Void> {
 
         // make sure projections are valid
         for (final ProjectionNode projectionNode : queryContext.getProjectionNodes()) {
-            final String namespace = projectionNode.getNamespace().getText();
+            final String namespace = projectionNode.getField().getNamespace().getText();
 
             final Map<String, Class<?>> fieldTypes = this.getFieldTypes(namespace);
 
@@ -117,10 +128,10 @@ public class SemanticAnalyzerVisitor extends BasePsqlVisitor<Void> {
 
     @Override
     public Void visitFunctionCallExpressionNode(final FunctionCallExpressionNode functionCallExpressionNode) {
-        final String namespace = functionCallExpressionNode.getTargetNamespace().getText();
+        final String namespace = functionCallExpressionNode.getTarget().getNamespace().getText();
         final Map<String, Class<?>> fieldTypes = this.getFieldTypes(namespace);
 
-        final String fieldName = functionCallExpressionNode.getTarget().getText();
+        final String fieldName = functionCallExpressionNode.getTarget().getField().getText();
         final Class<?> fieldType = this.getFieldType(fieldTypes, namespace, fieldName);
 
         final String functionName = functionCallExpressionNode.getFunctionName();
