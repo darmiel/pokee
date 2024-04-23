@@ -10,4 +10,9 @@ import com.github.pokee.psql.domain.token.support.TokenType;
  */
 public record Token(TokenType type, String value, int startIndex, int endIndex) {
 
+    @Override
+    public String toString() {
+        return type().name() + " (" + value() + ") [" + startIndex + "-" + endIndex + "]";
+    }
+
 }
