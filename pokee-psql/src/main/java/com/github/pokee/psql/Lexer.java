@@ -50,21 +50,6 @@ public class Lexer {
         this.currentToken = new Token(tokenType, value, this.currentIndex - 1, this.currentIndex);
     }
 
-    public Token peekToken() {
-        final int currentIndex = this.currentIndex;
-        final Token currentToken = this.currentToken;
-        final Token previousToken = this.previousToken;
-
-        this.nextToken();
-
-        final Token peekedToken = this.currentToken;
-        this.currentIndex = currentIndex;
-        this.currentToken = currentToken;
-        this.previousToken = previousToken;
-
-        return peekedToken;
-    }
-
     public boolean nextToken() {
         this.skipWhitespaces();
         if (this.isEndOfQuery()) {

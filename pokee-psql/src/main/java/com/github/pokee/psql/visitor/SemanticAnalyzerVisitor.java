@@ -4,7 +4,6 @@ import com.github.pokee.psql.domain.tree.nodes.expression.FunctionCallExpression
 import com.github.pokee.psql.domain.tree.nodes.grammar.impl.LanguageContext;
 import com.github.pokee.psql.domain.tree.nodes.grammar.impl.ProjectionNode;
 import com.github.pokee.psql.domain.tree.nodes.grammar.impl.QueryContext;
-import com.github.pokee.psql.domain.tree.nodes.grammar.impl.UseStatementContext;
 import com.github.pokee.psql.exception.SemanticException;
 
 import java.util.*;
@@ -31,45 +30,15 @@ public class SemanticAnalyzerVisitor extends BasePsqlVisitor<Void> {
     private final List<String> availableLanguages;
 
     public SemanticAnalyzerVisitor(final Map<String, Map<String, Class<?>>> namespaceProjections,
+                                   final Map<String, String> namespaceImports,
                                    final List<String> availableLanguages) {
         super();
 
         this.namespaceProjections = namespaceProjections;
+        this.namespaceImports = namespaceImports;
         this.availableLanguages = availableLanguages;
 
-        this.namespaceImports = new HashMap<>();
         this.queryNames = new HashSet<>();
-    }
-
-    /**
-     * Visit a use statement and update the namespace imports
-     *
-     * @param namespaceImports    the current namespace imports
-     * @param useStatementContext the use statement context
-     */
-    public static void visitUseStatement(final Map<String, Map<String, Class<?>>> availableNamespaces,
-                                         final Map<String, String> namespaceImports,
-                                         final UseStatementContext useStatementContext) {
-        // check if the imported namespace is valid
-        final String originalNamespace = useStatementContext.getOriginal().getText();
-        if (!availableNamespaces.containsKey(originalNamespace)) {
-            throw new SemanticException("Namespace " + originalNamespace + " is not valid");
-        }
-
-        // check if the alias is already used
-        final String importName = useStatementContext.getAlias() != null
-                ? useStatementContext.getAlias().getText()
-                : originalNamespace;
-        if (namespaceImports.containsKey(importName)) {
-            throw new SemanticException("Alias " + importName + " is already used");
-        }
-        namespaceImports.put(importName, originalNamespace);
-    }
-
-    @Override
-    public Void visitUseStatement(final UseStatementContext useStatementContext) {
-        SemanticAnalyzerVisitor.visitUseStatement(this.namespaceProjections, this.namespaceImports, useStatementContext);
-        return super.visitUseStatement(useStatementContext);
     }
 
     public Map<String, Class<?>> getFieldTypes(final String namespace) {

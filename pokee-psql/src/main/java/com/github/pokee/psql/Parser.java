@@ -22,22 +22,49 @@ public class Parser {
     private final Lexer lexer;
 
     /**
-     * Constructs a new Parser instance with the given lexer.
+     * Constructor for the Parser class that initializes it with a specified Lexer.
+     * This Lexer is used throughout the parsing process to tokenize the input query string.
      *
-     * @param lexer The lexer to use for tokenizing the query.
+     * @param lexer The Lexer instance used for tokenizing the input.
      */
     public Parser(final Lexer lexer) {
         this.lexer = lexer;
     }
 
+
     /**
-     * Constructs a new Parser instance with the given query string.
+     * Returns the current token from the lexer without advancing the position.
      *
-     * @param query The query string to parse.
+     * @return The current token.
      */
-    public Parser(final String query) {
-        this(new Lexer(query));
+    private Token current() {
+        return this.lexer.getCurrentToken();
     }
+
+    /**
+     * Advances the lexer to the next token.
+     *
+     * @return The current instance of the Parser for method chaining.
+     */
+    private Parser advance() {
+        this.lexer.nextToken();
+        return this;
+    }
+
+    /**
+     * Advances the lexer if the current token is null, ensuring that parsing does not fail
+     * due to a null token.
+     *
+     * @return The current instance of the Parser for method chaining.
+     */
+    private Parser advanceIfNull() {
+        if (this.current() == null) {
+            this.advance();
+        }
+        return this;
+    }
+
+    /// Basic Parsing Building Blocks
 
     /**
      * Ensures the current token matches the expected type and advances the lexer if it does.
@@ -55,38 +82,16 @@ public class Parser {
     }
 
     /**
-     * Advances the lexer to the next token.
+     * Verifies that a statement is correctly terminated by a semicolon or detects EOF.
      *
-     * @return The current instance of the Parser for method chaining.
+     * @return The Parser instance for chaining.
+     * @throws ParseException if termination is incorrect.
      */
-    private Parser advance() {
-        this.lexer.nextToken();
-        return this;
-    }
-
-    private Parser advanceIfNull() {
-        if (this.current() == null) {
-            this.advance();
+    private Parser expectEndOfStatement() throws ParseException {
+        if (this.current().type() != TokenType.SEMICOLON && this.current().type() != TokenType.EOF) {
+            throw ParseException.because(this.lexer, "Expected a semicolon to end the statement.");
         }
         return this;
-    }
-
-    /**
-     * Returns the next token from the lexer without advancing the position.
-     *
-     * @return The next token.
-     */
-    private Token peek() {
-        return this.lexer.peekToken();
-    }
-
-    /**
-     * Returns the current token from the lexer without advancing the position.
-     *
-     * @return The current token.
-     */
-    private Token current() {
-        return this.lexer.getCurrentToken();
     }
 
     /**
@@ -101,6 +106,14 @@ public class Parser {
         return terminalNode;
     }
 
+    /// High-Level Parsing Functions
+
+    /**
+     * Constructs a ProgramContext containing all parsed statements until EOF is reached.
+     *
+     * @return ProgramContext representing the entire program.
+     * @throws ParseException if there is an error in parsing.
+     */
     public ProgramContext parseProgram() throws ParseException {
         this.advanceIfNull();
 
@@ -113,9 +126,11 @@ public class Parser {
     }
 
     /**
-     * Parses a statement from the lexer and returns a StatementContext instance.
+     * Delegates to the specific parsing method based on the token type (USE, QUERY, LANGUAGE) and returns the result.
+     * Example: For 'USE Pokémon AS P;', this returns a StatementContext for a 'use' statement.
      *
-     * @return A StatementContext instance representing the parsed statement.
+     * @return StatementContext encapsulating the result.
+     * @throws ParseException if the token does not start a valid statement.
      */
     public StatementContext parseStatement() throws ParseException {
         switch (this.lexer.getCurrentToken().type()) {
@@ -138,9 +153,11 @@ public class Parser {
     }
 
     /**
-     * Parses a `use` statement and returns a UseAliasContext instance.
+     * Handles parsing of 'use' statements, supporting both namespace use and aliasing.
+     * Example: 'USE Pokémon AS P;' results in a UseStatementContext with 'Pokémon' as namespace and 'P' as alias.
      *
-     * @return A UseAliasContext instance representing the parsed `use` statement.
+     * @return UseStatementContext with namespace and optionally an alias.
+     * @throws ParseException if syntax is incorrect.
      */
     public UseStatementContext parseUseAliasContext() throws ParseException {
         this.expect(TokenType.USE, "A use-statement should start with `use`.").advance()
@@ -167,200 +184,12 @@ public class Parser {
     }
 
     /**
-     * Parses the type of projection based on the current token and updates the list of projections.
+     * Parses a complete query context from the current position, handling the query's name,
+     * projection list, and any filter expressions. Returns a QueryContext representing the entire query.
      *
-     * @param projectionNodeList The list to which new projection nodes are added.
-     * @param namespace          The current namespace terminal node.
-     * @throws ParseException if unexpected tokens are found.
+     * @return A QueryContext representing the parsed query including its name, projections, and filters.
+     * @throws ParseException If there is a syntax error in parsing the query.
      */
-    private void parseProjectionType(final List<ProjectionNode> projectionNodeList,
-                                     final TerminalNode namespace) throws ParseException {
-        switch (this.current().type()) {
-            case LBRACE -> {
-                // A brace projection is a shorthand for selecting multiple fields from a namespace.
-                // e.g.: `Pokémon::{name, hp as health}`
-                this.advance(); // skip the LBRACE
-
-                this.parseProjectionNodesInBraces(projectionNodeList, namespace);
-            }
-            case STAR, IDENTIFIER -> {
-                // A wildcard projection is used to select all fields in a namespace.
-                // e.g.: `Pokémon::*`
-                // A single field projection is used to select a single field from a namespace.
-                // e.g.: `Pokémon::name`
-                final ProjectionNode node = this.parseProjectionNode(namespace);
-                projectionNodeList.add(node);
-            }
-            default -> throw ParseException.because(this.lexer, """
-                            Expected either `*`, `{`, or an identifier after the namespace name.
-                            You can select all fields using `Pokemon::*` or specify multiple fields using `Pokemon::{field1, field2 as f2}`.""",
-                    TokenType.STAR, TokenType.LBRACE, TokenType.IDENTIFIER);
-        }
-    }
-
-    /**
-     * Parses field definitions enclosed in braces.
-     *
-     * @param projectionNodeList The list to which new projection nodes are added.
-     * @param namespace          The current namespace terminal node.
-     * @throws ParseException if unexpected tokens are found.
-     */
-    private void parseProjectionNodesInBraces(final List<ProjectionNode> projectionNodeList,
-                                              final TerminalNode namespace) throws ParseException {
-        while (this.current().type() != TokenType.RBRACE) {
-            final ProjectionNode node = this.parseProjectionNode(namespace);
-            projectionNodeList.add(node);
-
-            if (this.current().type() == TokenType.COMMA) {
-                this.advance();
-            } else if (this.current().type() != TokenType.RBRACE) {
-                throw ParseException.because(this.lexer, "Expected either `,` or `}` after a field selection.",
-                        TokenType.COMMA, TokenType.RBRACE);
-            }
-        }
-        this.advance(); // Move past the RBRACE
-    }
-
-    /**
-     * Parses projection nodes from a given query structure.
-     * This method supports different formats of projections including:
-     * - Wildcard projections (e.g., `P::*`)
-     * - Listed fields with optional aliases in braces (e.g., `P::{name, hp}`)
-     * - Multiple individual fields with optional aliases (e.g., `P::name, P::hp`)
-     *
-     * @return A list of ProjectionNode, each representing a parsed field or wildcard from the query.
-     * @throws ParseException if the syntax of the projections is incorrect.
-     */
-    private List<ProjectionNode> parseProjectionNodes() throws ParseException {
-        final List<ProjectionNode> projectionNodeList = new ArrayList<>();
-        while (true) {
-            this.expect(TokenType.NAMESPACE_NAME, """
-                    Expected a selection namespace name after query identifier.
-                    Use an identifier you have previously used in a `use` statement.
-                    For example, `P::{name, hp}` selects the `name` and `hp` fields from the `Pokemon` namespace.""");
-            final TerminalNode namespace = this.createTerminalNodeFromCurrentToken();
-            this.advance();
-
-            this.parseProjectionType(projectionNodeList, namespace);
-
-            if (this.current().type() == TokenType.COMMA) {
-                this.advance();
-            } else {
-                break;
-            }
-        }
-        return projectionNodeList;
-    }
-
-    public ExpressionNode parseExpressionNode() throws ParseException {
-        return this.parseLogicalOrExpression();
-    }
-
-    private ExpressionNode parseLogicalOrExpression() throws ParseException {
-        ExpressionNode lhs = this.parseLogicalAndExpression();
-        while (this.current().type() == TokenType.BOOL_OR) {
-            this.advance(); // move past the operator
-
-            final ExpressionNode rhs = this.parseLogicalAndExpression();
-            lhs = new BinaryExpressionNode(lhs, rhs, TokenType.BOOL_OR);
-        }
-        return lhs;
-    }
-
-    private ExpressionNode parseLogicalAndExpression() throws ParseException {
-        ExpressionNode lhs = this.parseEqualityExpression();
-        while (this.current().type() == TokenType.BOOL_AND) {
-            this.advance(); // move past the operator
-
-            final ExpressionNode rhs = this.parseEqualityExpression();
-            lhs = new BinaryExpressionNode(lhs, rhs, TokenType.BOOL_AND);
-        }
-        return lhs;
-    }
-
-    private ExpressionNode parseEqualityExpression() throws ParseException {
-        ExpressionNode lhs = this.parseRelationalExpression();
-        while (this.current().type() == TokenType.CMP_EQUALS || this.current().type() == TokenType.CMP_NOT_EQUALS) {
-            final TokenType operator = this.current().type();
-            this.advance(); // move past the operator
-
-            final ExpressionNode rhs = this.parseRelationalExpression();
-            lhs = new BinaryExpressionNode(lhs, rhs, operator);
-        }
-        return lhs;
-    }
-
-    private ExpressionNode parseRelationalExpression() throws ParseException {
-        ExpressionNode lhs = this.parsePrimaryExpression();
-        while (this.current().type().isCompareOperator()) {
-            final TokenType operator = this.current().type();
-            this.advance(); // move past the operator
-
-            final ExpressionNode rhs = this.parsePrimaryExpression();
-            lhs = new BinaryExpressionNode(lhs, rhs, operator);
-        }
-        return lhs;
-    }
-
-    private ExpressionNode parseLiteralExpression() throws ParseException {
-        final TokenType type = this.current().type();
-        final TerminalNode terminalNode = this.createTerminalNodeFromCurrentToken();
-        this.advance();
-        return new LiteralExpressionNode(type, terminalNode);
-    }
-
-    private ExpressionNode parseFunctionOrIdentifierExpression() throws ParseException {
-        // expect and parse the field with the namespace name
-        final NamespacedFieldNode fieldNode = this.parseNamespacedField();
-
-        // a dot indicates a function call
-        if (this.current().type() == TokenType.DOT) {
-            this.advance() // go to the function name
-                    .expect(TokenType.FUNCTION_NAME, "Expected a function name after the dot.");
-
-            final TerminalNode functionName = this.createTerminalNodeFromCurrentToken();
-            this.advance();
-
-            this.expect(TokenType.LPAREN, "Expected an opening parenthesis after the function name.").advance();
-            final List<TerminalNode> arguments = this.parseFunctionArguments();
-            this.expect(TokenType.RPAREN, "Expected a closing parenthesis after the function arguments.").advance();
-
-            return new FunctionCallExpressionNode(fieldNode, functionName.getText(), arguments);
-        }
-
-        // if there is a compare operator, treat the current expression as an identifier
-        if (this.current().type().isCompareOperator()) {
-            return new IdentifierExpressionNode(fieldNode);
-        }
-
-        throw ParseException.because(this.lexer, """
-                Expected either a function call or a comparison after the namespace and target field.
-                You can call a function using `P::name.startsWith("Pika")` or compare fields using `P::name == "Pikachu`.""");
-    }
-
-    public ExpressionNode parsePrimaryExpression() throws ParseException {
-        switch (this.current().type()) {
-            case LPAREN -> {
-                this.advance();
-
-                final ExpressionNode expression = this.parseExpressionNode();
-                this.expect(TokenType.RPAREN, "Expected a closing parenthesis after the expression.");
-                this.advance(); // move past the closing parenthesis
-
-                return expression;
-            }
-            case NAMESPACE_NAME -> {
-                return this.parseFunctionOrIdentifierExpression();
-            }
-        }
-        if (this.current().type().isLiteral()) {
-            return this.parseLiteralExpression();
-        }
-        throw ParseException.because(this.lexer, """
-                Expected either a literal value, a namespace name, or an opening parenthesis to start an expression.
-                You can use literals like strings, numbers, and booleans, call functions, or compare fields using `P::name == "Pikachu`.""");
-    }
-
     public QueryContext parseQueryContext() throws ParseException {
         this.expect(TokenType.QUERY, "Expected `query` to start a query statement.")
                 .advance();
@@ -394,13 +223,68 @@ public class Parser {
         return new QueryContext(queryName, projectionNodeList, filterExpressions);
     }
 
-    private Parser expectEndOfStatement() throws ParseException {
-        if (this.current().type() != TokenType.SEMICOLON && this.current().type() != TokenType.EOF) {
-            throw ParseException.because(this.lexer, "Expected a semicolon to end the statement.");
-        }
-        return this;
+    /**
+     * Parses a language statement and returns a LanguageContext instance.
+     * A language statement is used to specify the language in which the query is written.
+     * <p>
+     * At the end of the statement (or EOF), a semicolon is expected to terminate the statement and the lexer moves past
+     * the semicolon.
+     *
+     * <pre>
+     *     lang de;
+     *     │^^^ │^└▶End of Statement
+     *     │    │
+     *     │    └▶Language
+     *     │
+     *     └▶Language Keyword
+     * </pre>
+     *
+     * @return A LanguageContext instance representing the parsed language statement.
+     * @throws ParseException if the syntax of the language statement is incorrect.
+     */
+    public LanguageContext parseLanguage() throws ParseException {
+        this.expect(TokenType.LANGUAGE, "Expected `language` to start a language statement.").advance()
+                .expect(TokenType.IDENTIFIER, "Expected a language name after `language`.");
+
+        final TerminalNode language = this.createTerminalNodeFromCurrentToken();
+        this.advance().expectEndOfStatement().advance();
+
+        return new LanguageContext(language);
+
     }
 
+    /// Detailed Parsing Routines for Query Components
+
+    /**
+     * Parses projection nodes from a given query structure.
+     * This method supports different formats of projections including:
+     * - Wildcard projections (e.g., `P::*`)
+     * - Listed fields with optional aliases in braces (e.g., `P::{name, hp}`)
+     * - Multiple individual fields with optional aliases (e.g., `P::name, P::hp`)
+     *
+     * @return A list of ProjectionNode, each representing a parsed field or wildcard from the query.
+     * @throws ParseException if the syntax of the projections is incorrect.
+     */
+    private List<ProjectionNode> parseProjectionNodes() throws ParseException {
+        final List<ProjectionNode> projectionNodeList = new ArrayList<>();
+        while (true) {
+            this.expect(TokenType.NAMESPACE_NAME, """
+                    Expected a selection namespace name after query identifier.
+                    Use an identifier you have previously used in a `use` statement.
+                    For example, `P::{name, hp}` selects the `name` and `hp` fields from the `Pokemon` namespace.""");
+            final TerminalNode namespace = this.createTerminalNodeFromCurrentToken();
+            this.advance();
+
+            this.parseProjectionType(projectionNodeList, namespace);
+
+            if (this.current().type() == TokenType.COMMA) {
+                this.advance();
+            } else {
+                break;
+            }
+        }
+        return projectionNodeList;
+    }
 
     /**
      * Parses a projection node from the current token and returns a ProjectionNode instance.
@@ -474,6 +358,229 @@ public class Parser {
     }
 
     /**
+     * Parses the type of projection based on the current token and updates the list of projections.
+     *
+     * @param projectionNodeList The list to which new projection nodes are added.
+     * @param namespace          The current namespace terminal node.
+     * @throws ParseException if unexpected tokens are found.
+     */
+    private void parseProjectionType(final List<ProjectionNode> projectionNodeList,
+                                     final TerminalNode namespace) throws ParseException {
+        switch (this.current().type()) {
+            case LBRACE -> {
+                // A brace projection is a shorthand for selecting multiple fields from a namespace.
+                // e.g.: `Pokémon::{name, hp as health}`
+                this.advance(); // skip the LBRACE
+
+                this.parseProjectionNodesInBraces(projectionNodeList, namespace);
+            }
+            case STAR, IDENTIFIER -> {
+                // A wildcard projection is used to select all fields in a namespace.
+                // e.g.: `Pokémon::*`
+                // A single field projection is used to select a single field from a namespace.
+                // e.g.: `Pokémon::name`
+                final ProjectionNode node = this.parseProjectionNode(namespace);
+                projectionNodeList.add(node);
+            }
+            default -> throw ParseException.because(this.lexer, """
+                            Expected either `*`, `{`, or an identifier after the namespace name.
+                            You can select all fields using `Pokemon::*` or specify multiple fields using `Pokemon::{field1, field2 as f2}`.""",
+                    TokenType.STAR, TokenType.LBRACE, TokenType.IDENTIFIER);
+        }
+    }
+
+    /**
+     * Parses field definitions enclosed in braces.
+     *
+     * @param projectionNodeList The list to which new projection nodes are added.
+     * @param namespace          The current namespace terminal node.
+     * @throws ParseException if unexpected tokens are found.
+     */
+    private void parseProjectionNodesInBraces(final List<ProjectionNode> projectionNodeList,
+                                              final TerminalNode namespace) throws ParseException {
+        while (this.current().type() != TokenType.RBRACE) {
+            final ProjectionNode node = this.parseProjectionNode(namespace);
+            projectionNodeList.add(node);
+
+            if (this.current().type() == TokenType.COMMA) {
+                this.advance();
+            } else if (this.current().type() != TokenType.RBRACE) {
+                throw ParseException.because(this.lexer, "Expected either `,` or `}` after a field selection.",
+                        TokenType.COMMA, TokenType.RBRACE);
+            }
+        }
+        this.advance(); // Move past the RBRACE
+    }
+
+    /// Expression Parsing Functions
+
+    /**
+     * Constructs an expression tree starting with logical OR conditions.
+     * Example: 'a OR b AND c' results in an ExpressionNode encapsulating this logic.
+     *
+     * @return ExpressionNode for the parsed expression.
+     * @throws ParseException if syntax errors are found.
+     */
+    public ExpressionNode parseExpressionNode() throws ParseException {
+        return this.parseLogicalOrExpression();
+    }
+
+    /**
+     * Handles literals, namespace expressions, or function calls as primary expressions.
+     * Example: '("a" + b) * 5', 'Pokémon.name', 'Pokémon.name.startsWith("Pika")'.
+     *
+     * @return ExpressionNode representing the primary expression.
+     * @throws ParseException if syntax is incorrect.
+     */
+    public ExpressionNode parsePrimaryExpression() throws ParseException {
+        switch (this.current().type()) {
+            case LPAREN -> {
+                this.advance();
+
+                final ExpressionNode expression = this.parseExpressionNode();
+                this.expect(TokenType.RPAREN, "Expected a closing parenthesis after the expression.");
+                this.advance(); // move past the closing parenthesis
+
+                return expression;
+            }
+            case NAMESPACE_NAME -> {
+                return this.parseFunctionOrIdentifierExpression();
+            }
+        }
+        if (this.current().type().isLiteral()) {
+            return this.parseLiteralExpression();
+        }
+        throw ParseException.because(this.lexer, """
+                Expected either a literal value, a namespace name, or an opening parenthesis to start an expression.
+                You can use literals like strings, numbers, and booleans, call functions, or compare fields using `P::name == "Pikachu`.""");
+    }
+
+    /**
+     * Handles parsing of functions or identifiers within expressions, dealing with namespace and field-specific function calls.
+     * Example: 'Pokémon.hp > 50' where 'Pokémon.hp' is parsed as a field identifier expression, or 'Math.max(a, b)' as a function call.
+     *
+     * @return ExpressionNode either a function call or an identifier.
+     * @throws ParseException if unexpected tokens or syntax errors occur.
+     */
+    private ExpressionNode parseFunctionOrIdentifierExpression() throws ParseException {
+        // expect and parse the field with the namespace name
+        final NamespacedFieldNode fieldNode = this.parseNamespacedField();
+
+        // a dot indicates a function call
+        if (this.current().type() == TokenType.DOT) {
+            this.advance() // go to the function name
+                    .expect(TokenType.FUNCTION_NAME, "Expected a function name after the dot.");
+
+            final TerminalNode functionName = this.createTerminalNodeFromCurrentToken();
+            this.advance();
+
+            this.expect(TokenType.LPAREN, "Expected an opening parenthesis after the function name.").advance();
+            final List<TerminalNode> arguments = this.parseFunctionArguments();
+            this.expect(TokenType.RPAREN, "Expected a closing parenthesis after the function arguments.").advance();
+
+            return new FunctionCallExpressionNode(fieldNode, functionName.getText(), arguments);
+        }
+
+        // if there is a compare operator, treat the current expression as an identifier
+        if (this.current().type().isCompareOperator()) {
+            return new IdentifierExpressionNode(fieldNode);
+        }
+
+        throw ParseException.because(this.lexer, """
+                Expected either a function call or a comparison after the namespace and target field.
+                You can call a function using `P::name.startsWith("Pika")` or compare fields using `P::name == "Pikachu`.""");
+    }
+
+    /**
+     * Constructs an ExpressionNode tree, starting with logical OR conditions, handling the complexity of nested expressions.
+     * Example: 'a OR b' results in a BinaryExpressionNode representing the OR condition between 'a' and 'b'.
+     *
+     * @return ExpressionNode representing the parsed logical OR expression.
+     * @throws ParseException if syntax errors are found.
+     */
+    private ExpressionNode parseLogicalOrExpression() throws ParseException {
+        ExpressionNode lhs = this.parseLogicalAndExpression();
+        while (this.current().type() == TokenType.BOOL_OR) {
+            this.advance(); // move past the operator
+
+            final ExpressionNode rhs = this.parseLogicalAndExpression();
+            lhs = new BinaryExpressionNode(lhs, rhs, TokenType.BOOL_OR);
+        }
+        return lhs;
+    }
+
+    /**
+     * Parses logical AND expressions, forming part of the higher-level expression parsing that handles AND operations.
+     * Example: 'a AND b' results in a BinaryExpressionNode linking 'a' and 'b' with AND.
+     *
+     * @return ExpressionNode representing the parsed logical AND expression.
+     * @throws ParseException if syntax errors are found.
+     */
+    private ExpressionNode parseLogicalAndExpression() throws ParseException {
+        ExpressionNode lhs = this.parseEqualityExpression();
+        while (this.current().type() == TokenType.BOOL_AND) {
+            this.advance(); // move past the operator
+
+            final ExpressionNode rhs = this.parseEqualityExpression();
+            lhs = new BinaryExpressionNode(lhs, rhs, TokenType.BOOL_AND);
+        }
+        return lhs;
+    }
+
+    /**
+     * Handles equality expressions, distinguishing between 'equals' and 'not equals' conditions within the expression parsing.
+     * Example: 'a == b' or 'a != b' is parsed into a BinaryExpressionNode representing the equality or inequality.
+     *
+     * @return ExpressionNode encapsulating the equality comparison.
+     * @throws ParseException if syntax errors are found.
+     */
+    private ExpressionNode parseEqualityExpression() throws ParseException {
+        ExpressionNode lhs = this.parseRelationalExpression();
+        while (this.current().type() == TokenType.CMP_EQUALS || this.current().type() == TokenType.CMP_NOT_EQUALS) {
+            final TokenType operator = this.current().type();
+            this.advance(); // move past the operator
+
+            final ExpressionNode rhs = this.parseRelationalExpression();
+            lhs = new BinaryExpressionNode(lhs, rhs, operator);
+        }
+        return lhs;
+    }
+
+    /**
+     * Parses relational expressions, dealing with operators like '<', '>', '<=', and '>='.
+     * Example: 'a < b' or 'a >= b' results in a BinaryExpressionNode representing these comparisons.
+     *
+     * @return ExpressionNode representing the parsed relational expression.
+     * @throws ParseException if syntax errors occur.
+     */
+    private ExpressionNode parseRelationalExpression() throws ParseException {
+        ExpressionNode lhs = this.parsePrimaryExpression();
+        while (this.current().type().isCompareOperator()) {
+            final TokenType operator = this.current().type();
+            this.advance(); // move past the operator
+
+            final ExpressionNode rhs = this.parsePrimaryExpression();
+            lhs = new BinaryExpressionNode(lhs, rhs, operator);
+        }
+        return lhs;
+    }
+
+    /**
+     * Parses literal expressions directly from tokens, typically handling basic data types like strings, numbers, and booleans.
+     * Example: '42', '"hello"', 'true' are directly converted into LiteralExpressionNode instances.
+     *
+     * @return ExpressionNode representing the literal value.
+     */
+    private ExpressionNode parseLiteralExpression() {
+        final TokenType type = this.current().type();
+        final TerminalNode terminalNode = this.createTerminalNodeFromCurrentToken();
+        this.advance();
+        return new LiteralExpressionNode(type, terminalNode);
+    }
+
+    /// Specific Utility Functions for Expressions
+
+    /**
      * Parses arguments for a function call and returns a list of terminal nodes representing the arguments.
      * The arguments can be any literal value (e.g., string, number, boolean) and are separated by commas.
      * A function call can have multiple arguments separated by commas.
@@ -524,35 +631,6 @@ public class Parser {
         } while (this.current().type() != TokenType.RPAREN); // continue until reaching the closing parenthesis.
 
         return args;
-    }
-
-    /**
-     * Parses a language statement and returns a LanguageContext instance.
-     * A language statement is used to specify the language in which the query is written.
-     * <p>
-     * At the end of the statement (or EOF), a semicolon is expected to terminate the statement and the lexer moves past
-     * the semicolon.
-     *
-     * <pre>
-     *     lang de;
-     *     │^^^ │^└▶End of Statement
-     *     │    │
-     *     │    └▶Language
-     *     │
-     *     └▶Language Keyword
-     * </pre>
-     *
-     * @return A LanguageContext instance representing the parsed language statement.
-     * @throws ParseException if the syntax of the language statement is incorrect.
-     */
-    public LanguageContext parseLanguage() throws ParseException {
-        this.expect(TokenType.LANGUAGE, "Expected `language` to start a language statement.").advance()
-                .expect(TokenType.IDENTIFIER, "Expected a language name after `language`.");
-
-        final TerminalNode language = this.createTerminalNodeFromCurrentToken();
-        this.advance().expectEndOfStatement().advance();
-
-        return new LanguageContext(language);
     }
 
     /**

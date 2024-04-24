@@ -19,7 +19,9 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EditorPane extends JPanel implements DocumentListener {
 
@@ -154,16 +156,26 @@ public class EditorPane extends JPanel implements DocumentListener {
             this.statusPage.updateStatements(statements);
 
             // make sure all namespaces are defined
+            final Map<String, String> importedAliases = new HashMap<>();
             final NamespaceAnalyzerVisitor namespaceAnalyzerVisitor = new NamespaceAnalyzerVisitor(
-                    NamespaceAnalyzerVisitor.EXAMPLE_NAMESPACES
+                    NamespaceAnalyzerVisitor.EXAMPLE_NAMESPACES, importedAliases
             );
             program.accept(namespaceAnalyzerVisitor);
-            this.statusPage.updateNamespaces(namespaceAnalyzerVisitor.getImportedNamespaces());
+            this.statusPage.updateNamespaces(importedAliases);
 
-            program.accept(new SemanticAnalyzerVisitor(SemanticAnalyzerVisitor.EXAMPLE_NAMESPACE_PROJECTIONS, List.of("de", "en")));
+            // check things like duplicate query names
+            program.accept(new SemanticAnalyzerVisitor(
+                    SemanticAnalyzerVisitor.EXAMPLE_NAMESPACE_PROJECTIONS,
+                    importedAliases,
+                    List.of("de", "en"))
+            );
             this.statusPage.setSemanticOk(true);
 
-            program.accept(new InterpreterVisitor(InterpreterVisitor.DEFAULT_LANGUAGE, SemanticAnalyzerVisitor.EXAMPLE_NAMESPACE_PROJECTIONS));
+            program.accept(new InterpreterVisitor(
+                    InterpreterVisitor.DEFAULT_LANGUAGE,
+                    importedAliases,
+                    SemanticAnalyzerVisitor.EXAMPLE_NAMESPACE_PROJECTIONS
+            ));
             this.statusPage.setInterpreterOk(true);
 
         } catch (final LexerException lexerException) {
