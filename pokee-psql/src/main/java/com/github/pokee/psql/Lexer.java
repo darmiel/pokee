@@ -6,17 +6,16 @@ import com.github.pokee.psql.exception.LexerException;
 
 import java.util.Map;
 
+/**
+ * The Lexer class is responsible for converting a query-"program" into a stream of tokens.
+ */
 public class Lexer {
 
-    private final String query;
-    private final int queryLength;
-
-    private int currentIndex;
-
-    private Token currentToken;
-    private Token previousToken;
-
-    private final Map<String, TokenType> keywords = Map.of(
+    /**
+     * A mapping of keyword strings to their corresponding TokenType, facilitating quick lookup and categorization
+     * of keywords within the query.
+     */
+    public static final Map<String, TokenType> KEYWORDS = Map.of(
             "and", TokenType.BOOL_AND,
             "or", TokenType.BOOL_OR,
             "use", TokenType.USE,
@@ -29,27 +28,52 @@ public class Lexer {
             "false", TokenType.BOOL_FALSE
     );
 
+    /**
+     * The original query string that is being tokenized.
+     */
+    private final String query;
+
+    /**
+     * The total length of the query string, used to check if the end of the string has been reached.
+     */
+    private final int queryLength;
+
+    /**
+     * Current index in the query string, indicating the position of the next character to be processed.
+     */
+    private int currentIndex;
+
+    /**
+     * The most recently recognized token. This is the 'current' token in the context of the parsing process.
+     */
+    private Token currentToken;
+
+    /**
+     * Initializes a new Lexer instance with the specified query.
+     *
+     * @param query The SQL-like query string to be tokenized.
+     */
     public Lexer(final String query) {
         this.query = query;
         this.queryLength = query.length();
         this.currentIndex = 0;
     }
 
+    /**
+     * Resets the lexer to the initial state for reusing the instance on new input.
+     */
     public void reset() {
         this.currentIndex = 0;
         this.currentToken = null;
-        this.previousToken = null;
     }
 
-    public String getQuery() {
-        return query;
-    }
-
-    private void getAndAdvance(final TokenType tokenType, final String value) {
-        this.currentIndex++;
-        this.currentToken = new Token(tokenType, value, this.currentIndex - 1, this.currentIndex);
-    }
-
+    /**
+     * Processes the next token in the query string, skipping whitespace and handling different types of characters.
+     * It recognizes and categorizes tokens such as parentheses, operators, literals, and identifiers.
+     *
+     * @return true if a token is successfully processed, false if the end of the query is reached.
+     * @throws LexerException if an unrecognized character or sequence is encountered.
+     */
     public boolean nextToken() {
         this.skipWhitespaces();
         if (this.isEndOfQuery()) {
@@ -57,7 +81,6 @@ public class Lexer {
             return false;
         }
 
-        this.previousToken = this.currentToken;
         final char currentChar = this.query.charAt(this.currentIndex);
 
         switch (currentChar) {
@@ -172,7 +195,7 @@ public class Lexer {
                     final String identifier = this.readIdentifier();
 
                     // an identifier can be upper or lower case
-                    final TokenType keywordType = this.keywords.get(identifier.toLowerCase());
+                    final TokenType keywordType = Lexer.KEYWORDS.get(identifier.toLowerCase());
                     if (keywordType != null) {
                         this.currentToken = new Token(keywordType, identifier, startIndex, this.currentIndex);
                         break;
@@ -207,16 +230,40 @@ public class Lexer {
         return true;
     }
 
-    public boolean isEndOfQuery() {
-        return currentIndex >= queryLength;
-    }
-
+    /**
+     * Skips whitespace characters in the query until a non-whitespace character is encountered.
+     */
     public void skipWhitespaces() {
         while (!this.isEndOfQuery() && Character.isWhitespace(this.query.charAt(this.currentIndex))) {
             this.currentIndex++;
         }
     }
 
+    /**
+     * Determines if the current index has reached the end of the query string.
+     *
+     * @return true if the end of the query has been reached, otherwise false.
+     */
+    public boolean isEndOfQuery() {
+        return currentIndex >= queryLength;
+    }
+
+    /**
+     * Advances the current index in the query string and sets the current token based on the specified type and value.
+     *
+     * @param tokenType The type of token to set.
+     * @param value     The value of the token.
+     */
+    private void getAndAdvance(final TokenType tokenType, final String value) {
+        this.currentIndex++;
+        this.currentToken = new Token(tokenType, value, this.currentIndex - 1, this.currentIndex);
+    }
+
+    /**
+     * Reads a numeric literal from the query starting from the current index.
+     *
+     * @return The string representation of the number.
+     */
     public String readNumber() {
         final StringBuilder number = new StringBuilder();
         while (!this.isEndOfQuery() && Character.isDigit(this.query.charAt(this.currentIndex))) {
@@ -226,6 +273,11 @@ public class Lexer {
         return number.toString();
     }
 
+    /**
+     * Reads an identifier from the query starting from the current index, recognizing letters, digits, and underscores.
+     *
+     * @return The identifier string.
+     */
     public String readIdentifier() {
         final StringBuilder identifier = new StringBuilder();
         while (!this.isEndOfQuery() && (Character.isLetterOrDigit(this.query.charAt(this.currentIndex)) || this.query.charAt(this.currentIndex) == '_')) {
@@ -235,7 +287,11 @@ public class Lexer {
         return identifier.toString();
     }
 
-
+    /**
+     * Reads a string literal enclosed in double quotes from the query.
+     *
+     * @return The string literal without the enclosing quotes.
+     */
     public String readStringLiteral() {
         StringBuilder literal = new StringBuilder();
         this.currentIndex++; // skip the initial quote
@@ -247,12 +303,31 @@ public class Lexer {
         return literal.toString();
     }
 
-    public int getCurrentIndex() {
-        return currentIndex;
+    /**
+     * Returns the query string associated with this Lexer.
+     *
+     * @return The original query string.
+     */
+    public String getQuery() {
+        return this.query;
     }
 
+    /**
+     * Returns the current position within the query string being processed.
+     *
+     * @return The current index.
+     */
+    public int getCurrentIndex() {
+        return this.currentIndex;
+    }
+
+    /**
+     * Returns the current token that has been processed by the lexer.
+     *
+     * @return The current token.
+     */
     public Token getCurrentToken() {
-        return currentToken;
+        return this.currentToken;
     }
 
 }
