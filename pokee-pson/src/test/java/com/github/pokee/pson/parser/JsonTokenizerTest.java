@@ -1,8 +1,11 @@
 package com.github.pokee.pson.parser;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class JsonTokenizerTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+public class JsonTokenizerTest {
 
     public static final String JSON = "{\"key\":\"value\"}";
 
@@ -12,14 +15,16 @@ public class JsonTokenizerTest extends TestCase {
         }
     }
 
-    public void testAdvanceTo() {
+    @Test
+    void testAdvanceTo() {
         final JsonTokenizer tokenizer = new JsonTokenizer(JSON);
         assertEquals(0, tokenizer.getIndex());
         tokenizer.advanceTo(5);
         assertEquals(5, tokenizer.getIndex());
     }
 
-    public void testPeekNextToken() {
+    @Test
+    void testPeekNextToken() {
         final JsonTokenizer tokenizer = new JsonTokenizer(JSON);
         assertEquals(0, tokenizer.getIndex());
         final JsonToken token = tokenizer.peekNextToken();
@@ -28,7 +33,8 @@ public class JsonTokenizerTest extends TestCase {
         assertEquals("{", token.value());
     }
 
-    public void testNextToken() {
+    @Test
+    void testNextToken() {
         final JsonTokenizer tokenizer = new JsonTokenizer(JSON);
         assertEquals(JsonTokenType.BEGIN_OBJECT, tokenizer.nextToken().type());
         assertEquals(JsonTokenType.STRING, tokenizer.nextToken().type());
@@ -38,7 +44,8 @@ public class JsonTokenizerTest extends TestCase {
         assertEquals(JsonTokenType.END_DOCUMENT, tokenizer.nextToken().type());
     }
 
-    public void testSkipWhitespace() {
+    @Test
+    void testSkipWhitespace() {
         final JsonTokenizer tokenizer = new JsonTokenizer("{    \"key\"    :    \"value\"    }");
         assertEquals(JsonTokenType.BEGIN_OBJECT, tokenizer.nextToken().type());
 
@@ -56,7 +63,8 @@ public class JsonTokenizerTest extends TestCase {
         assertEquals(JsonTokenType.END_DOCUMENT, tokenizer.nextToken().type());
     }
 
-    public void testTypes() {
+    @Test
+    void testTypes() {
         final JsonTokenizer tokenizer = new JsonTokenizer("""
                 {
                     "object": {},
@@ -79,7 +87,8 @@ public class JsonTokenizerTest extends TestCase {
     }
 
 
-    public void testUnexpectedCharacter() {
+    @Test
+    void testUnexpectedCharacter() {
         final JsonTokenizer tokenizer = new JsonTokenizer("a");
         try {
             tokenizer.nextToken();
@@ -89,7 +98,8 @@ public class JsonTokenizerTest extends TestCase {
         }
     }
 
-    public void testReadString() {
+    @Test
+    void testReadString() {
         final JsonTokenizer tokenizer = new JsonTokenizer(JSON);
         tokenizer.nextToken();
         assertEquals("\"key\"", tokenizer.readString());
@@ -97,7 +107,8 @@ public class JsonTokenizerTest extends TestCase {
         assertEquals("\"value\"", tokenizer.readString());
     }
 
-    public void testUnterminatedString() {
+    @Test
+    void testUnterminatedString() {
         final JsonTokenizer tokenizer = new JsonTokenizer("{\"key\":\"value");
         this.assertTokenTypes(tokenizer, JsonTokenType.BEGIN_OBJECT, JsonTokenType.STRING, JsonTokenType.NAME_SEPARATOR);
         try {
@@ -108,7 +119,8 @@ public class JsonTokenizerTest extends TestCase {
         }
     }
 
-    public void testReadPrimitive() {
+    @Test
+    void testReadPrimitive() {
         final JsonTokenizer tokenizer = new JsonTokenizer("{\"key\":true,\"key2\":10.5,\"key3\":null}");
         tokenizer.nextToken();
         tokenizer.nextToken();
@@ -124,7 +136,8 @@ public class JsonTokenizerTest extends TestCase {
         assertEquals("null", tokenizer.readPrimitive());
     }
 
-    public void testInvalidPrimitives() {
+    @Test
+    void testInvalidPrimitives() {
         final JsonTokenizer tokenizer = new JsonTokenizer("{\"true\":true,\"null\":null,\"num\":10,\"truee\":truee,\"nul\":nul}");
         this.assertTokenTypes(tokenizer, JsonTokenType.BEGIN_OBJECT, JsonTokenType.STRING, JsonTokenType.NAME_SEPARATOR);
 

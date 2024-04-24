@@ -1,10 +1,13 @@
 package com.github.pokee.pson.parser;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class JsonTokenTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    public void testResetPosition() {
+public class JsonTokenTest {
+
+    @Test
+    void testResetPosition() {
         final JsonTokenizer tokenizer = new JsonTokenizer("{\"key\":\"value\"}");
         assertEquals(0, tokenizer.getIndex());
 
@@ -18,7 +21,8 @@ public class JsonTokenTest extends TestCase {
         assertEquals(JsonTokenType.BEGIN_OBJECT, token.type());
     }
 
-    public void testApply() {
+    @Test
+    void testApply() {
         final JsonTokenizer tokenizer = new JsonTokenizer("{\"key\":\"value\"}");
         assertEquals(0, tokenizer.getIndex());
 

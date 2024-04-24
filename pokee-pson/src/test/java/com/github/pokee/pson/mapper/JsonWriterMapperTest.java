@@ -1,8 +1,9 @@
 package com.github.pokee.pson.mapper;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class JsonWriterMapperTest {
 
@@ -108,11 +109,11 @@ public class JsonWriterMapperTest {
 
         }) {
             final String escaped = JsonWriterMapper.escapeString(testCase.input);
-            assertEquals(testCase.message + " (escape)", testCase.expected, escaped);
+            assertEquals(testCase.expected, escaped, testCase.message + " (escape)");
 
             try {
                 final String unescaped = JsonReaderMapper.unescapeString(escaped);
-                assertEquals(testCase.message + " (unescape)", testCase.input, unescaped);
+                assertEquals(testCase.input, unescaped, testCase.message + " (unescape)");
             } catch (final Exception e) {
                 fail(testCase.message + " (unescape): " + e.getMessage());
             }

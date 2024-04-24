@@ -8,8 +8,6 @@ public enum TokenTypeType {
     OPERATOR,
     COMPARE_OPERATOR,
     PUNCTUATION,
-    WHITESPACE,
-    COMMENT,
     EOF;
 
     public static TokenTypeType fromString(final String type) {

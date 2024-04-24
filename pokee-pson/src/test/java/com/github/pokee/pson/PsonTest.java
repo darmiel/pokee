@@ -1,18 +1,19 @@
 package com.github.pokee.pson;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Objects;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PsonTest {
 
     private final Pson pson = Pson.createWithDefaults().build();
 
     @Test
-    public void testMarshal() {
+    void testMarshal() {
         class Test {
             private final String string;
             private final int integer;
@@ -60,21 +61,6 @@ public class PsonTest {
         final Test output = pson.unmarshalObject(pson.marshal(input), Test.class);
         System.out.println("After: " + output);
         assertEquals(input, output);
-    }
-
-    @Test
-    public void unmarshalObject() {
-
-    }
-
-    @Test
-    public void unmarshalArray() {
-
-    }
-
-    @Test
-    public void unmarshalList() {
-
     }
 
 }

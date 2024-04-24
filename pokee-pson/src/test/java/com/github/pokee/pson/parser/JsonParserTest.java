@@ -5,12 +5,14 @@ import com.github.pokee.pson.value.JsonArray;
 import com.github.pokee.pson.value.JsonElement;
 import com.github.pokee.pson.value.JsonObject;
 import com.github.pokee.pson.value.JsonPrimitive;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class JsonParserTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
 
+public class JsonParserTest {
 
-    public void testParseReturnTypes() {
+    @Test
+    void testParseReturnTypes() {
         record Case(String json, Class<?> expectedClass) {
         }
         final Case[] testCases = new Case[]{
@@ -44,7 +46,8 @@ public class JsonParserTest extends TestCase {
         }
     }
 
-    public void testParse() throws TokenTypeExpectedException {
+    @Test
+    void testParse() throws TokenTypeExpectedException {
         record Case(String json, Object... expectedFields) {
         }
         final Case[] testCases = new Case[]{
@@ -79,7 +82,8 @@ public class JsonParserTest extends TestCase {
         }
     }
 
-    public void testObjectUnexpected() {
+    @Test
+    void testObjectUnexpected() {
         final JsonParser parser = new JsonParser("{\"key\":}");
         try {
             parser.parse();
@@ -96,7 +100,8 @@ public class JsonParserTest extends TestCase {
         }
     }
 
-    public void testUnexpectedStart() {
+    @Test
+    void testUnexpectedStart() {
         final JsonParser parser = new JsonParser("}");
         try {
             parser.parse();
@@ -107,7 +112,8 @@ public class JsonParserTest extends TestCase {
         }
     }
 
-    public void testNestedObject() throws TokenTypeExpectedException {
+    @Test
+    void testNestedObject() throws TokenTypeExpectedException {
         final JsonParser parser = new JsonParser("""
                 {
                     "key1": "value1",
@@ -126,7 +132,8 @@ public class JsonParserTest extends TestCase {
         assertEquals("nestedValue2", nestedObject.get("nestedKey2").asPrimitive().asString());
     }
 
-    public void testArray() throws TokenTypeExpectedException {
+    @Test
+    void testArray() throws TokenTypeExpectedException {
         final JsonParser parser = new JsonParser("""
                 ["value1", "value2"]
                 """);
@@ -135,7 +142,8 @@ public class JsonParserTest extends TestCase {
         assertEquals("value2", array.get(1).asPrimitive().asString());
     }
 
-    public void testNestedArray() throws TokenTypeExpectedException {
+    @Test
+    void testNestedArray() throws TokenTypeExpectedException {
         final JsonParser parser = new JsonParser("""
                 {
                     "key1": "value1",
@@ -169,7 +177,8 @@ public class JsonParserTest extends TestCase {
         assertTrue(nestedArray.get(3).isObject());
     }
 
-    public void testArrayUnexpected() {
+    @Test
+    void testArrayUnexpected() {
         final JsonParser parser = new JsonParser("[}]");
         try {
             parser.parse();
@@ -186,7 +195,8 @@ public class JsonParserTest extends TestCase {
         }
     }
 
-    public void testUnexpectedEnd() {
+    @Test
+    void testUnexpectedEnd() {
         final JsonParser parser = new JsonParser("{},");
         try {
             parser.parse();
@@ -197,7 +207,8 @@ public class JsonParserTest extends TestCase {
         }
     }
 
-    public void testExpect() {
+    @Test
+    void testExpect() {
         final JsonParser parser = new JsonParser("{");
         try {
             parser.parse();

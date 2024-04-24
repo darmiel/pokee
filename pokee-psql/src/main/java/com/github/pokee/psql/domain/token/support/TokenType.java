@@ -90,12 +90,5 @@ public enum TokenType {
         return this.type == TokenTypeType.PUNCTUATION;
     }
 
-    public boolean isWhitespace() {
-        return this.type == TokenTypeType.WHITESPACE;
-    }
-
-    public boolean isComment() {
-        return type == TokenTypeType.COMMENT;
-    }
 
 }
