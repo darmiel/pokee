@@ -207,6 +207,10 @@ public class Parser {
         final List<ProjectionNode> projectionNodeList = this.parseProjectionNodes();
         System.out.println(projectionNodeList);
 
+        if (projectionNodeList.isEmpty()) {
+            throw ParseException.because(this.lexer, "You must specify at least one projection in a query.");
+        }
+
         // make sure if there is an `all` projection node, it is the only one
         if (projectionNodeList.stream().anyMatch(ProjectionNode::isAll) && projectionNodeList.size() > 1) {
             throw ParseException.because(this.lexer, "You can only use `*` once in a query.");
