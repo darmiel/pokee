@@ -1,27 +1,30 @@
 package com.github.pokee.psql.editor;
 
+import com.github.pokee.common.Pokemon;
+import com.github.pokee.common.fielder.Fielder;
 import com.github.pokee.psql.Lexer;
 import com.github.pokee.psql.Parser;
 import com.github.pokee.psql.domain.token.Token;
 import com.github.pokee.psql.domain.token.support.TokenType;
 import com.github.pokee.psql.domain.tree.nodes.grammar.impl.ProgramContext;
 import com.github.pokee.psql.domain.tree.nodes.grammar.impl.StatementContext;
+import com.github.pokee.psql.exception.ExpressionException;
 import com.github.pokee.psql.exception.LexerException;
 import com.github.pokee.psql.exception.ParseException;
 import com.github.pokee.psql.exception.SemanticException;
-import com.github.pokee.psql.visitor.InterpreterVisitor;
-import com.github.pokee.psql.visitor.NamespaceAnalyzerVisitor;
-import com.github.pokee.psql.visitor.SemanticAnalyzerVisitor;
+import com.github.pokee.psql.query.NamespaceValues;
+import com.github.pokee.psql.query.QueryExecutor;
+import com.github.pokee.psql.visitor.impl.InterpreterVisitor;
+import com.github.pokee.psql.visitor.impl.NamespaceAnalyzerVisitor;
+import com.github.pokee.psql.visitor.impl.SemanticAnalyzerVisitor;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EditorPane extends JPanel implements DocumentListener {
 
@@ -29,6 +32,8 @@ public class EditorPane extends JPanel implements DocumentListener {
     private final StatusPagePane statusPage;
     private final ErrorPane errorPane;
     int a = 0;
+
+    private final Map<String, NamespaceValues> namespaceValues = this.getValues();
 
     public EditorPane(final StatusPagePane statusPage,
                       final ErrorPane errorPane) {
@@ -165,25 +170,34 @@ public class EditorPane extends JPanel implements DocumentListener {
 
             // check things like duplicate query names
             program.accept(new SemanticAnalyzerVisitor(
-                    SemanticAnalyzerVisitor.EXAMPLE_NAMESPACE_PROJECTIONS,
-                    importedAliases,
                     List.of("de", "en"))
             );
             this.statusPage.setSemanticOk(true);
 
+            final List<InterpreterVisitor.Query> queries = new ArrayList<>();
             program.accept(new InterpreterVisitor(
+                    queries,
                     InterpreterVisitor.DEFAULT_LANGUAGE,
                     importedAliases,
-                    SemanticAnalyzerVisitor.EXAMPLE_NAMESPACE_PROJECTIONS
+                    this.namespaceValues
             ));
             this.statusPage.setInterpreterOk(true);
 
+            // run query
+            final Map<String, List<Fielder>> result = QueryExecutor.execute(
+                    queries,
+                    importedAliases,
+                    this.namespaceValues
+            );
+            this.errorPane.setText(result.toString(), Color.GREEN);
         } catch (final LexerException lexerException) {
             this.errorPane.setLexerException(lexerException);
         } catch (final ParseException parseException) {
             this.errorPane.setParseException(parseException);
         } catch (final SemanticException semanticException) {
             this.errorPane.setSemanticException(semanticException);
+        } catch (final ExpressionException expressionException) {
+            this.errorPane.setExpressionException(expressionException);
         }
     }
 
@@ -213,4 +227,21 @@ public class EditorPane extends JPanel implements DocumentListener {
         this.textPane.setSelectionStart(startIndex);
         this.textPane.setSelectionEnd(endIndex);
     }
+
+
+    public Map<String, NamespaceValues> getValues() {
+        final Map<String, NamespaceValues> namespaceValues = new HashMap<>();
+        namespaceValues.put("Pokemon", new NamespaceValues(Arrays.asList(
+                new Pokemon(1, "Bulbasaur", 10),
+                new Pokemon(2, "Ivysaur", 20),
+                new Pokemon(3, "Venusaur", 30),
+                new Pokemon(4, "Charmander", 10),
+                new Pokemon(5, "Charmeleon", 20),
+                new Pokemon(6, "Charizard", 30),
+                new Pokemon(7, "Squirtle", 10)
+        ), new Pokemon(0, "", 0)));
+
+        return namespaceValues;
+    }
+
 }

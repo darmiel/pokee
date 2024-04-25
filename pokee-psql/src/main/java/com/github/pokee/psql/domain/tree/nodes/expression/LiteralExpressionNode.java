@@ -32,7 +32,7 @@ public class LiteralExpressionNode extends ExpressionNode {
 
     @Override
     public String toString() {
-        return this.literal.toString();
+        return "L[" + this.literal.toString() + "]";
     }
 
 }

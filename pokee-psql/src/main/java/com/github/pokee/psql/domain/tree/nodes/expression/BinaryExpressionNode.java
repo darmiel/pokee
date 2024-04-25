@@ -39,7 +39,7 @@ public class BinaryExpressionNode extends ExpressionNode {
 
     @Override
     public String toString() {
-        return "(" + this.lhs + " " + this.operator + " " + this.rhs + ")";
+        return "Bin[" + this.lhs + " " + this.operator + " " + this.rhs + "]";
     }
 
 }

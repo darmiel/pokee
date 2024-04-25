@@ -24,7 +24,7 @@ public class IdentifierExpressionNode extends ExpressionNode {
 
     @Override
     public String toString() {
-        return this.target.getText();
+        return "ID[" + this.target.getText() + "]";
     }
 
 }

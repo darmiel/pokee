@@ -42,7 +42,7 @@ public class FunctionCallExpressionNode extends ExpressionNode {
 
     @Override
     public String toString() {
-        return this.target + "." + this.functionName + "(" + this.arguments + ")";
+        return "F[" + this.target + "." + this.functionName + "(" + this.arguments + ")]";
     }
 
 }

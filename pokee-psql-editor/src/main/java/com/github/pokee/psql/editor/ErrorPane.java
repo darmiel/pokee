@@ -1,5 +1,6 @@
 package com.github.pokee.psql.editor;
 
+import com.github.pokee.psql.exception.ExpressionException;
 import com.github.pokee.psql.exception.LexerException;
 import com.github.pokee.psql.exception.ParseException;
 import com.github.pokee.psql.exception.SemanticException;
@@ -17,6 +18,7 @@ public class ErrorPane extends JPanel {
     private LexerException lexerException;
     private ParseException parseException;
     private SemanticException semanticException;
+    private ExpressionException expressionException;
 
     public ErrorPane() {
         this.setLayout(new BorderLayout());
@@ -39,7 +41,7 @@ public class ErrorPane extends JPanel {
         this.errorHighlighter = new DefaultHighlighter.DefaultHighlightPainter(new Color(255, 0, 0, 50));
     }
 
-    private void setText(final String text, final Color color) {
+    public void setText(final String text, final Color color) {
         this.textPane.setForeground(color);
 
         this.textPane.setText(Objects.requireNonNullElse(text, "No errors found."));
@@ -69,10 +71,19 @@ public class ErrorPane extends JPanel {
         }
     }
 
+    public void setExpressionException(ExpressionException expressionException) {
+        this.expressionException = expressionException;
+
+        if (expressionException != null) {
+            this.setText("Expression | " + expressionException.getMessage(), Color.CYAN);
+        }
+    }
+
     public void reset() {
         this.setLexerException(null);
         this.setParseException(null);
         this.setSemanticException(null);
+        this.setExpressionException(null);
         this.setText(null, Color.GREEN);
     }
 

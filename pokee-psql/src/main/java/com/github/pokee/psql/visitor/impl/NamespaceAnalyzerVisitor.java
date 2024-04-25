@@ -1,8 +1,9 @@
-package com.github.pokee.psql.visitor;
+package com.github.pokee.psql.visitor.impl;
 
 import com.github.pokee.psql.domain.tree.nodes.common.NamespacedFieldNode;
 import com.github.pokee.psql.domain.tree.nodes.grammar.impl.UseStatementContext;
 import com.github.pokee.psql.exception.SemanticException;
+import com.github.pokee.psql.visitor.BasePsqlVisitor;
 
 import java.util.List;
 import java.util.Map;
