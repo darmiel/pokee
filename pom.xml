@@ -71,10 +71,10 @@
 
     <modules>
         <module>pokee-pson</module>
+        <module>pokee-commons</module>
         <module>pokee-psql</module>
         <module>pokee-psql-editor</module>
         <module>pokee-pswf</module>
-        <module>pokee-commons</module>
         <module>pokee-bootstrap</module>
     </modules>
 

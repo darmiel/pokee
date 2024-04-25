@@ -225,6 +225,29 @@ public class Pson {
         return this.unmarshalArray(json, clazz);
     }
 
+    /**
+     * Unmarshal an object of array type T[] using the @PsonSource annotation
+     *
+     * @param clazz the class of the array elements
+     * @param <T>   the type of the array elements
+     * @return the array of objects of type T
+     * @throws IOException           if the file could not be read
+     * @throws IllegalStateException if the JSON could not be unmarshalled
+     */
+    public <T> T[] unmarshalArray(final Class<T> clazz) throws IOException {
+        if (!clazz.isAnnotationPresent(PsonSource.class)) {
+            throw new IllegalArgumentException("Class must be annotated with @PsonSource");
+        }
+        final PsonSource source = clazz.getAnnotation(PsonSource.class);
+        if (!source.raw().isBlank()) {
+            return this.unmarshalArray(source.raw(), clazz);
+        }
+        if (!source.file().isBlank()) {
+            return this.unmarshalArrayFromFile(new File(source.file()), clazz);
+        }
+        throw new IllegalArgumentException("Class must have either raw or file set in @PsonSource");
+    }
+
 
     /**
      * Unmarshal a JSON string to a list
@@ -258,5 +281,27 @@ public class Pson {
         return this.unmarshalList(json, clazz);
     }
 
+    /**
+     * Unmarshal an object of list type List<T> using the @PsonSource annotation
+     *
+     * @param clazz the class of the list elements
+     * @param <T>   the type of the list elements
+     * @return the list of objects of type T
+     * @throws IOException           if the file could not be read
+     * @throws IllegalStateException if the JSON could not be unmarshalled
+     */
+    public <T> List<T> unmarshalList(final Class<T> clazz) throws IOException {
+        if (!clazz.isAnnotationPresent(PsonSource.class)) {
+            throw new IllegalArgumentException("Class must be annotated with @PsonSource");
+        }
+        final PsonSource source = clazz.getAnnotation(PsonSource.class);
+        if (!source.raw().isBlank()) {
+            return this.unmarshalList(source.raw(), clazz);
+        }
+        if (!source.file().isBlank()) {
+            return this.unmarshalListFromFile(new File(source.file()), clazz);
+        }
+        throw new IllegalArgumentException("Class must have either raw or file set in @PsonSource");
+    }
 
 }

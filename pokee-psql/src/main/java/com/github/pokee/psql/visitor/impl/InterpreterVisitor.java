@@ -51,7 +51,8 @@ public class InterpreterVisitor extends AliasNamespacedBasePsqlVisitor<Void> {
 
         final ExpressionVisitor expressionVisitor = new ExpressionVisitor(
                 super.importedNamespaces,
-                this.namespaceValues
+                this.namespaceValues,
+                this.currentLanguage
         );
 
         for (final ExpressionNode filter : queryContext.getFilters()) {
@@ -62,11 +63,14 @@ public class InterpreterVisitor extends AliasNamespacedBasePsqlVisitor<Void> {
             queryFilters.add(fielderPredicate);
         }
 
-        this.queries.add(new Query(queryName, queryContext.getProjectionNodes(), queryFilters));
+        this.queries.add(new Query(queryName, queryContext.getProjectionNodes(), queryFilters, this.currentLanguage));
         return null;
     }
 
-    public record Query(String name, List<ProjectionNode> projections, List<Predicate<Fielder>> predicate) {
+    public record Query(String name,
+                        List<ProjectionNode> projections,
+                        List<Predicate<Fielder>> predicate,
+                        String language) {
     }
 
 }

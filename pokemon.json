@@ -1,0 +1,1142 @@
+[
+  {
+    "pokedexID": 1,
+    "name": {
+      "en": "Bulbasaur",
+      "de": "Bisasam",
+      "fr": "Bulbizarre",
+      "es": "Bulbasaur"
+    },
+    "description": {
+      "en": "A strange seed was planted on its back at birth. The plant sprouts and grows with this Pokémon.",
+      "de": "Ein seltsamer Samen wurde ihm bei seiner Geburt auf den Rücken gepflanzt. Die Pflanze sprießt und wächst mit diesem Pokémon.",
+      "fr": "Une étrange graine a été plantée sur son dos à la naissance. La plante germe et grandit avec ce Pokémon.",
+      "es": "Al nacer, se le planta una semilla en el lomo, que brota y crece con él a lo largo de su vida."
+    },
+    "hp": 45,
+    "attack": 49,
+    "defense": 49,
+    "speed": 45
+  },
+  {
+    "pokedexID": 2,
+    "name": {
+      "en": "Ivysaur",
+      "de": "Bisaknosp",
+      "fr": "Herbizarre",
+      "es": "Ivysaur"
+    },
+    "description": {
+      "en": "When the bulb on its back grows large, it appears to lose the ability to stand on its hind legs.",
+      "de": "Wenn die Knolle auf seinem Rücken groß wird, scheint es die Fähigkeit zu verlieren, auf den Hinterbeinen zu stehen.",
+      "fr": "Lorsque le bulbe sur son dos grossit, il semble perdre la capacité de se tenir sur ses pattes arrière.",
+      "es": "El bulbo que tiene en el lomo crece tanto que llega a dificultarle la capacidad de ponerse en pie con las patas traseras."
+    },
+    "hp": 60,
+    "attack": 62,
+    "defense": 63,
+    "speed": 60
+  },
+  {
+    "pokedexID": 3,
+    "name": {
+      "en": "Venusaur",
+      "de": "Bisaflor",
+      "fr": "Florizarre",
+      "es": "Venusaur"
+    },
+    "description": {
+      "en": "The plant blooms spectacularly under strong sunlight. It stays on the move to seek sunlight.",
+      "de": "Die Pflanze blüht spektakulär bei starker Sonneneinstrahlung. Es bleibt in Bewegung, um Sonnenlicht zu suchen.",
+      "fr": "La plante fleurit de manière spectaculaire sous un fort ensoleillement. Il reste en mouvement pour chercher du soleil.",
+      "es": "La planta florece espectacularmente con una fuerte luz solar. Se mantiene en movimiento para buscar la luz del sol."
+    },
+    "hp": 80,
+    "attack": 82,
+    "defense": 83,
+    "speed": 80
+  },
+  {
+    "pokedexID": 4,
+    "name": {
+      "en": "Charmander",
+      "de": "Glumanda",
+      "fr": "Salamèche",
+      "es": "Charmander"
+    },
+    "description": {
+      "en": "The flame that burns at the tip of its tail is an indication of its emotions. The flame wavers when Charmander is happy.",
+      "de": "Die Flamme, die an der Spitze seines Schwanzes brennt, ist ein Indiz für seine Emotionen. Die Flamme flackert, wenn Glumanda glücklich ist.",
+      "fr": "La flamme qui brûle à la pointe de sa queue est une indication de ses émotions. La flamme vacille lorsque Salamèche est heureux.",
+      "es": "La llama que arde en la punta de su cola indica sus emociones. La llama ondea cuando Charmander está contento."
+    },
+    "hp": 39,
+    "attack": 52,
+    "defense": 43,
+    "speed": 65
+  },
+  {
+    "pokedexID": 5,
+    "name": {
+      "en": "Charmeleon",
+      "de": "Glutexo",
+      "fr": "Reptincel",
+      "es": "Charmeleon"
+    },
+    "description": {
+      "en": "It has a barbaric nature. In battle, it whips its fiery tail around and slashes away with sharp claws.",
+      "de": "Es hat eine barbarische Natur. Im Kampf schwingt es seinen feurigen Schwanz herum und schlägt mit scharfen Klauen zu.",
+      "fr": "Il a une nature barbare. En combat, il fouette sa queue enflammée et lacère avec ses griffes acérées.",
+      "es": "Tiene una naturaleza bárbara. En combate, azota su cola ardiente y corta con sus garras afiladas."
+    },
+    "hp": 58,
+    "attack": 64,
+    "defense": 58,
+    "speed": 80
+  },
+  {
+    "pokedexID": 6,
+    "name": {
+      "en": "Charizard",
+      "de": "Glurak",
+      "fr": "Dracaufeu",
+      "es": "Charizard"
+    },
+    "description": {
+      "en": "Spits fire that is hot enough to melt boulders. Known to cause forest fires unintentionally.",
+      "de": "Spuckt Feuer, das heiß genug ist, um Felsen zu schmelzen. Bekannt dafür, unbeabsichtigt Waldbrände zu verursachen.",
+      "fr": "Crache du feu suffisamment chaud pour fondre des rochers. Connus pour causer des incendies de forêt accidentellement.",
+      "es": "Escupe un fuego que puede derretir rocas. Conocido por causar incendios forestales accidentalmente."
+    },
+    "hp": 78,
+    "attack": 84,
+    "defense": 78,
+    "speed": 100
+  },
+  {
+    "pokedexID": 7,
+    "name": {
+      "en": "Squirtle",
+      "de": "Schiggy",
+      "fr": "Carapuce",
+      "es": "Squirtle"
+    },
+    "description": {
+      "en": "After birth, its back swells and hardens into a shell. Powerfully sprays foam from its mouth.",
+      "de": "Nach der Geburt schwillt sein Rücken an und verhärtet sich zu einer Schale. Sprüht kräftig Schaum aus seinem Mund.",
+      "fr": "Après la naissance, son dos gonfle et durcit en une carapace. Pulvérise puissamment de la mousse de sa bouche.",
+      "es": "Tras nacer, su espalda se hincha y se endurece formando un caparazón. Expulsa espuma por la boca con fuerza."
+    },
+    "hp": 44,
+    "attack": 48,
+    "defense": 65,
+    "speed": 43
+  },
+  {
+    "pokedexID": 8,
+    "name": {
+      "en": "Wartortle",
+      "de": "Schillok",
+      "fr": "Carabaffe",
+      "es": "Wartortle"
+    },
+    "description": {
+      "en": "It is recognized by its tail that is thick and covered with a rich, glossy fur. The tail becomes increasingly deeper in color as Wartortle ages.",
+      "de": "Es ist an seinem dicken, mit glänzendem Fell bedeckten Schwanz zu erkennen. Der Schwanz wird mit zunehmendem Alter von Schillok immer dunkler.",
+      "fr": "Il est reconnaissable à sa queue épaisse recouverte d'un pelage riche et brillant. La queue devient de plus en plus foncée à mesure que Carabaffe vieillit.",
+      "es": "Se reconoce por su cola, gruesa y cubierta de un pelo rico y brillante. La cola se oscurece a medida que Wartortle envejece."
+    },
+    "hp": 59,
+    "attack": 63,
+    "defense": 80,
+    "speed": 58
+  },
+  {
+    "pokedexID": 9,
+    "name": {
+      "en": "Blastoise",
+      "de": "Turtok",
+      "fr": "Tortank",
+      "es": "Blastoise"
+    },
+    "description": {
+      "en": "The jet cannons on its shell can shoot bursts of water capable of piercing steel plates.",
+      "de": "Die Strahlkanonen auf seinem Panzer können Wasserstöße schießen, die Stahlplatten durchdringen können.",
+      "fr": "Les canons à jet sur sa carapace peuvent tirer des jets d'eau capables de percer des plaques d'acier.",
+      "es": "Los cañones de agua de su caparazón pueden disparar ráfagas capaces de perforar placas de acero."
+    },
+    "hp": 79,
+    "attack": 83,
+    "defense": 100,
+    "speed": 78
+  },
+  {
+    "pokedexID": 10,
+    "name": {
+      "en": "Caterpie",
+      "de": "Raupy",
+      "fr": "Chenipan",
+      "es": "Caterpie"
+    },
+    "description": {
+      "en": "Its short feet are tipped with suction pads that enable it to tirelessly climb slopes and walls.",
+      "de": "Seine kurzen Füße sind mit Saugnäpfen versehen, die es ihm ermöglichen, unermüdlich Hänge und Wände zu erklimmen.",
+      "fr": "Ses petits pieds sont pourvus de ventouses qui lui permettent d'escalader sans relâche des pentes et des murs.",
+      "es": "Sus cortos pies tienen ventosas que le permiten trepar incansablemente pendientes y paredes."
+    },
+    "hp": 45,
+    "attack": 30,
+    "defense": 35,
+    "speed": 45
+  },
+  {
+    "pokedexID": 11,
+    "name": {
+      "en": "Metapod",
+      "de": "Safcon",
+      "fr": "Chrysacier",
+      "es": "Metapod"
+    },
+    "description": {
+      "en": "This Pokémon is vulnerable to attack while its shell is soft, exposing its weak and tender body.",
+      "de": "Dieses Pokémon ist anfällig für Angriffe, solange seine Schale weich ist und seinen schwachen und zarten Körper freilegt.",
+      "fr": "Ce Pokémon est vulnérable tant que sa carapace est molle, exposant son corps faible et tendre.",
+      "es": "Este Pokémon es vulnerable a los ataques mientras su caparazón está blando, exponiendo su cuerpo débil y tierno."
+    },
+    "hp": 50,
+    "attack": 20,
+    "defense": 55,
+    "speed": 30
+  },
+  {
+    "pokedexID": 12,
+    "name": {
+      "en": "Butterfree",
+      "de": "Smettbo",
+      "fr": "Papilusion",
+      "es": "Butterfree"
+    },
+    "description": {
+      "en": "In battle, it flaps its wings at high speed to release highly toxic dust into the air.",
+      "de": "Im Kampf schlägt es schnell mit den Flügeln, um hochgiftigen Staub in die Luft zu wirbeln.",
+      "fr": "En combat, il bat des ailes à grande vitesse pour libérer une poussière hautement toxique dans l'air.",
+      "es": "En combate, agita sus alas a gran velocidad para liberar polvo altamente tóxico al aire."
+    },
+    "hp": 60,
+    "attack": 45,
+    "defense": 50,
+    "speed": 70
+  },
+  {
+    "pokedexID": 13,
+    "name": {
+      "en": "Weedle",
+      "de": "Hornliu",
+      "fr": "Aspicot",
+      "es": "Weedle"
+    },
+    "description": {
+      "en": "Often found in forests, eating leaves. It has a sharp venomous stinger on its head.",
+      "de": "Oft in Wäldern zu finden, wo es Blätter frisst. Es hat einen scharfen giftigen Stachel auf dem Kopf.",
+      "fr": "Souvent trouvé dans les forêts, mangeant des feuilles. Il a un dard venimeux pointu sur la tête.",
+      "es": "A menudo se encuentra en bosques, comiendo hojas. Tiene un aguijón venenoso y afilado en la cabeza."
+    },
+    "hp": 40,
+    "attack": 35,
+    "defense": 30,
+    "speed": 50
+  },
+  {
+    "pokedexID": 14,
+    "name": {
+      "en": "Kakuna",
+      "de": "Kokuna",
+      "fr": "Coconfort",
+      "es": "Kakuna"
+    },
+    "description": {
+      "en": "Able to move only slightly. When endangered, it may stick out its stinger and poison its enemy.",
+      "de": "Kann sich nur leicht bewegen. Wenn es in Gefahr ist, kann es seinen Stachel herausstrecken und seinen Feind vergiften.",
+      "fr": "Capable de bouger juste un peu. En danger, il peut sortir son dard et empoisonner son ennemi.",
+      "es": "Solo puede moverse un poco. Cuando está en peligro, puede sacar su aguijón y envenenar a su enemigo."
+    },
+    "hp": 45,
+    "attack": 25,
+    "defense": 50,
+    "speed": 35
+  },
+  {
+    "pokedexID": 15,
+    "name": {
+      "en": "Beedrill",
+      "de": "Bibor",
+      "fr": "Dardargnan",
+      "es": "Beedrill"
+    },
+    "description": {
+      "en": "Flies at high speed and attacks using its large venomous stingers on its forelegs and tail.",
+      "de": "Fliegt mit hoher Geschwindigkeit und greift mit seinen großen giftigen Stacheln an den Vorderbeinen und am Schwanz an.",
+      "fr": "Vole à grande vitesse et attaque avec ses grands dards venimeux sur ses pattes avant et sa queue.",
+      "es": "Vuela a alta velocidad y ataca con sus grandes aguijones venenosos en las patas delanteras y en la cola."
+    },
+    "hp": 65,
+    "attack": 90,
+    "defense": 40,
+    "speed": 75
+  },
+  {
+    "pokedexID": 16,
+    "name": {
+      "en": "Pidgey",
+      "de": "Taubsi",
+      "fr": "Roucool",
+      "es": "Pidgey"
+    },
+    "description": {
+      "en": "A common sight in forests and woods. It flaps its wings at ground level to kick up blinding sand.",
+      "de": "Ein häufiger Anblick in Wäldern und Wäldern. Es schlägt mit den Flügeln auf Bodenhöhe, um blendenden Sand aufzuwirbeln.",
+      "fr": "Une vue commune dans les forêts et les bois. Il bat des ailes au niveau du sol pour soulever un sable aveuglant.",
+      "es": "Es común verlo en bosques y selvas. Agita sus alas a nivel del suelo para levantar arena cegadora."
+    },
+    "hp": 40,
+    "attack": 45,
+    "defense": 40,
+    "speed": 56
+  },
+  {
+    "pokedexID": 17,
+    "name": {
+      "en": "Pidgeotto",
+      "de": "Tauboga",
+      "fr": "Roucoups",
+      "es": "Pidgeotto"
+    },
+    "description": {
+      "en": "Very protective of its sprawling territorial area, this Pokémon will fiercely peck at any intruder.",
+      "de": "Sehr schützend für sein ausgedehntes Territorialgebiet, wird dieses Pokémon jeden Eindringling heftig picken.",
+      "fr": "Très protecteur de son vaste territoire, ce Pokémon picorera férocement tout intrus.",
+      "es": "Muy protector de su amplio territorio, este Pokémon picoteará ferozmente a cualquier intruso."
+    },
+    "hp": 63,
+    "attack": 60,
+    "defense": 55,
+    "speed": 71
+  },
+  {
+    "pokedexID": 18,
+    "name": {
+      "en": "Pidgeot",
+      "de": "Tauboss",
+      "fr": "Roucarnage",
+      "es": "Pidgeot"
+    },
+    "description": {
+      "en": "When hunting, it skims the surface of water at high speed to pick off unwary prey such as Magikarp.",
+      "de": "Bei der Jagd gleitet es mit hoher Geschwindigkeit über die Wasseroberfläche, um unachtsame Beute wie Karpador zu erhaschen.",
+      "fr": "Lors de la chasse, il rase la surface de l'eau à grande vitesse pour capturer des proies imprudentes comme Magicarpe.",
+      "es": "Cuando caza, roza la superficie del agua a gran velocidad para atrapar presas desprevenidas como Magikarp."
+    },
+    "hp": 83,
+    "attack": 80,
+    "defense": 75,
+    "speed": 101
+  },
+  {
+    "pokedexID": 19,
+    "name": {
+      "en": "Rattata",
+      "de": "Rattfratz",
+      "fr": "Rattata",
+      "es": "Rattata"
+    },
+    "description": {
+      "en": "Bites anything when it attacks. Small and very quick, it is a common sight in many places.",
+      "de": "Beißt alles, wenn es angreift. Klein und sehr schnell, ist es ein häufiger Anblick an vielen Orten.",
+      "fr": "Mord tout ce qu'il attaque. Petit et très rapide, il est un spectacle commun dans de nombreux endroits.",
+      "es": "Muerde cualquier cosa cuando ataca. Pequeño y muy rápido, es una vista común en muchos lugares."
+    },
+    "hp": 30,
+    "attack": 56,
+    "defense": 35,
+    "speed": 72
+  },
+  {
+    "pokedexID": 20,
+    "name": {
+      "en": "Raticate",
+      "de": "Rattikarl",
+      "fr": "Rattatac",
+      "es": "Raticate"
+    },
+    "description": {
+      "en": "It uses its whiskers to maintain its balance. It apparently slows down if they are cut off.",
+      "de": "Es verwendet seine Schnurrhaare, um sein Gleichgewicht zu halten. Es verlangsamt sich anscheinend, wenn sie abgeschnitten werden.",
+      "fr": "Il utilise ses moustaches pour maintenir son équilibre. Il semble ralentir si elles sont coupées.",
+      "es": "Usa sus bigotes para mantener su equilibrio. Parece que se ralentiza si se le cortan."
+    },
+    "hp": 55,
+    "attack": 81,
+    "defense": 60,
+    "speed": 97
+  },
+  {
+    "pokedexID": 21,
+    "name": {
+      "en": "Spearow",
+      "de": "Habitak",
+      "fr": "Piafabec",
+      "es": "Spearow"
+    },
+    "description": {
+      "en": "Eats bugs in grassy areas. It has to flap its short wings at high speed to stay airborne.",
+      "de": "Isst Käfer in grasbewachsenen Gebieten. Es muss seine kurzen Flügel mit hoher Geschwindigkeit schlagen, um in der Luft zu bleiben.",
+      "fr": "Mange des insectes dans les zones herbeuses. Il doit battre ses courtes ailes à grande vitesse pour rester en l'air.",
+      "es": "Come insectos en áreas con césped. Tiene que aletear sus cortas alas a gran velocidad para mantenerse en el aire."
+    },
+    "hp": 40,
+    "attack": 60,
+    "defense": 30,
+    "speed": 70
+  },
+  {
+    "pokedexID": 22,
+    "name": {
+      "en": "Fearow",
+      "de": "Ibitak",
+      "fr": "Rapasdepic",
+      "es": "Fearow"
+    },
+    "description": {
+      "en": "With its huge and magnificent wings, it can keep aloft without ever having to land for rest.",
+      "de": "Mit seinen riesigen und prächtigen Flügeln kann es in der Luft bleiben, ohne jemals landen zu müssen, um sich auszuruhen.",
+      "fr": "Avec ses ailes immenses et magnifiques, il peut rester en vol sans jamais avoir besoin de se poser pour se reposer.",
+      "es": "Con sus alas grandes y magníficas, puede mantenerse en vuelo sin necesidad de aterrizar para descansar."
+    },
+    "hp": 65,
+    "attack": 90,
+    "defense": 65,
+    "speed": 100
+  },
+  {
+    "pokedexID": 23,
+    "name": {
+      "en": "Ekans",
+      "de": "Rettan",
+      "fr": "Abo",
+      "es": "Ekans"
+    },
+    "description": {
+      "en": "Moves silently and stealthily. Eats the eggs of birds, such as Pidgey and Spearow, whole.",
+      "de": "Bewegt sich leise und heimlich. Isst die Eier von Vögeln, wie Taubsi und Habitak, ganz.",
+      "fr": "Se déplace silencieusement et discrètement. Mange entièrement les œufs d'oiseaux, tels que Roucool et Piafabec.",
+      "es": "Se mueve silenciosa y furtivamente. Come enteros los huevos de aves, como Pidgey y Spearow."
+    },
+    "hp": 35,
+    "attack": 60,
+    "defense": 44,
+    "speed": 55
+  },
+  {
+    "pokedexID": 24,
+    "name": {
+      "en": "Arbok",
+      "de": "Arbok",
+      "fr": "Arbok",
+      "es": "Arbok"
+    },
+    "description": {
+      "en": "It is rumored that the ferocious warning markings on its belly differ from area to area.",
+      "de": "Es wird gemunkelt, dass die furchterregenden Warnmarkierungen auf seinem Bauch von Gebiet zu Gebiet unterschiedlich sind.",
+      "fr": "On raconte que les marquages d'avertissement féroces sur son ventre varient d'une région à l'autre.",
+      "es": "Se rumorea que las marcas de advertencia feroces en su vientre varían de un área a otra."
+    },
+    "hp": 60,
+    "attack": 95,
+    "defense": 69,
+    "speed": 80
+  },
+  {
+    "pokedexID": 25,
+    "name": {
+      "en": "Pikachu",
+      "de": "Pikachu",
+      "fr": "Pikachu",
+      "es": "Pikachu"
+    },
+    "description": {
+      "en": "Pikachu that can generate powerful electricity have cheek sacs that are extra soft and super stretchy.",
+      "de": "Pikachu, das kräftige Elektrizität erzeugen kann, hat Wangentaschen, die extra weich und super dehnbar sind.",
+      "fr": "Les Pikachu qui peuvent générer de l'électricité puissante ont des poches joues qui sont extra douces et très extensibles.",
+      "es": "Los Pikachu que pueden generar electricidad potente tienen bolsas en las mejillas que son extra suaves y súper elásticas."
+    },
+    "hp": 35,
+    "attack": 55,
+    "defense": 40,
+    "speed": 90
+  },
+  {
+    "pokedexID": 26,
+    "name": {
+      "en": "Raichu",
+      "de": "Raichu",
+      "fr": "Raichu",
+      "es": "Raichu"
+    },
+    "description": {
+      "en": "Its long tail serves as a ground to protect itself from its own high voltage power.",
+      "de": "Sein langer Schwanz dient als Erdung, um sich vor seiner eigenen Hochspannung zu schützen.",
+      "fr": "Sa longue queue sert de terre pour se protéger de sa propre puissance à haute tension.",
+      "es": "Su larga cola sirve como toma de tierra para protegerse de su propio poder de alto voltaje."
+    },
+    "hp": 60,
+    "attack": 90,
+    "defense": 55,
+    "speed": 110
+  },
+  {
+    "pokedexID": 27,
+    "name": {
+      "en": "Sandshrew",
+      "de": "Sandan",
+      "fr": "Sabelette",
+      "es": "Sandshrew"
+    },
+    "description": {
+      "en": "Burrows deep underground in arid locations far from water. It only emerges to hunt for food.",
+      "de": "Gräbt sich tief unter der Erde in trockenen Gegenden fern von Wasser ein. Es taucht nur auf, um nach Nahrung zu suchen.",
+      "fr": "Creuse profondément sous terre dans des lieux arides loin de l'eau. Il n'émerge que pour chasser sa nourriture.",
+      "es": "Excava profundamente bajo tierra en lugares áridos lejos del agua. Solo emerge para cazar comida."
+    },
+    "hp": 50,
+    "attack": 75,
+    "defense": 85,
+    "speed": 40
+  },
+  {
+    "pokedexID": 28,
+    "name": {
+      "en": "Sandslash",
+      "de": "Sandamer",
+      "fr": "Sablaireau",
+      "es": "Sandslash"
+    },
+    "description": {
+      "en": "The spikes on its body are made up of its hardened hide. It rolls up and attacks foes with its spikes.",
+      "de": "Die Stacheln an seinem Körper bestehen aus seiner gehärteten Haut. Es rollt sich zusammen und attackiert Feinde mit seinen Stacheln.",
+      "fr": "Les pics sur son corps sont constitués de sa peau durcie. Il se roule en boule et attaque ses ennemis avec ses pics.",
+      "es": "Las espinas de su cuerpo están formadas por su piel endurecida. Se enrolla y ataca a los enemigos con sus espinas."
+    },
+    "hp": 75,
+    "attack": 100,
+    "defense": 110,
+    "speed": 65
+  },
+  {
+    "pokedexID": 29,
+    "name": {
+      "en": "Nidoran♀",
+      "de": "Nidoran♀",
+      "fr": "Nidoran♀",
+      "es": "Nidoran♀"
+    },
+    "description": {
+      "en": "Although small, its venomous barbs render this Pokémon dangerous. The female has smaller horns.",
+      "de": "Obwohl klein, machen seine giftigen Stacheln dieses Pokémon gefährlich. Das Weibchen hat kleinere Hörner.",
+      "fr": "Bien qu'il soit petit, ses barbes venimeuses rendent ce Pokémon dangereux. La femelle a de plus petits cornes.",
+      "es": "Aunque es pequeño, sus púas venenosas hacen que este Pokémon sea peligroso. La hembra tiene cuernos más pequeños."
+    },
+    "hp": 55,
+    "attack": 47,
+    "defense": 52,
+    "speed": 41
+  },
+  {
+    "pokedexID": 30,
+    "name": {
+      "en": "Nidorina",
+      "de": "Nidorina",
+      "fr": "Nidorina",
+      "es": "Nidorina"
+    },
+    "description": {
+      "en": "When it is with its friends or family, its barbs are tucked away to prevent injury. It appears to become nervous if separated from the others.",
+      "de": "Wenn es mit seinen Freunden oder seiner Familie zusammen ist, werden seine Stacheln eingezogen, um Verletzungen zu vermeiden. Es scheint nervös zu werden, wenn es von den anderen getrennt wird.",
+      "fr": "Quand il est avec ses amis ou sa famille, ses barbes sont rentrées pour éviter les blessures. Il semble devenir nerveux s'il est séparé des autres.",
+      "es": "Cuando está con sus amigos o familiares, guarda sus púas para evitar heridas. Parece ponerse nervioso si se separa de los demás."
+    },
+    "hp": 70,
+    "attack": 62,
+    "defense": 67,
+    "speed": 56
+  },
+  {
+    "pokedexID": 31,
+    "name": {
+      "en": "Nidoqueen",
+      "de": "Nidoqueen",
+      "fr": "Nidoqueen",
+      "es": "Nidoqueen"
+    },
+    "description": {
+      "en": "Its hard scales provide strong protection. It uses its hefty bulk to execute powerful moves.",
+      "de": "Seine harten Schuppen bieten starken Schutz. Es nutzt seine schwere Masse, um kraftvolle Bewegungen auszuführen.",
+      "fr": "Ses écailles dures fournissent une forte protection. Il utilise sa lourde masse pour exécuter des mouvements puissants.",
+      "es": "Sus escamas duras proporcionan una fuerte protección. Utiliza su corpulencia para ejecutar movimientos poderosos."
+    },
+    "hp": 90,
+    "attack": 92,
+    "defense": 87,
+    "speed": 76
+  },
+  {
+    "pokedexID": 32,
+    "name": {
+      "en": "Nidoran♂",
+      "de": "Nidoran♂",
+      "fr": "Nidoran♂",
+      "es": "Nidoran♂"
+    },
+    "description": {
+      "en": "The male has developed muscles for moving its ears. Thanks to them, it can freely move its ears in any direction.",
+      "de": "Das Männchen hat Muskeln entwickelt, um seine Ohren zu bewegen. Dank ihnen kann es seine Ohren frei in jede Richtung bewegen.",
+      "fr": "Le mâle a développé des muscles pour bouger ses oreilles. Grâce à eux, il peut librement bouger ses oreilles dans n'importe quelle direction.",
+      "es": "El macho ha desarrollado músculos para mover sus orejas. Gracias a ellos, puede mover sus orejas libremente en cualquier dirección."
+    },
+    "hp": 46,
+    "attack": 57,
+    "defense": 40,
+    "speed": 50
+  },
+  {
+    "pokedexID": 33,
+    "name": {
+      "en": "Nidorino",
+      "de": "Nidorino",
+      "fr": "Nidorino",
+      "es": "Nidorino"
+    },
+    "description": {
+      "en": "An aggressive Pokémon that is quick to attack. The horn on its head secretes a powerful venom.",
+      "de": "Ein aggressives Pokémon, das schnell angreift. Das Horn auf seinem Kopf sondert ein starkes Gift ab.",
+      "fr": "Un Pokémon agressif qui attaque rapidement. La corne sur sa tête sécrète un venin puissant.",
+      "es": "Un Pokémon agresivo que ataca rápidamente. El cuerno en su cabeza segrega un veneno potente."
+    },
+    "hp": 61,
+    "attack": 72,
+    "defense": 57,
+    "speed": 65
+  },
+  {
+    "pokedexID": 34,
+    "name": {
+      "en": "Nidoking",
+      "de": "Nidoking",
+      "fr": "Nidoking",
+      "es": "Nidoking"
+    },
+    "description": {
+      "en": "It uses its powerful tail in battle to smash, constrict, then break the prey's bones.",
+      "de": "Es verwendet seinen kräftigen Schwanz im Kampf, um zu schlagen, zu umschlingen und dann die Knochen der Beute zu brechen.",
+      "fr": "Il utilise sa puissante queue en combat pour écraser, enserrer, puis briser les os de sa proie.",
+      "es": "Usa su poderosa cola en batalla para golpear, constreñir y luego romper los huesos de su presa."
+    },
+    "hp": 81,
+    "attack": 102,
+    "defense": 77,
+    "speed": 85
+  },
+  {
+    "pokedexID": 35,
+    "name": {
+      "en": "Clefairy",
+      "de": "Piepi",
+      "fr": "Mélofée",
+      "es": "Clefairy"
+    },
+    "description": {
+      "en": "Adored for their cute looks and playfulness. They are thought to be rare, as they do not appear often.",
+      "de": "Wegen ihres süßen Aussehens und ihrer Verspieltheit verehrt. Sie gelten als selten, da sie nicht oft erscheinen.",
+      "fr": "Adorés pour leur apparence mignonne et leur espièglerie. On pense qu'ils sont rares, car ils n'apparaissent pas souvent.",
+      "es": "Adorados por su aspecto adorable y su juguetonería. Se cree que son raros, ya que no aparecen con frecuencia."
+    },
+    "hp": 70,
+    "attack": 45,
+    "defense": 48,
+    "speed": 35
+  },
+  {
+    "pokedexID": 36,
+    "name": {
+      "en": "Clefable",
+      "de": "Pixi",
+      "fr": "Mélodelfe",
+      "es": "Clefable"
+    },
+    "description": {
+      "en": "A timid fairy Pokémon that is rarely seen. It will run and hide the moment it senses people.",
+      "de": "Ein scheues Feen-Pokémon, das selten zu sehen ist. Es wird weglaufen und sich verstecken, sobald es Menschen wahrnimmt.",
+      "fr": "Un Pokémon fée timide qui est rarement vu. Il fuira et se cachera dès qu'il sentira la présence de personnes.",
+      "es": "Un Pokémon hada tímido que raramente se ve. Correrá a esconderse en cuanto sienta la presencia de personas."
+    },
+    "hp": 95,
+    "attack": 70,
+    "defense": 73,
+    "speed": 60
+  },
+  {
+    "pokedexID": 37,
+    "name": {
+      "en": "Vulpix",
+      "de": "Vulpix",
+      "fr": "Goupix",
+      "es": "Vulpix"
+    },
+    "description": {
+      "en": "At the time of birth, it has just one tail. The tail splits from its tip as it grows older.",
+      "de": "Zur Zeit der Geburt hat es nur einen Schwanz. Der Schwanz teilt sich mit dem Alter an der Spitze.",
+      "fr": "À la naissance, il n'a qu'une seule queue. La queue se divise à partir de sa pointe à mesure qu'il vieillit.",
+      "es": "Al nacer, tiene solo una cola. La cola se divide desde la punta a medida que envejece."
+    },
+    "hp": 38,
+    "attack": 41,
+    "defense": 40,
+    "speed": 65
+  },
+  {
+    "pokedexID": 38,
+    "name": {
+      "en": "Ninetales",
+      "de": "Vulnona",
+      "fr": "Feunard",
+      "es": "Ninetales"
+    },
+    "description": {
+      "en": "Very smart and very vengeful. Grabbing one of its many tails could result in a 1000-year curse.",
+      "de": "Sehr intelligent und sehr rachsüchtig. Das Ergreifen eines seiner vielen Schwänze könnte eine 1000-jährige Verwünschung zur Folge haben.",
+      "fr": "Très intelligent et très rancunier. Attraper une de ses nombreuses queues pourrait entraîner une malédiction de 1000 ans.",
+      "es": "Muy inteligente y muy vengativo. Agarrar una de sus muchas colas podría resultar en una maldición de 1000 años."
+    },
+    "hp": 73,
+    "attack": 76,
+    "defense": 75,
+    "speed": 100
+  },
+  {
+    "pokedexID": 39,
+    "name": {
+      "en": "Jigglypuff",
+      "de": "Pummeluff",
+      "fr": "Rondoudou",
+      "es": "Jigglypuff"
+    },
+    "description": {
+      "en": "It captivates foes with its huge, round eyes, then lulls them to sleep by singing a soothing melody.",
+      "de": "Es fesselt Feinde mit seinen großen, runden Augen, dann wiegt es sie mit einem beruhigenden Lied in den Schlaf.",
+      "fr": "Il captive les ennemis avec ses grands yeux ronds, puis les berce pour les endormir en chantant une mélodie apaisante.",
+      "es": "Cautiva a los enemigos con sus grandes ojos redondos, luego los arrulla para dormir cantando una melodía relajante."
+    },
+    "hp": 115,
+    "attack": 45,
+    "defense": 20,
+    "speed": 20
+  },
+  {
+    "pokedexID": 40,
+    "name": {
+      "en": "Wigglytuff",
+      "de": "Knuddeluff",
+      "fr": "Grodoudou",
+      "es": "Wigglytuff"
+    },
+    "description": {
+      "en": "Its fur is extremely fine, dense, and supple. The exquisitely soft fur envelops those who touch it.",
+      "de": "Sein Fell ist extrem fein, dicht und geschmeidig. Das exquisit weiche Fell umhüllt jeden, der es berührt.",
+      "fr": "Son pelage est extrêmement fin, dense et souple. La fourrure exquisément douce enveloppe ceux qui la touchent.",
+      "es": "Su pelo es extremadamente fino, denso y suave. La exquisita pelusa suave envuelve a aquellos que la tocan."
+    },
+    "hp": 140,
+    "attack": 70,
+    "defense": 45,
+    "speed": 45
+  },
+  {
+    "pokedexID": 41,
+    "name": {
+      "en": "Zubat",
+      "de": "Zubat",
+      "fr": "Nosferapti",
+      "es": "Zubat"
+    },
+    "description": {
+      "en": "Forms colonies in perpetually dark places. Uses ultrasonic waves to identify and approach targets.",
+      "de": "Bildet Kolonien in ewig dunklen Orten. Verwendet Ultraschallwellen, um Ziele zu identifizieren und sich ihnen zu nähern.",
+      "fr": "Forme des colonies dans des lieux perpétuellement sombres. Utilise des ondes ultrasonores pour identifier et approcher les cibles.",
+      "es": "Forma colonias en lugares perpetuamente oscuros. Utiliza ondas ultrasónicas para identificar y acercarse a los objetivos."
+    },
+    "hp": 40,
+    "attack": 45,
+    "defense": 35,
+    "speed": 55
+  },
+  {
+    "pokedexID": 42,
+    "name": {
+      "en": "Golbat",
+      "de": "Golbat",
+      "fr": "Nosferalto",
+      "es": "Golbat"
+    },
+    "description": {
+      "en": "It clamps down on its prey with needle-sharp fangs and drains over 10 ounces of blood in one gulp.",
+      "de": "Es klemmt seine Beute mit nadelscharfen Fangzähnen fest und saugt in einem Schluck über 10 Unzen Blut.",
+      "fr": "Il se cramponne à sa proie avec des crocs acérés comme des aiguilles et draine plus de 10 onces de sang en une gorgée.",
+      "es": "Se aferra a su presa con colmillos afilados como agujas y drena más de 10 onzas de sangre de un trago."
+    },
+    "hp": 75,
+    "attack": 80,
+    "defense": 70,
+    "speed": 90
+  },
+  {
+    "pokedexID": 43,
+    "name": {
+      "en": "Oddish",
+      "de": "Myrapla",
+      "fr": "Mystherbe",
+      "es": "Oddish"
+    },
+    "description": {
+      "en": "During the day, it stays in the cold underground to avoid the sun. It grows by bathing in moonlight.",
+      "de": "Tagsüber bleibt es im kalten Untergrund, um der Sonne zu entgehen. Es wächst, indem es sich im Mondlicht badet.",
+      "fr": "Pendant la journée, il reste dans le froid souterrain pour éviter le soleil. Il grandit en se baignant au clair de lune.",
+      "es": "Durante el día, permanece en el frío subterráneo para evitar el sol. Crece bañándose a la luz de la luna."
+    },
+    "hp": 45,
+    "attack": 50,
+    "defense": 55,
+    "speed": 30
+  },
+  {
+    "pokedexID": 44,
+    "name": {
+      "en": "Gloom",
+      "de": "Duflor",
+      "fr": "Ortide",
+      "es": "Gloom"
+    },
+    "description": {
+      "en": "The fluid that oozes from its mouth isn't drool. It is a nectar that is used to attract prey.",
+      "de": "Die Flüssigkeit, die aus seinem Mund tropft, ist kein Speichel. Es ist ein Nektar, der verwendet wird, um Beute anzulocken.",
+      "fr": "Le liquide qui suinte de sa bouche n'est pas de la bave. C'est un nectar qui est utilisé pour attirer les proies.",
+      "es": "El fluido que rezuma de su boca no es babas. Es un néctar que se utiliza para atraer a las presas."
+    },
+    "hp": 60,
+    "attack": 65,
+    "defense": 70,
+    "speed": 40
+  },
+  {
+    "pokedexID": 45,
+    "name": {
+      "en": "Vileplume",
+      "de": "Giflor",
+      "fr": "Rafflesia",
+      "es": "Vileplume"
+    },
+    "description": {
+      "en": "The larger its petals, the more toxic pollen it releases. Its big head is heavy and hard to hold up.",
+      "de": "Je größer seine Blütenblätter sind, desto mehr giftigen Pollen setzt es frei. Sein großer Kopf ist schwer und schwer zu halten.",
+      "fr": "Plus ses pétales sont grands, plus il libère de pollen toxique. Sa grosse tête est lourde et difficile à lever.",
+      "es": "Cuanto más grandes son sus pétalos, más polen tóxico libera. Su cabeza grande es pesada y difícil de sostener."
+    },
+    "hp": 75,
+    "attack": 80,
+    "defense": 85,
+    "speed": 50
+  },
+  {
+    "pokedexID": 46,
+    "name": {
+      "en": "Paras",
+      "de": "Paras",
+      "fr": "Paras",
+      "es": "Paras"
+    },
+    "description": {
+      "en": "Burrows under the ground to gnaw on tree roots. The mushrooms on its back absorb most of the nutrition.",
+      "de": "Gräbt sich unter die Erde, um an Baumwurzeln zu nagen. Die Pilze auf seinem Rücken absorbieren den Großteil der Nährstoffe.",
+      "fr": "Creuse sous terre pour ronger les racines des arbres. Les champignons sur son dos absorbent la majeure partie de la nutrition.",
+      "es": "Se entierra bajo tierra para roer las raíces de los árboles. Los hongos en su espalda absorben la mayor parte de la nutrición."
+    },
+    "hp": 35,
+    "attack": 70,
+    "defense": 55,
+    "speed": 25
+  },
+  {
+    "pokedexID": 47,
+    "name": {
+      "en": "Parasect",
+      "de": "Parasek",
+      "fr": "Parasect",
+      "es": "Parasect"
+    },
+    "description": {
+      "en": "A host-parasite pair in which the parasite mushroom has taken over the host bug. Prefers damp places.",
+      "de": "Ein Wirt-Parasit-Paar, bei dem der parasitäre Pilz den Wirtskäfer übernommen hat. Bevorzugt feuchte Orte.",
+      "fr": "Une paire hôte-parasite dans laquelle le champignon parasite a pris le contrôle de l'insecte hôte. Préfère les endroits humides.",
+      "es": "Un par huésped-parásito en el que el hongo parásito ha tomado el control del insecto huésped. Prefiere lugares húmedos."
+    },
+    "hp": 60,
+    "attack": 95,
+    "defense": 80,
+    "speed": 30
+  },
+  {
+    "pokedexID": 48,
+    "name": {
+      "en": "Venonat",
+      "de": "Bluzuk",
+      "fr": "Mimitoss",
+      "es": "Venonat"
+    },
+    "description": {
+      "en": "Its large eyes act as radars. In a bright place, you can see that they are clusters of many tiny eyes.",
+      "de": "Seine großen Augen wirken wie Radare. An einem hellen Ort können Sie sehen, dass es sich um Cluster vieler kleiner Augen handelt.",
+      "fr": "Ses grands yeux agissent comme des radars. Dans un endroit lumineux, vous pouvez voir qu'ils sont des grappes de nombreux petits yeux.",
+      "es": "Sus grandes ojos actúan como radares. En un lugar brillante, puedes ver que son racimos de muchos ojos pequeños."
+    },
+    "hp": 60,
+    "attack": 55,
+    "defense": 50,
+    "speed": 45
+  },
+  {
+    "pokedexID": 49,
+    "name": {
+      "en": "Venomoth",
+      "de": "Omot",
+      "fr": "Aéromite",
+      "es": "Venomoth"
+    },
+    "description": {
+      "en": "The dust-like scales covering its wings are color-coded to indicate the kinds of poison it has.",
+      "de": "Die staubartigen Schuppen, die seine Flügel bedecken, sind farbcodiert, um die Arten von Gift anzuzeigen, die es hat.",
+      "fr": "Les écailles poussiéreuses recouvrant ses ailes sont codées par couleur pour indiquer les types de poison qu'il possède.",
+      "es": "Las escamas similares a polvo que cubren sus alas están codificadas por colores para indicar los tipos de veneno que tiene."
+    },
+    "hp": 70,
+    "attack": 65,
+    "defense": 60,
+    "speed": 90
+  },
+  {
+    "pokedexID": 50,
+    "name": {
+      "en": "Diglett",
+      "de": "Digda",
+      "fr": "Taupiqueur",
+      "es": "Diglett"
+    },
+    "description": {
+      "en": "Lives about one yard underground where it feeds on plant roots. It sometimes appears above ground.",
+      "de": "Lebt etwa einen Meter unter der Erde, wo es sich von Pflanzenwurzeln ernährt. Manchmal erscheint es über dem Boden.",
+      "fr": "Vit environ un mètre sous terre où il se nourrit de racines de plantes. Il apparaît parfois à la surface.",
+      "es": "Vive a unos tres pies bajo tierra donde se alimenta de raíces de plantas. A veces aparece en la superficie."
+    },
+    "hp": 10,
+    "attack": 55,
+    "defense": 25,
+    "speed": 95
+  },
+  {
+    "pokedexID": 51,
+    "name": {
+      "en": "Dugtrio",
+      "de": "Digdri",
+      "fr": "Triopikeur",
+      "es": "Dugtrio"
+    },
+    "description": {
+      "en": "A team of Diglett triplets. It triggers huge earthquakes by burrowing 60 miles underground.",
+      "de": "Ein Team von Digda-Drillingen. Es löst enorme Erdbeben aus, indem es 60 Meilen unter der Erde gräbt.",
+      "fr": "Une équipe de triplés Taupiqueur. Il déclenche d'énormes tremblements de terre en creusant à 60 miles sous terre.",
+      "es": "Un equipo de trillizos Diglett. Provoca enormes terremotos al excavar 60 millas bajo tierra."
+    },
+    "hp": 35,
+    "attack": 100,
+    "defense": 50,
+    "speed": 120
+  },
+  {
+    "pokedexID": 52,
+    "name": {
+      "en": "Meowth",
+      "de": "Mauzi",
+      "fr": "Miaouss",
+      "es": "Meowth"
+    },
+    "description": {
+      "en": "Adores circular objects. Wanders the streets on a nightly basis to look for dropped loose change.",
+      "de": "Liebt runde Gegenstände. Streift nachts durch die Straßen, um nach heruntergefallenem Kleingeld zu suchen.",
+      "fr": "Adore les objets circulaires. Erre dans les rues la nuit à la recherche de monnaie tombée.",
+      "es": "Adora los objetos circulares. Vaga por las calles por la noche en busca de cambio perdido."
+    },
+    "hp": 40,
+    "attack": 45,
+    "defense": 35,
+    "speed": 90
+  },
+  {
+    "pokedexID": 53,
+    "name": {
+      "en": "Persian",
+      "de": "Snobilikat",
+      "fr": "Persian",
+      "es": "Persian"
+    },
+    "description": {
+      "en": "Although its fur has many admirers, it is tough to raise as a pet because of its fickle meanness.",
+      "de": "Obwohl sein Fell viele Bewunderer hat, ist es schwierig, es als Haustier zu halten, wegen seiner launischen Gemeinheit.",
+      "fr": "Bien que sa fourrure ait de nombreux admirateurs, il est difficile à élever comme animal de compagnie en raison de sa méchanceté capricieuse.",
+      "es": "Aunque su pelo tiene muchos admiradores, es difícil de criar como mascota debido a su malicia caprichosa."
+    },
+    "hp": 65,
+    "attack": 70,
+    "defense": 60,
+    "speed": 115
+  },
+  {
+    "pokedexID": 54,
+    "name": {
+      "en": "Psyduck",
+      "de": "Enton",
+      "fr": "Psykokwak",
+      "es": "Psyduck"
+    },
+    "description": {
+      "en": "While lulling its enemies with its vacant look, this wily Pokémon will use psychokinetic powers.",
+      "de": "Während es seine Feinde mit seinem leeren Blick einlullt, wird dieses gerissene Pokémon psychokinetische Kräfte einsetzen.",
+      "fr": "Tout en berçant ses ennemis avec son regard vide, ce Pokémon rusé utilisera des pouvoirs psychokinétiques.",
+      "es": "Mientras adormece a sus enemigos con su mirada vacía, este astuto Pokémon utilizará poderes psicocinéticos."
+    },
+    "hp": 50,
+    "attack": 52,
+    "defense": 48,
+    "speed": 55
+  },
+  {
+    "pokedexID": 55,
+    "name": {
+      "en": "Golduck",
+      "de": "Entoron",
+      "fr": "Akwakwak",
+      "es": "Golduck"
+    },
+    "description": {
+      "en": "The webbed flippers on its forelegs and sturdy swimming tail make it a fast swimmer.",
+      "de": "Die Schwimmhäute an seinen Vorderbeinen und der robuste Schwimmschwanz machen es zu einem schnellen Schwimmer.",
+      "fr": "Les palmes palmées sur ses pattes avant et sa queue de nage robuste en font un nageur rapide.",
+      "es": "Las aletas palmeadas en sus patas delanteras y su resistente cola de nado lo hacen un nadador rápido."
+    },
+    "hp": 80,
+    "attack": 82,
+    "defense": 78,
+    "speed": 85
+  },
+  {
+    "pokedexID": 56,
+    "name": {
+      "en": "Mankey",
+      "de": "Menki",
+      "fr": "Férosinge",
+      "es": "Mankey"
+    },
+    "description": {
+      "en": "Extremely quick to anger. It could be docile one moment then thrashing wildly the next.",
+      "de": "Extrem schnell wütend. Es könnte einen Moment lang zahm sein und im nächsten wild um sich schlagen.",
+      "fr": "Extrêmement rapide à se mettre en colère. Il peut être docile un instant puis se débattre sauvagement l'instant suivant.",
+      "es": "Extremadamente rápido para enojarse. Podría estar dócil un momento y al siguiente golpeando violentamente."
+    },
+    "hp": 40,
+    "attack": 80,
+    "defense": 35,
+    "speed": 70
+  },
+  {
+    "pokedexID": 57,
+    "name": {
+      "en": "Primeape",
+      "de": "Rasaff",
+      "fr": "Colossinge",
+      "es": "Primeape"
+    },
+    "description": {
+      "en": "Always furious and tenacious to boot. It will not abandon chasing its quarry until it is caught.",
+      "de": "Immer wütend und dazu noch hartnäckig. Es wird die Verfolgung seiner Beute nicht aufgeben, bis sie gefangen ist.",
+      "fr": "Toujours furieux et tenace de surcroît. Il n'abandonnera pas la poursuite de sa proie jusqu'à ce qu'elle soit capturée.",
+      "es": "Siempre furioso y tenaz además. No abandonará la persecución de su presa hasta que la capture."
+    },
+    "hp": 65,
+    "attack": 105,
+    "defense": 60,
+    "speed": 95
+  },
+  {
+    "pokedexID": 58,
+    "name": {
+      "en": "Growlithe",
+      "de": "Fukano",
+      "fr": "Caninos",
+      "es": "Growlithe"
+    },
+    "description": {
+      "en": "Very protective of its territory. It will bark and bite to repel intruders from its space.",
+      "de": "Sehr beschützend für sein Territorium. Es wird bellen und beißen, um Eindringlinge aus seinem Raum zu vertreiben.",
+      "fr": "Très protecteur de son territoire. Il aboiera et mordra pour repousser les intrus de son espace.",
+      "es": "Muy protector de su territorio. Ladrará y morderá para repeler a los intrusos de su espacio."
+    },
+    "hp": 55,
+    "attack": 70,
+    "defense": 45,
+    "speed": 60
+  },
+  {
+    "pokedexID": 59,
+    "name": {
+      "en": "Arcanine",
+      "de": "Arkani",
+      "fr": "Arcanin",
+      "es": "Arcanine"
+    },
+    "description": {
+      "en": "A Pokémon that has been admired since the past for its beauty. It runs agilely as if on wings.",
+      "de": "Ein Pokémon, das seit der Vergangenheit für seine Schönheit bewundert wird. Es läuft behände, als hätte es Flügel.",
+      "fr": "Un Pokémon qui est admiré depuis le passé pour sa beauté. Il court agilement comme s'il avait des ailes.",
+      "es": "Un Pokémon que ha sido admirado desde el pasado por su belleza. Corre ágilmente como si tuviera alas."
+    },
+    "hp": 90,
+    "attack": 110,
+    "defense": 80,
+    "speed": 95
+  },
+  {
+    "pokedexID": 60,
+    "name": {
+      "en": "Poliwag",
+      "de": "Quapsel",
+      "fr": "Ptitard",
+      "es": "Poliwag"
+    },
+    "description": {
+      "en": "Its newly grown legs prevent it from running. It appears to prefer swimming than trying to stand.",
+      "de": "Seine neu gewachsenen Beine hindern es am Laufen. Es scheint Schwimmen dem Stehen vorzuziehen.",
+      "fr": "Ses pattes nouvellement développées l'empêchent de courir. Il semble préférer nager plutôt que d'essayer de se tenir debout.",
+      "es": "Sus piernas recién crecidas le impiden correr. Parece preferir nadar que intentar estar de pie."
+    },
+    "hp": 40,
+    "attack": 50,
+    "defense": 40,
+    "speed": 90
+  }
+]

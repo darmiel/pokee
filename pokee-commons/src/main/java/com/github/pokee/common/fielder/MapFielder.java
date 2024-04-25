@@ -34,8 +34,6 @@ public class MapFielder implements Fielder {
 
     @Override
     public String toString() {
-        return "MapFielder{" +
-                "fields=" + fields +
-                '}';
+        return this.fields.toString();
     }
 }

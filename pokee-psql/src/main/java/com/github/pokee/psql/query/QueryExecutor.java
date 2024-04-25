@@ -1,12 +1,17 @@
 package com.github.pokee.psql.query;
 
+import com.github.pokee.common.FancyList;
+import com.github.pokee.common.QueryValueConverter;
 import com.github.pokee.common.fielder.Fielder;
 import com.github.pokee.common.fielder.MapFielder;
 import com.github.pokee.psql.domain.token.support.TokenType;
 import com.github.pokee.psql.domain.tree.nodes.grammar.impl.ProjectionNode;
 import com.github.pokee.psql.visitor.impl.InterpreterVisitor;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class QueryExecutor {
 
@@ -21,6 +26,14 @@ public class QueryExecutor {
      */
     public static Map<Class<?>, Map<String, QueryFilterFunction>> getFunctions() {
         return QueryExecutor.functions;
+    }
+
+    private static Object getValue(final Fielder fielder, final String key, final String language) {
+        final Object val = fielder.hasField(key) ? fielder.getField(key) : null;
+        if (val instanceof final QueryValueConverter converter) {
+            return converter.convertValue(language);
+        }
+        return val;
     }
 
     /**
@@ -57,7 +70,7 @@ public class QueryExecutor {
         final Map<String, List<Fielder>> result = new HashMap<>();
 
         for (final InterpreterVisitor.Query query : queries) {
-            final List<Fielder> values = new ArrayList<>();
+            final List<Fielder> values = new FancyList<>();
 
             // Extracting the namespace once as it's reused in the loop.
             final ProjectionNode first = query.projections().get(0);
@@ -76,14 +89,15 @@ public class QueryExecutor {
                 final MapFielder mapFielder = new MapFielder();
                 for (final ProjectionNode projection : query.projections()) {
                     if (projection.isAll()) {
-                        Arrays.stream(value.getFields()).forEach(field -> mapFielder.put(field, value.getField(field)));
+                        Arrays.stream(value.getFields()).forEach(field ->
+                                mapFielder.put(field, getValue(value, field, query.language())));
                         continue;
                     }
 
                     final String target = projection.getField().getField().getText();
                     final String key = projection.hasAlias() ? projection.getAlias().getText() : target;
 
-                    mapFielder.put(key, value.hasField(target) ? value.getField(target) : null);
+                    mapFielder.put(key, getValue(value, target, query.language()));
                 }
                 values.add(mapFielder);
             }

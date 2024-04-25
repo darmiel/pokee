@@ -122,6 +122,44 @@ public class JsonWriterMapper {
     }
 
     /**
+     * Write an object start to a string builder
+     *
+     * @param bob the string builder
+     */
+    public void writeObjectStart(final StringBuilder bob) {
+        bob.append('{');
+    }
+
+    /**
+     * Write an object end to a string builder
+     *
+     * @param bob the string builder
+     */
+    public void writeObjectEnd(final StringBuilder bob) {
+        bob.append('}');
+    }
+
+    /**
+     * Write an object entry to a string builder
+     *
+     * @param bob   the string builder
+     * @param key   the key
+     * @param value the value
+     * @param field the field
+     * @param depth the depth
+     */
+    public void writeObjectEntry(final StringBuilder bob,
+                                 final String key,
+                                 final Object value,
+                                 final Field field,
+                                 final int depth) {
+        this.prettyPrintNewLine(bob, depth + 1);
+        this.writeString(bob, key);
+        bob.append(": ");
+        this.write(bob, field, value, depth + 1);
+    }
+
+    /**
      * Write an object to a string builder
      *
      * @param bob    the string builder
@@ -129,7 +167,7 @@ public class JsonWriterMapper {
      * @param depth  the depth
      */
     public void writeObject(final StringBuilder bob, final Object object, final int depth) {
-        bob.append('{');
+        this.writeObjectStart(bob);
 
         int i = 0;
         final Map<String, Field> fields = JsonMapperUtil.getDeclaredFieldsInClassAndSuperClasses(object.getClass());
@@ -151,21 +189,39 @@ public class JsonWriterMapper {
             if (i++ != 0) {
                 bob.append(',');
             }
-            this.prettyPrintNewLine(bob, depth + 1);
 
-            // write name
             final String propertyName = field.isAnnotationPresent(JsonProperty.class)
                     ? field.getAnnotation(JsonProperty.class).value()
                     : field.getName();
-            this.writeString(bob, propertyName);
-            bob.append(": ");
 
-            // write value
-            this.write(bob, field, value, depth + 1);
+            this.writeObjectEntry(bob, propertyName, value, field, depth);
         }
 
         this.prettyPrintNewLine(bob, depth);
-        bob.append('}');
+        this.writeObjectEnd(bob);
+    }
+
+    /**
+     * Write a map to a string builder
+     *
+     * @param bob   the string builder
+     * @param map   the map
+     * @param depth the depth
+     */
+    public void writeMap(final StringBuilder bob, final Map<?, ?> map, final int depth) {
+        this.writeObjectStart(bob);
+
+        int i = 0;
+        for (final Map.Entry<?, ?> entry : map.entrySet()) {
+            if (i++ != 0) {
+                bob.append(',');
+            }
+
+            this.writeObjectEntry(bob, Objects.toString(entry.getKey()), entry.getValue(), null, depth);
+        }
+
+        this.prettyPrintNewLine(bob, depth);
+        this.writeObjectEnd(bob);
     }
 
     /**
@@ -229,10 +285,12 @@ public class JsonWriterMapper {
             return;
         }
 
-        final ValueWriterMapper valueWriterMapper = this.getValueWriterMapper(field, clazz);
-        if (valueWriterMapper != null) {
-            valueWriterMapper.writeValue(this, bob, field, object);
-            return;
+        if (field != null) {
+            final ValueWriterMapper valueWriterMapper = this.getValueWriterMapper(field, clazz);
+            if (valueWriterMapper != null) {
+                valueWriterMapper.writeValue(this, bob, field, object);
+                return;
+            }
         }
 
         // enums should be identified by name
@@ -244,6 +302,12 @@ public class JsonWriterMapper {
         // check if primitive type
         if (String.class.equals(clazz) || JsonMapperUtil.WRAPPER_TYPES.contains(clazz)) {
             this.writeString(bob, JsonWriterMapper.escapeString(Objects.toString(object)));
+            return;
+        }
+
+        // write map
+        if (Map.class.isAssignableFrom(clazz)) {
+            this.writeMap(bob, (Map<?, ?>) object, depth);
             return;
         }
 

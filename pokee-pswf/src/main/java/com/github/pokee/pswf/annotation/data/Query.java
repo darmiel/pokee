@@ -11,4 +11,6 @@ public @interface Query {
 
     String value();
 
+    String fallback() default "";
+
 }

@@ -1,5 +1,6 @@
 package com.github.pokee.psql.visitor.impl;
 
+import com.github.pokee.common.QueryValueConverter;
 import com.github.pokee.common.fielder.Fielder;
 import com.github.pokee.psql.domain.token.support.TokenType;
 import com.github.pokee.psql.domain.tree.nodes.common.TerminalNode;
@@ -19,12 +20,15 @@ public class ExpressionVisitor extends AliasNamespacedBasePsqlVisitor<Predicate<
 
 
     private final Map<String, NamespaceValues> namespaceValues;
+    private final String language;
 
     public ExpressionVisitor(final Map<String, String> importedNamespaces,
-                             final Map<String, NamespaceValues> namespaceValues) {
+                             final Map<String, NamespaceValues> namespaceValues,
+                             final String language) {
         super(importedNamespaces);
 
         this.namespaceValues = namespaceValues;
+        this.language = language;
     }
 
 
@@ -66,9 +70,12 @@ public class ExpressionVisitor extends AliasNamespacedBasePsqlVisitor<Predicate<
             throw new ExpressionException("Field " + field + " not found in namespace " + namespace);
         }
 
-        final Object dummyValue = namespaceValues.dummy().getField(field);
+        Object dummyValue = namespaceValues.dummy().getField(field);
         if (dummyValue == null) {
             throw new ExpressionException("Dummy field " + field + " was null in namespace " + namespace);
+        }
+        if (dummyValue instanceof final QueryValueConverter converter) {
+            dummyValue = converter.convertValue(this.language);
         }
 
         final Map<String, QueryFilterFunction> fieldFunctionMap = QueryExecutor.getFunctions().get(dummyValue.getClass());
@@ -100,9 +107,12 @@ public class ExpressionVisitor extends AliasNamespacedBasePsqlVisitor<Predicate<
         }
 
         return t -> {
-            final Object value = t.getField(field);
+            Object value = t.getField(field);
             if (value == null) {
                 return false;
+            }
+            if (value instanceof final QueryValueConverter converter) {
+                value = converter.convertValue(this.language);
             }
             return function.runner().execute(value, functionNode.getArguments());
         };

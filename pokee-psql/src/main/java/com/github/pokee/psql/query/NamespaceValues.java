@@ -4,5 +4,5 @@ import com.github.pokee.common.fielder.Fielder;
 
 import java.util.List;
 
-public record NamespaceValues(List<Fielder> values, Fielder dummy) {
+public record NamespaceValues(List<? extends Fielder> values, Fielder dummy) {
 }

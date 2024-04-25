@@ -129,7 +129,7 @@ public class Context {
      * @return The integer value of the parameter.
      */
     public int paramInt(final String key, final int defaultValue) {
-        return this.anyInt(key, defaultValue);
+        return this.anyInt(this.parameters.get(key), defaultValue);
     }
 
     /**

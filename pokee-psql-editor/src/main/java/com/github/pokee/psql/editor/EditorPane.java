@@ -1,6 +1,5 @@
 package com.github.pokee.psql.editor;
 
-import com.github.pokee.common.Pokemon;
 import com.github.pokee.common.fielder.Fielder;
 import com.github.pokee.psql.Lexer;
 import com.github.pokee.psql.Parser;
@@ -23,8 +22,10 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
 
 public class EditorPane extends JPanel implements DocumentListener {
 
@@ -170,7 +171,7 @@ public class EditorPane extends JPanel implements DocumentListener {
 
             // check things like duplicate query names
             program.accept(new SemanticAnalyzerVisitor(
-                    List.of("de", "en"))
+                    List.of("de", "en", "fr", "es"))
             );
             this.statusPage.setSemanticOk(true);
 
@@ -189,7 +190,15 @@ public class EditorPane extends JPanel implements DocumentListener {
                     importedAliases,
                     this.namespaceValues
             );
-            this.errorPane.setText(result.toString(), Color.GREEN);
+            final StringBuilder bob = new StringBuilder("{\n");
+            for (final Map.Entry<String, List<Fielder>> entry : result.entrySet()) {
+                bob.append("\t").append(entry.getKey()).append(": [\n");
+                for (final Fielder fielder : entry.getValue()) {
+                    bob.append("\t\t").append(fielder).append(",\n");
+                }
+                bob.append("\t],\n");
+            }
+            this.errorPane.setText(bob.toString(), Color.GREEN);
         } catch (final LexerException lexerException) {
             this.errorPane.setLexerException(lexerException);
         } catch (final ParseException parseException) {
@@ -231,15 +240,7 @@ public class EditorPane extends JPanel implements DocumentListener {
 
     public Map<String, NamespaceValues> getValues() {
         final Map<String, NamespaceValues> namespaceValues = new HashMap<>();
-        namespaceValues.put("Pokemon", new NamespaceValues(Arrays.asList(
-                new Pokemon(1, "Bulbasaur", 10),
-                new Pokemon(2, "Ivysaur", 20),
-                new Pokemon(3, "Venusaur", 30),
-                new Pokemon(4, "Charmander", 10),
-                new Pokemon(5, "Charmeleon", 20),
-                new Pokemon(6, "Charizard", 30),
-                new Pokemon(7, "Squirtle", 10)
-        ), new Pokemon(0, "", 0)));
+        // namespaceValues.put("Pokemon", new NamespaceValues());
 
         return namespaceValues;
     }

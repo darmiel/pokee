@@ -5,6 +5,7 @@ import com.github.pokee.psql.domain.tree.nodes.grammar.impl.UseStatementContext;
 import com.github.pokee.psql.exception.SemanticException;
 import com.github.pokee.psql.visitor.BasePsqlVisitor;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -26,9 +27,9 @@ public class NamespaceAnalyzerVisitor extends BasePsqlVisitor<Void> {
     public static final List<String> EXAMPLE_NAMESPACES = List.of("Pokemon", "Daniel");
 
     private final Map<String, String> importedNamespaces;
-    private final List<String> availableNamespaces;
+    private final Collection<String> availableNamespaces;
 
-    public NamespaceAnalyzerVisitor(final List<String> availableNamespaces,
+    public NamespaceAnalyzerVisitor(final Collection<String> availableNamespaces,
                                     final Map<String, String> importedNamespaces) {
         this.availableNamespaces = availableNamespaces;
         this.importedNamespaces = importedNamespaces;

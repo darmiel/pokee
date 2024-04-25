@@ -29,7 +29,7 @@ public class RequestParserVersion1_0 implements RequestParser {
         final Headers headers = new Headers();
         while (true) {
             final String line = reader.readLine();
-            if (line.isBlank()) {
+            if (line == null || line.isBlank()) {
                 break;
             }
             final int colonIndex = line.indexOf(':');

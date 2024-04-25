@@ -68,6 +68,10 @@ public record MethodTransformer(
         final Class<?> parameterType = parameter.getType();
         boolean isInteger = Integer.class.equals(parameterType) || int.class.equals(parameterType);
 
+        if (Context.class.equals(parameterType)) {
+            return context -> context;
+        }
+
         if (parameter.isAnnotationPresent(Param.class)) {
             if (String.class.equals(parameterType)) {
                 return context -> context.param(parameter.getAnnotation(Param.class).value());
@@ -78,11 +82,18 @@ public record MethodTransformer(
             throw new IllegalArgumentException("Unsupported parameter type: " + parameterType);
         }
         if (parameter.isAnnotationPresent(Query.class)) {
+            final Query query = parameter.getAnnotation(Query.class);
             if (String.class.equals(parameterType)) {
-                return context -> context.query(parameter.getAnnotation(Query.class).value());
+                if (query.fallback() != null && !query.fallback().isEmpty()) {
+                    return context -> context.query(query.value(), query.fallback());
+                }
+                return context -> context.query(query.value());
             }
             if (isInteger) {
-                return context -> context.queryInt(parameter.getAnnotation(Query.class).value(), 0);
+                if (query.fallback() != null && !query.fallback().isEmpty()) {
+                    return context -> context.queryInt(query.value(), Integer.parseInt(query.fallback()));
+                }
+                return context -> context.queryInt(query.value(), 0);
             }
             throw new IllegalArgumentException("Unsupported query type: " + parameterType);
         }
