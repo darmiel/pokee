@@ -4,7 +4,10 @@ import com.github.pokee.psql.domain.token.Token;
 import com.github.pokee.psql.domain.token.support.TokenType;
 import com.github.pokee.psql.domain.tree.nodes.common.NamespacedFieldNode;
 import com.github.pokee.psql.domain.tree.nodes.common.TerminalNode;
-import com.github.pokee.psql.domain.tree.nodes.expression.*;
+import com.github.pokee.psql.domain.tree.nodes.expression.BinaryExpressionNode;
+import com.github.pokee.psql.domain.tree.nodes.expression.ExpressionNode;
+import com.github.pokee.psql.domain.tree.nodes.expression.FunctionCallExpressionNode;
+import com.github.pokee.psql.domain.tree.nodes.expression.NotExpressionNode;
 import com.github.pokee.psql.domain.tree.nodes.grammar.impl.*;
 import com.github.pokee.psql.exception.ParseException;
 
@@ -444,14 +447,14 @@ public class Parser {
                 return expression;
             }
             case NAMESPACE_NAME -> {
-                return this.parseFunctionOrIdentifierExpression();
+                return this.parseFunctionExpression();
+            }
+            case NOT -> {
+                return this.parseNotOrPrimaryExpression();
             }
         }
-        if (this.current().type().isLiteral()) {
-            return this.parseLiteralExpression();
-        }
         throw ParseException.because(this.lexer, """
-                Expected either a literal value, a namespace name, or an opening parenthesis to start an expression.
+                Expected a namespace name, or an opening parenthesis to start an expression.
                 You can use literals like strings, numbers, and booleans, call functions, or compare fields using `P::name == "Pikachu`.""");
     }
 
@@ -462,7 +465,7 @@ public class Parser {
      * @return ExpressionNode either a function call or an identifier.
      * @throws ParseException if unexpected tokens or syntax errors occur.
      */
-    private ExpressionNode parseFunctionOrIdentifierExpression() throws ParseException {
+    private ExpressionNode parseFunctionExpression() throws ParseException {
         // expect and parse the field with the namespace name
         final NamespacedFieldNode fieldNode = this.parseNamespacedField();
 
@@ -481,14 +484,9 @@ public class Parser {
             return new FunctionCallExpressionNode(fieldNode, functionName.getText(), arguments);
         }
 
-        // if there is a compare operator, treat the current expression as an identifier
-        if (this.current().type().isCompareOperator()) {
-            return new IdentifierExpressionNode(fieldNode);
-        }
-
         throw ParseException.because(this.lexer, """
-                Expected either a function call or a comparison after the namespace and target field.
-                You can call a function using `P::name.startsWith("Pika")` or compare fields using `P::name == "Pikachu`.""");
+                Expected either a function call. You can call a function using 
+                `P::name.startsWith("Pika")` or compare fields using `P::name == "Pikachu`.""");
     }
 
     /**
@@ -500,11 +498,11 @@ public class Parser {
      */
     private ExpressionNode parseLogicalOrExpression() throws ParseException {
         ExpressionNode lhs = this.parseLogicalAndExpression();
-        while (this.current().type() == TokenType.BOOL_OR) {
+        while (this.current().type() == TokenType.OR) {
             this.advance(); // move past the operator
 
             final ExpressionNode rhs = this.parseLogicalAndExpression();
-            lhs = new BinaryExpressionNode(lhs, rhs, TokenType.BOOL_OR);
+            lhs = new BinaryExpressionNode(lhs, rhs, TokenType.OR);
         }
         return lhs;
     }
@@ -517,65 +515,22 @@ public class Parser {
      * @throws ParseException if syntax errors are found.
      */
     private ExpressionNode parseLogicalAndExpression() throws ParseException {
-        ExpressionNode lhs = this.parseEqualityExpression();
-        while (this.current().type() == TokenType.BOOL_AND) {
-            this.advance(); // move past the operator
-
-            final ExpressionNode rhs = this.parseEqualityExpression();
-            lhs = new BinaryExpressionNode(lhs, rhs, TokenType.BOOL_AND);
-        }
-        return lhs;
-    }
-
-    /**
-     * Handles equality expressions, distinguishing between 'equals' and 'not equals' conditions within the expression parsing.
-     * Example: 'a == b' or 'a != b' is parsed into a BinaryExpressionNode representing the equality or inequality.
-     *
-     * @return ExpressionNode encapsulating the equality comparison.
-     * @throws ParseException if syntax errors are found.
-     */
-    private ExpressionNode parseEqualityExpression() throws ParseException {
-        ExpressionNode lhs = this.parseRelationalExpression();
-        while (this.current().type() == TokenType.CMP_EQUALS || this.current().type() == TokenType.CMP_NOT_EQUALS) {
-            final TokenType operator = this.current().type();
-            this.advance(); // move past the operator
-
-            final ExpressionNode rhs = this.parseRelationalExpression();
-            lhs = new BinaryExpressionNode(lhs, rhs, operator);
-        }
-        return lhs;
-    }
-
-    /**
-     * Parses relational expressions, dealing with operators like '<', '>', '<=', and '>='.
-     * Example: 'a < b' or 'a >= b' results in a BinaryExpressionNode representing these comparisons.
-     *
-     * @return ExpressionNode representing the parsed relational expression.
-     * @throws ParseException if syntax errors occur.
-     */
-    private ExpressionNode parseRelationalExpression() throws ParseException {
         ExpressionNode lhs = this.parsePrimaryExpression();
-        while (this.current().type().isCompareOperator()) {
-            final TokenType operator = this.current().type();
+        while (this.current().type() == TokenType.AND) {
             this.advance(); // move past the operator
 
             final ExpressionNode rhs = this.parsePrimaryExpression();
-            lhs = new BinaryExpressionNode(lhs, rhs, operator);
+            lhs = new BinaryExpressionNode(lhs, rhs, TokenType.AND);
         }
         return lhs;
     }
 
-    /**
-     * Parses literal expressions directly from tokens, typically handling basic data types like strings, numbers, and booleans.
-     * Example: '42', '"hello"', 'true' are directly converted into LiteralExpressionNode instances.
-     *
-     * @return ExpressionNode representing the literal value.
-     */
-    private ExpressionNode parseLiteralExpression() {
-        final TokenType type = this.current().type();
-        final TerminalNode terminalNode = this.createTerminalNodeFromCurrentToken();
+    private ExpressionNode parseNotOrPrimaryExpression() throws ParseException {
+        this.expect(TokenType.NOT, "Expected a `not` keyword to start a negation expression.");
         this.advance();
-        return new LiteralExpressionNode(type, terminalNode);
+
+        final ExpressionNode expression = this.parsePrimaryExpression();
+        return new NotExpressionNode(expression);
     }
 
     /// Specific Utility Functions for Expressions
@@ -610,7 +565,7 @@ public class Parser {
                 throw ParseException.because(this.lexer, """
                                 Expected a literal value as a function argument.
                                 You can use strings, numbers, and booleans as function arguments.""",
-                        TokenType.STRING_LITERAL, TokenType.NUMBER, TokenType.BOOL_TRUE, TokenType.BOOL_FALSE);
+                        TokenType.STRING_LITERAL, TokenType.NUMBER);
             }
 
             // e.g. `P::name.startsWith("Pika")`

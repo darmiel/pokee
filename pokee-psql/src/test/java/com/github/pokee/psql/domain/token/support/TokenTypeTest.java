@@ -16,8 +16,6 @@ class TokenTypeTest {
     void isLiteral() {
         assertTrue(TokenType.STRING_LITERAL.isLiteral());
         assertTrue(TokenType.NUMBER.isLiteral());
-        assertTrue(TokenType.BOOL_TRUE.isLiteral());
-        assertTrue(TokenType.BOOL_FALSE.isLiteral());
     }
 
     @Test
@@ -35,33 +33,7 @@ class TokenTypeTest {
         assertTrue(TokenType.MAP.isKeyword());
         assertTrue(TokenType.QUERY.isKeyword());
         assertTrue(TokenType.LANGUAGE.isKeyword());
-    }
-
-    @Test
-    void isOperator() {
-        assertTrue(TokenType.STAR.isOperator());
-        assertTrue(TokenType.BOOL_AND.isOperator());
-        assertTrue(TokenType.BOOL_OR.isOperator());
-        assertTrue(TokenType.BIT_AND.isOperator());
-        assertTrue(TokenType.BIT_OR.isOperator());
-        assertTrue(TokenType.BIT_XOR.isOperator());
-        assertTrue(TokenType.BIT_NOT.isOperator());
-        assertTrue(TokenType.BIT_SHIFT_LEFT.isOperator());
-        assertTrue(TokenType.BIT_SHIFT_RIGHT.isOperator());
-        assertTrue(TokenType.PLUS.isOperator());
-        assertTrue(TokenType.MINUS.isOperator());
-        assertTrue(TokenType.DIVIDE.isOperator());
-        assertTrue(TokenType.MODULO.isOperator());
-    }
-
-    @Test
-    void isCompareOperator() {
-        assertTrue(TokenType.CMP_EQUALS.isCompareOperator());
-        assertTrue(TokenType.CMP_NOT_EQUALS.isCompareOperator());
-        assertTrue(TokenType.CMP_LESS_THAN.isCompareOperator());
-        assertTrue(TokenType.CMP_LESS_OR_EQUALS.isCompareOperator());
-        assertTrue(TokenType.CMP_GREATER_THAN.isCompareOperator());
-        assertTrue(TokenType.CMP_GREATER_OR_EQUALS.isCompareOperator());
+        assertTrue(TokenType.STAR.isKeyword());
     }
 
     @Test

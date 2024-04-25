@@ -18,38 +18,15 @@ public enum TokenType {
     RBRACKET(TokenTypeType.PUNCTUATION),
     LBRACE(TokenTypeType.PUNCTUATION),
     RBRACE(TokenTypeType.PUNCTUATION),
-    STAR(TokenTypeType.OPERATOR),
     COMMA(TokenTypeType.PUNCTUATION),
     DOT(TokenTypeType.PUNCTUATION),
     SEMICOLON(TokenTypeType.PUNCTUATION),
 
-    // logic operators
-    BOOL_TRUE(TokenTypeType.LITERAL),
-    BOOL_FALSE(TokenTypeType.LITERAL),
-    BOOL_AND(TokenTypeType.OPERATOR),
-    BOOL_OR(TokenTypeType.OPERATOR),
-
-    // math operators
-    BIT_AND(TokenTypeType.OPERATOR),
-    BIT_OR(TokenTypeType.OPERATOR),
-    BIT_XOR(TokenTypeType.OPERATOR),
-    BIT_NOT(TokenTypeType.OPERATOR),
-    BIT_SHIFT_LEFT(TokenTypeType.OPERATOR),
-    BIT_SHIFT_RIGHT(TokenTypeType.OPERATOR),
-    PLUS(TokenTypeType.OPERATOR),
-    MINUS(TokenTypeType.OPERATOR),
-    DIVIDE(TokenTypeType.OPERATOR),
-    MODULO(TokenTypeType.OPERATOR),
-
-    // comparison operators
-    CMP_EQUALS(TokenTypeType.COMPARE_OPERATOR),
-    CMP_NOT_EQUALS(TokenTypeType.COMPARE_OPERATOR),
-    CMP_LESS_THAN(TokenTypeType.COMPARE_OPERATOR),
-    CMP_LESS_OR_EQUALS(TokenTypeType.COMPARE_OPERATOR),
-    CMP_GREATER_THAN(TokenTypeType.COMPARE_OPERATOR),
-    CMP_GREATER_OR_EQUALS(TokenTypeType.COMPARE_OPERATOR),
-
     // other keywords
+    STAR(TokenTypeType.KEYWORD),
+    NOT(TokenTypeType.KEYWORD),
+    AND(TokenTypeType.KEYWORD),
+    OR(TokenTypeType.KEYWORD),
     FILTER(TokenTypeType.KEYWORD),
     MAP(TokenTypeType.KEYWORD),
     QUERY(TokenTypeType.KEYWORD),
@@ -78,17 +55,8 @@ public enum TokenType {
         return this.type == TokenTypeType.KEYWORD;
     }
 
-    public boolean isOperator() {
-        return this.type == TokenTypeType.OPERATOR;
-    }
-
-    public boolean isCompareOperator() {
-        return this.type == TokenTypeType.COMPARE_OPERATOR;
-    }
-
     public boolean isPunctuation() {
         return this.type == TokenTypeType.PUNCTUATION;
     }
-
 
 }

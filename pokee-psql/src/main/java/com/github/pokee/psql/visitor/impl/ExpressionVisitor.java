@@ -5,6 +5,7 @@ import com.github.pokee.psql.domain.token.support.TokenType;
 import com.github.pokee.psql.domain.tree.nodes.common.TerminalNode;
 import com.github.pokee.psql.domain.tree.nodes.expression.BinaryExpressionNode;
 import com.github.pokee.psql.domain.tree.nodes.expression.FunctionCallExpressionNode;
+import com.github.pokee.psql.domain.tree.nodes.expression.NotExpressionNode;
 import com.github.pokee.psql.exception.ExpressionException;
 import com.github.pokee.psql.query.NamespaceValues;
 import com.github.pokee.psql.query.QueryExecutor;
@@ -26,6 +27,12 @@ public class ExpressionVisitor extends AliasNamespacedBasePsqlVisitor<Predicate<
         this.namespaceValues = namespaceValues;
     }
 
+
+    @Override
+    public Predicate<Fielder> visitNotExpressionNode(final NotExpressionNode notExpressionNode) {
+        return Predicate.not(notExpressionNode.getExpression().accept(this));
+    }
+
     @Override
     public Predicate<Fielder> visitBinaryExpressionNode(final BinaryExpressionNode binaryExpressionNode) {
         final Predicate<Fielder> left = binaryExpressionNode.getLhs().accept(this);
@@ -38,12 +45,11 @@ public class ExpressionVisitor extends AliasNamespacedBasePsqlVisitor<Predicate<
         }
 
         return switch (binaryExpressionNode.getOperator()) {
-            case BOOL_AND -> left.and(right);
-            case BOOL_OR -> left.or(right);
+            case AND -> left.and(right);
+            case OR -> left.or(right);
             default -> throw new ExpressionException("Unsupported operator: " + binaryExpressionNode.getOperator());
         };
     }
-
 
     @Override
     public Predicate<Fielder> visitFunctionCallExpressionNode(final FunctionCallExpressionNode functionNode) {

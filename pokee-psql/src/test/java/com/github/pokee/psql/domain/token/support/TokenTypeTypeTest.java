@@ -13,7 +13,6 @@ class TokenTypeTypeTest {
         assertEquals(TokenTypeType.IDENTIFIER, TokenTypeType.fromString("IDENTIFIER"));
         assertEquals(TokenTypeType.LITERAL, TokenTypeType.fromString("LITERAL"));
         assertEquals(TokenTypeType.OPERATOR, TokenTypeType.fromString("OPERATOR"));
-        assertEquals(TokenTypeType.COMPARE_OPERATOR, TokenTypeType.fromString("COMPARE_OPERATOR"));
         assertEquals(TokenTypeType.PUNCTUATION, TokenTypeType.fromString("PUNCTUATION"));
         assertEquals(TokenTypeType.EOF, TokenTypeType.fromString("EOF"));
     }

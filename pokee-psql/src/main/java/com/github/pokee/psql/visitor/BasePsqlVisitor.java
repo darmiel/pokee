@@ -5,8 +5,7 @@ import com.github.pokee.psql.domain.tree.nodes.common.NamespacedFieldNode;
 import com.github.pokee.psql.domain.tree.nodes.common.TerminalNode;
 import com.github.pokee.psql.domain.tree.nodes.expression.BinaryExpressionNode;
 import com.github.pokee.psql.domain.tree.nodes.expression.FunctionCallExpressionNode;
-import com.github.pokee.psql.domain.tree.nodes.expression.IdentifierExpressionNode;
-import com.github.pokee.psql.domain.tree.nodes.expression.LiteralExpressionNode;
+import com.github.pokee.psql.domain.tree.nodes.expression.NotExpressionNode;
 import com.github.pokee.psql.domain.tree.nodes.grammar.impl.*;
 
 public class BasePsqlVisitor<T> implements Visitor<T> {
@@ -47,13 +46,8 @@ public class BasePsqlVisitor<T> implements Visitor<T> {
     }
 
     @Override
-    public T visitLiteralExpressionNode(final LiteralExpressionNode literalExpressionNode) {
-        return this.visitChildren(literalExpressionNode);
-    }
-
-    @Override
-    public T visitIdentifierExpressionNode(final IdentifierExpressionNode identifierExpressionNode) {
-        return this.visitChildren(identifierExpressionNode);
+    public T visitNotExpressionNode(NotExpressionNode notExpressionNode) {
+        return this.visitChildren(notExpressionNode);
     }
 
     @Override

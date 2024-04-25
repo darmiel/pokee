@@ -49,20 +49,15 @@ class LexerTest {
                 QUERY all Pokemon::{
                 	id AS poke_id,
                 	name
-                } FILTER Pokemon::id >= 14 AND
-                	  (Pokemon::id < 4 &&
-                	    P::name.starts_with("hello!", 1);
-                """);
+                } FILTER Pokemon::id.gt(0)""");
         this.testAll(lexer,
                 TokenType.USE, withValue(TokenType.IDENTIFIER, "Pokemon"), TokenType.SEMICOLON,
                 TokenType.USE, withValue(TokenType.IDENTIFIER, "Pokemon"), TokenType.AS, withValue(TokenType.IDENTIFIER, "P"), TokenType.SEMICOLON,
                 TokenType.QUERY, withValue(TokenType.IDENTIFIER, "all"), withValue(TokenType.NAMESPACE_NAME, "Pokemon"), TokenType.LBRACE,
                 withValue(TokenType.IDENTIFIER, "id"), TokenType.AS, withValue(TokenType.IDENTIFIER, "poke_id"), TokenType.COMMA,
                 withValue(TokenType.IDENTIFIER, "name"),
-                TokenType.RBRACE, TokenType.FILTER, TokenType.NAMESPACE_NAME, withValue(TokenType.IDENTIFIER, "id"), TokenType.CMP_GREATER_OR_EQUALS, TokenType.NUMBER, TokenType.BOOL_AND,
-                TokenType.LPAREN, TokenType.NAMESPACE_NAME, withValue(TokenType.IDENTIFIER, "id"), TokenType.CMP_LESS_THAN, TokenType.NUMBER, TokenType.BOOL_AND,
-                withValue(TokenType.NAMESPACE_NAME, "P"), withValue(TokenType.IDENTIFIER, "name"), TokenType.DOT, withValue(TokenType.FUNCTION_NAME, "starts_with"), TokenType.LPAREN, TokenType.STRING_LITERAL, TokenType.COMMA, TokenType.NUMBER, TokenType.RPAREN, TokenType.SEMICOLON,
-                TokenType.EOF);
+                TokenType.RBRACE, TokenType.FILTER, TokenType.NAMESPACE_NAME, withValue(TokenType.IDENTIFIER, "id"), TokenType.DOT, withValue(TokenType.FUNCTION_NAME, "gt"),
+                TokenType.LPAREN, withValue(TokenType.NUMBER, "0"), TokenType.RPAREN, TokenType.EOF);
     }
 
     @Test
@@ -84,20 +79,11 @@ class LexerTest {
     @Test
     void testOperators() {
         final Lexer lexer = new Lexer("""
-                AND && &
-                OR || |
-                ^~+-/%
-                < <= <<
-                > >= >>
-                <>
-                ==""");
+                AND &&
+                OR ||""");
         this.testAll(lexer,
-                TokenType.BOOL_AND, TokenType.BOOL_AND, TokenType.BIT_AND,
-                TokenType.BOOL_OR, TokenType.BOOL_OR, TokenType.BIT_OR,
-                TokenType.BIT_XOR, TokenType.BIT_NOT, TokenType.PLUS, TokenType.MINUS, TokenType.DIVIDE, TokenType.MODULO,
-                TokenType.CMP_LESS_THAN, TokenType.CMP_LESS_OR_EQUALS, TokenType.BIT_SHIFT_LEFT,
-                TokenType.CMP_GREATER_THAN, TokenType.CMP_GREATER_OR_EQUALS, TokenType.BIT_SHIFT_RIGHT,
-                TokenType.CMP_NOT_EQUALS, TokenType.CMP_EQUALS,
+                TokenType.AND, TokenType.AND,
+                TokenType.OR, TokenType.OR,
                 TokenType.EOF
         );
     }

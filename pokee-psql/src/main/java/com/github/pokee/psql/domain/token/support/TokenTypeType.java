@@ -6,7 +6,6 @@ public enum TokenTypeType {
     IDENTIFIER,
     LITERAL,
     OPERATOR,
-    COMPARE_OPERATOR,
     PUNCTUATION,
     EOF;
 

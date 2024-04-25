@@ -16,16 +16,15 @@ public class Lexer {
      * of keywords within the query.
      */
     public static final Map<String, TokenType> KEYWORDS = Map.of(
-            "and", TokenType.BOOL_AND,
-            "or", TokenType.BOOL_OR,
+            "and", TokenType.AND,
+            "or", TokenType.OR,
+            "not", TokenType.NOT,
             "use", TokenType.USE,
             "as", TokenType.AS,
             "filter", TokenType.FILTER,
             "map", TokenType.MAP,
             "query", TokenType.QUERY,
-            "lang", TokenType.LANGUAGE,
-            "true", TokenType.BOOL_TRUE,
-            "false", TokenType.BOOL_FALSE
+            "lang", TokenType.LANGUAGE
     );
 
     /**
@@ -101,83 +100,26 @@ public class Lexer {
                 this.currentIndex++;
                 if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == '&') {
                     this.currentIndex++;
-                    this.currentToken = new Token(TokenType.BOOL_AND, "&&", this.currentIndex - 2, this.currentIndex);
+                    this.currentToken = new Token(TokenType.AND, "&&", this.currentIndex - 2, this.currentIndex);
                 } else {
-                    this.currentToken = new Token(TokenType.BIT_AND, "&", this.currentIndex - 1, this.currentIndex);
+                    throw new LexerException("Unrecognized character: " + currentChar);
                 }
             }
             case '|' -> {
                 this.currentIndex++;
                 if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == '|') {
                     this.currentIndex++;
-                    this.currentToken = new Token(TokenType.BOOL_OR, "||", this.currentIndex - 2, this.currentIndex);
+                    this.currentToken = new Token(TokenType.OR, "||", this.currentIndex - 2, this.currentIndex);
                 } else {
-                    this.currentToken = new Token(TokenType.BIT_OR, "|", this.currentIndex - 1, this.currentIndex);
+                    throw new LexerException("Unrecognized character: " + currentChar);
                 }
             }
-
-            // a ^ b is a XOR b
-            case '^' -> this.getAndAdvance(TokenType.BIT_XOR, "^");
-
-            // ~ is a bitwise NOT
-            case '~' -> this.getAndAdvance(TokenType.BIT_NOT, "~");
-
-            // +, -, / and % are simple math operators
-            case '+' -> this.getAndAdvance(TokenType.PLUS, "+");
-            case '-' -> this.getAndAdvance(TokenType.MINUS, "-");
-            case '/' -> this.getAndAdvance(TokenType.DIVIDE, "/");
-            case '%' -> this.getAndAdvance(TokenType.MODULO, "%");
 
             // value tokens
             case '"' -> {
                 final int startIndex = this.currentIndex;
                 final String value = this.readStringLiteral();
                 this.currentToken = new Token(TokenType.STRING_LITERAL, value, startIndex, this.currentIndex);
-            }
-
-            // comparison operators
-            case '<' -> {
-                this.currentIndex++;
-                if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == '<') {
-                    // << is a bit shift left
-                    this.currentIndex++;
-                    this.currentToken = new Token(TokenType.BIT_SHIFT_LEFT, "<<", this.currentIndex - 2, this.currentIndex);
-                } else if (this.query.charAt(this.currentIndex) == '>') {
-                    // <> is not equals
-                    this.currentIndex++;
-                    this.currentToken = new Token(TokenType.CMP_NOT_EQUALS, "<>", this.currentIndex - 2, this.currentIndex);
-                } else if (this.query.charAt(this.currentIndex) == '=') {
-                    // <= is lower or equals
-                    this.currentIndex++;
-                    this.currentToken = new Token(TokenType.CMP_LESS_OR_EQUALS, "<=", this.currentIndex - 2, this.currentIndex);
-                } else {
-                    // < is lower than
-                    this.currentToken = new Token(TokenType.CMP_LESS_THAN, "<", this.currentIndex - 1, this.currentIndex);
-                }
-            }
-            case '>' -> {
-                this.currentIndex++;
-                if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == '>') {
-                    // >> is a bit shift right
-                    this.currentIndex++;
-                    this.currentToken = new Token(TokenType.BIT_SHIFT_RIGHT, ">>", this.currentIndex - 2, this.currentIndex);
-                } else if (this.query.charAt(this.currentIndex) == '=') {
-                    // >= is greater or equals
-                    this.currentIndex++;
-                    this.currentToken = new Token(TokenType.CMP_GREATER_OR_EQUALS, ">=", this.currentIndex - 2, this.currentIndex);
-                } else {
-                    // > is greater than
-                    this.currentToken = new Token(TokenType.CMP_GREATER_THAN, ">", this.currentIndex - 1, this.currentIndex);
-                }
-            }
-            case '=' -> {
-                this.currentIndex++;
-                if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == '=') {
-                    this.currentIndex++;
-                    this.currentToken = new Token(TokenType.CMP_EQUALS, "==", this.currentIndex - 2, this.currentIndex);
-                } else {
-                    throw new LexerException("Unrecognized character: " + currentChar);
-                }
             }
 
             default -> {
