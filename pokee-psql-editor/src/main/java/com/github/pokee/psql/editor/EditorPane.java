@@ -1,6 +1,11 @@
 package com.github.pokee.psql.editor;
 
+import com.github.pokee.common.LocalizedString;
+import com.github.pokee.common.Pokemon;
 import com.github.pokee.common.fielder.Fielder;
+import com.github.pokee.pson.Pson;
+import com.github.pokee.pson.value.JsonElement;
+import com.github.pokee.pson.value.JsonObject;
 import com.github.pokee.psql.Lexer;
 import com.github.pokee.psql.Parser;
 import com.github.pokee.psql.domain.token.Token;
@@ -22,6 +27,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -239,10 +245,32 @@ public class EditorPane extends JPanel implements DocumentListener {
 
 
     public Map<String, NamespaceValues> getValues() {
-        final Map<String, NamespaceValues> namespaceValues = new HashMap<>();
-        // namespaceValues.put("Pokemon", new NamespaceValues());
 
-        return namespaceValues;
+        final Pson pson = Pson.createWithDefaults()
+                .registerValueReaderMapper(LocalizedString.class, (element, field) -> {
+                    final JsonObject object = element.asObject();
+                    final LocalizedString localizedString = new LocalizedString();
+                    for (final Map.Entry<String, JsonElement> entry : object.entries()) {
+                        localizedString.put(entry.getKey(), entry.getValue().asPrimitive().asString());
+                    }
+                    return localizedString;
+                })
+                .build();
+
+        final Map<String, NamespaceValues> namespaceValues = new HashMap<>();
+
+        // load pokemons data
+        try {
+            final List<Pokemon> pokemons = pson.unmarshalList(Pokemon.class);
+            final NamespaceValues pokemonValues = new NamespaceValues(
+                    pokemons,
+                    new Pokemon(1, LocalizedString.fromString(""), LocalizedString.fromString(""), 0, 0, 0, 0)
+            );
+            namespaceValues.put("Pokemon", pokemonValues);
+            return namespaceValues;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
