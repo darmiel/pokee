@@ -117,19 +117,20 @@ public class JsonParserTest {
         final JsonParser parser = new JsonParser("""
                 {
                     "key1": "value1",
-                    "key2": "value2",
+                    "key2": null,
                     "key3": {
                       "nestedKey1": "nestedValue1",
-                      "nestedKey2": "nestedValue2"
+                      "nestedKey2": 1
                     }
                 }
                 """);
         final JsonObject object = (JsonObject) parser.parse();
         assertTrue(object.has("key3"));
+        assertTrue(object.get("key2").asPrimitive().isNull());
 
         final JsonObject nestedObject = object.get("key3").asObject();
         assertEquals("nestedValue1", nestedObject.get("nestedKey1").asPrimitive().asString());
-        assertEquals("nestedValue2", nestedObject.get("nestedKey2").asPrimitive().asString());
+        assertEquals(1, nestedObject.get("nestedKey2").asPrimitive().asInteger());
     }
 
     @Test

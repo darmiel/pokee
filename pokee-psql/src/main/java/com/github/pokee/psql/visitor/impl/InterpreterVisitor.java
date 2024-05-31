@@ -21,7 +21,6 @@ public class InterpreterVisitor extends AliasNamespacedBasePsqlVisitor<Void> {
     private final List<Query> queries;
     private final Map<String, NamespaceValues> namespaceValues;
 
-
     private String currentLanguage;
 
     public InterpreterVisitor(final List<Query> queries,
@@ -71,6 +70,13 @@ public class InterpreterVisitor extends AliasNamespacedBasePsqlVisitor<Void> {
                         List<ProjectionNode> projections,
                         List<Predicate<Fielder>> predicate,
                         String language) {
+    }
+
+    /**
+     * @return the current language
+     */
+    public String getCurrentLanguage() {
+        return currentLanguage;
     }
 
 }
