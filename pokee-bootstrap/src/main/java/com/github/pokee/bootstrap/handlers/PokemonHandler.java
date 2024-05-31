@@ -1,6 +1,6 @@
 package com.github.pokee.bootstrap.handlers;
 
-import com.github.pokee.bootstrap.PokemonRegistry;
+import com.github.pokee.bootstrap.PokemonRepository;
 import com.github.pokee.common.LocalizedString;
 import com.github.pokee.common.Pokemon;
 import com.github.pokee.common.fielder.Fielder;
@@ -29,15 +29,15 @@ import java.util.*;
 @RoutePrefix("/pokemon")
 public class PokemonHandler {
 
-    private final PokemonRegistry pokemonRegistry;
+    private final PokemonRepository pokemonRepository;
     private final Map<String, NamespaceValues> namespaceValues;
 
-    public PokemonHandler(final PokemonRegistry pokemonRegistry) {
-        this.pokemonRegistry = pokemonRegistry;
+    public PokemonHandler(final PokemonRepository pokemonRepository) {
+        this.pokemonRepository = pokemonRepository;
 
         this.namespaceValues = new HashMap<>();
         final NamespaceValues pokemonValues = new NamespaceValues(
-                this.pokemonRegistry.findAll(),
+                this.pokemonRepository.findAll(),
                 new Pokemon(1, LocalizedString.fromString(""), LocalizedString.fromString(""), 0, 0, 0, 0)
         );
         this.namespaceValues.put("Pokemon", pokemonValues);
@@ -56,7 +56,7 @@ public class PokemonHandler {
         final Pson pson = this.createLocalizedPson(language)
                 .prettyPrint()
                 .build();
-        return pson.marshal(this.pokemonRegistry.findAll());
+        return pson.marshal(this.pokemonRepository.findAll());
     }
 
     @GET("/:id")
@@ -67,7 +67,7 @@ public class PokemonHandler {
                 .prettyPrint()
                 .build();
 
-        final Optional<Pokemon> pokemon = this.pokemonRegistry.findById(id);
+        final Optional<Pokemon> pokemon = this.pokemonRepository.findById(id);
         if (pokemon.isEmpty()) {
             return new ResponseBuilder()
                     .status(StatusCode.NOT_FOUND)

@@ -5,7 +5,7 @@ import com.github.pokee.common.Pokemon;
 import java.util.List;
 import java.util.Optional;
 
-public interface PokemonRegistry {
+public interface PokemonRepository {
 
     List<Pokemon> findAll();
 

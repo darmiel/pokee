@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class LocalPokemonRegistry implements PokemonRegistry {
+public class LocalPokemonRepository implements PokemonRepository {
 
     private final List<Pokemon> pokemonList;
 
-    public LocalPokemonRegistry(
+    public LocalPokemonRepository(
             final List<Pokemon> pokemonList
     ) {
         this.pokemonList = pokemonList;

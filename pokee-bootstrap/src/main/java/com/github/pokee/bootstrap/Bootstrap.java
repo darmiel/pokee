@@ -38,7 +38,7 @@ public class Bootstrap {
 
         // load pokemons data
         final List<Pokemon> pokemons = pson.unmarshalList(Pokemon.class);
-        final PokemonRegistry pokemonRegistry = new LocalPokemonRegistry(pokemons);
+        final PokemonRepository pokemonRepository = new LocalPokemonRepository(pokemons);
 
         final WebServer server = new WebServerBuilder(8080)
                 .parameterized()
@@ -54,7 +54,7 @@ public class Bootstrap {
                 .get("/", ctx -> new ResponseBuilder()
                         .text("Hello World from Pokee API!"))
                 .clazz(new HelloWorldHandler())
-                .clazz(new PokemonHandler(pokemonRegistry))
+                .clazz(new PokemonHandler(pokemonRepository))
                 .build();
 
         System.out.println("Starting server on port " + config.getPort());
