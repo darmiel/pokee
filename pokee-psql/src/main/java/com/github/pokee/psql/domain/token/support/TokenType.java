@@ -3,60 +3,60 @@ package com.github.pokee.psql.domain.token.support;
 public enum TokenType {
 
     // value tokens
-    IDENTIFIER(TokenTypeType.IDENTIFIER),
-    FUNCTION_NAME(TokenTypeType.IDENTIFIER),
-    NAMESPACE_NAME(TokenTypeType.IDENTIFIER),
-    USE(TokenTypeType.KEYWORD),
-    AS(TokenTypeType.KEYWORD),
-    STRING_LITERAL(TokenTypeType.LITERAL),
-    NUMBER(TokenTypeType.LITERAL),
+    IDENTIFIER(TokenKind.IDENTIFIER),
+    FUNCTION_NAME(TokenKind.IDENTIFIER),
+    NAMESPACE_NAME(TokenKind.IDENTIFIER),
+    USE(TokenKind.KEYWORD),
+    AS(TokenKind.KEYWORD),
+    STRING_LITERAL(TokenKind.LITERAL),
+    NUMBER(TokenKind.LITERAL),
 
     // simple symbols
-    LPAREN(TokenTypeType.PUNCTUATION),
-    RPAREN(TokenTypeType.PUNCTUATION),
-    LBRACKET(TokenTypeType.PUNCTUATION),
-    RBRACKET(TokenTypeType.PUNCTUATION),
-    LBRACE(TokenTypeType.PUNCTUATION),
-    RBRACE(TokenTypeType.PUNCTUATION),
-    COMMA(TokenTypeType.PUNCTUATION),
-    DOT(TokenTypeType.PUNCTUATION),
-    SEMICOLON(TokenTypeType.PUNCTUATION),
+    LPAREN(TokenKind.PUNCTUATION),
+    RPAREN(TokenKind.PUNCTUATION),
+    LBRACKET(TokenKind.PUNCTUATION),
+    RBRACKET(TokenKind.PUNCTUATION),
+    LBRACE(TokenKind.PUNCTUATION),
+    RBRACE(TokenKind.PUNCTUATION),
+    COMMA(TokenKind.PUNCTUATION),
+    DOT(TokenKind.PUNCTUATION),
+    SEMICOLON(TokenKind.PUNCTUATION),
 
     // other keywords
-    STAR(TokenTypeType.KEYWORD),
-    NOT(TokenTypeType.KEYWORD),
-    AND(TokenTypeType.KEYWORD),
-    OR(TokenTypeType.KEYWORD),
-    FILTER(TokenTypeType.KEYWORD),
-    MAP(TokenTypeType.KEYWORD),
-    QUERY(TokenTypeType.KEYWORD),
-    LANGUAGE(TokenTypeType.KEYWORD),
-    EOF(TokenTypeType.EOF);
+    STAR(TokenKind.KEYWORD),
+    NOT(TokenKind.KEYWORD),
+    AND(TokenKind.KEYWORD),
+    OR(TokenKind.KEYWORD),
+    FILTER(TokenKind.KEYWORD),
+    MAP(TokenKind.KEYWORD),
+    QUERY(TokenKind.KEYWORD),
+    LANGUAGE(TokenKind.KEYWORD),
+    EOF(TokenKind.EOF);
 
-    private final TokenTypeType type;
+    private final TokenKind type;
 
-    TokenType(final TokenTypeType type) {
+    TokenType(final TokenKind type) {
         this.type = type;
     }
 
-    public TokenTypeType getTokenTypeType() {
+    public TokenKind getTokenTypeType() {
         return this.type;
     }
 
     public boolean isLiteral() {
-        return this.type == TokenTypeType.LITERAL;
+        return this.type == TokenKind.LITERAL;
     }
 
     public boolean isIdentifier() {
-        return this.type == TokenTypeType.IDENTIFIER;
+        return this.type == TokenKind.IDENTIFIER;
     }
 
     public boolean isKeyword() {
-        return this.type == TokenTypeType.KEYWORD;
+        return this.type == TokenKind.KEYWORD;
     }
 
     public boolean isPunctuation() {
-        return this.type == TokenTypeType.PUNCTUATION;
+        return this.type == TokenKind.PUNCTUATION;
     }
 
 }

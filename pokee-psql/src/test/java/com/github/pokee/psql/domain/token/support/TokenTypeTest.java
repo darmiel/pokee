@@ -9,7 +9,7 @@ class TokenTypeTest {
 
     @Test
     void getTokenTypeType() {
-        assertEquals(TokenTypeType.KEYWORD, TokenType.AS.getTokenTypeType());
+        assertEquals(TokenKind.KEYWORD, TokenType.AS.getTokenTypeType());
     }
 
     @Test

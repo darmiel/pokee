@@ -24,78 +24,63 @@ public class EqualsFunctions {
             final JsonElement a = function.getParameter(0);
             final JsonElement b = function.getParameter(1);
 
-            if (a.isObject() != b.isObject()) {
+            if (a.isObject() && b.isObject()) {
+                return compareObjects(a, b);
+            } else if (a.isArray() && b.isArray()) {
+                return compareArrays(a, b);
+            } else if (a.isPrimitive() && b.isPrimitive()) {
+                return comparePrimitives(a.asPrimitive(), b.asPrimitive());
+            }
+
+            return JsonPrimitive.fromBool(false);
+        }
+
+        private JsonElement compareObjects(JsonElement a, JsonElement b) {
+            final int sizeA = a.asObject().entries().size();
+            final int sizeB = b.asObject().entries().size();
+
+            if (sizeA != sizeB) {
                 return JsonPrimitive.fromBool(false);
             }
-            if (a.isObject()) {
-                final int sizeA = a.asObject().entries().size();
-                // we cannot compare objects yet, but if they have different sizes, they are different
-                if (sizeA != b.asObject().entries().size()) {
-                    return JsonPrimitive.fromBool(false);
-                }
-                if (sizeA == 0) {
-                    return JsonPrimitive.fromBool(true);
-                }
-                throw new UnsupportedOperationException("Cannot compare objects");
+            if (sizeA == 0) {
+                return JsonPrimitive.fromBool(true);
             }
 
-            if (a.isArray() != b.isArray()) {
+            throw new UnsupportedOperationException("Cannot compare objects");
+        }
+
+        private JsonElement compareArrays(JsonElement a, JsonElement b) {
+            final int sizeA = a.asArray().size();
+            final int sizeB = b.asArray().size();
+
+            if (sizeA != sizeB) {
                 return JsonPrimitive.fromBool(false);
             }
-            if (a.isArray()) {
-                // we cannot compare arrays yet, but if they have different sizes, they are different
-                if (a.asArray().size() != b.asArray().size()) {
-                    return JsonPrimitive.fromBool(false);
-                }
-                if (a.asArray().size() == 0) {
-                    return JsonPrimitive.fromBool(true);
-                }
-                throw new UnsupportedOperationException("Cannot compare arrays");
+            if (sizeA == 0) {
+                return JsonPrimitive.fromBool(true);
             }
 
-            if (a.isPrimitive() != b.isPrimitive()) {
-                return JsonPrimitive.fromBool(false);
+            throw new UnsupportedOperationException("Cannot compare arrays");
+        }
+
+        private JsonElement comparePrimitives(JsonPrimitive aPrimitive, JsonPrimitive bPrimitive) {
+            if (aPrimitive.isNull() && bPrimitive.isNull()) {
+                return JsonPrimitive.fromBool(true);
             }
-            if (a.isPrimitive()) {
-                final JsonPrimitive aPrimitive = a.asPrimitive();
-                final JsonPrimitive bPrimitive = b.asPrimitive();
-
-                if (aPrimitive.isNull() != bPrimitive.isNull()) {
-                    return JsonPrimitive.fromBool(false);
-                }
-                if (aPrimitive.isBoolean() != bPrimitive.isBoolean()) {
-                    return JsonPrimitive.fromBool(false);
-                }
-                if (aPrimitive.isString() != bPrimitive.isString()) {
-                    return JsonPrimitive.fromBool(false);
-                }
-                if (aPrimitive.isDouble() != bPrimitive.isDouble()) {
-                    return JsonPrimitive.fromBool(false);
-                }
-                if (aPrimitive.isInteger() != bPrimitive.isInteger()) {
-                    return JsonPrimitive.fromBool(false);
-                }
-
-                if (aPrimitive.isNull()) {
-                    return JsonPrimitive.fromBool(true);
-                }
-                if (aPrimitive.isBoolean()) {
-                    return JsonPrimitive.fromBool(aPrimitive.asBoolean() == bPrimitive.asBoolean());
-                }
-                if (aPrimitive.isString()) {
-                    return JsonPrimitive.fromBool(aPrimitive.asString().equals(bPrimitive.asString()));
-                }
-                if (aPrimitive.isDouble()) {
-                    return JsonPrimitive.fromBool(aPrimitive.asDouble() == bPrimitive.asDouble());
-                }
-                if (aPrimitive.isInteger()) {
-                    return JsonPrimitive.fromBool(aPrimitive.asInteger() == bPrimitive.asInteger());
-                }
-
-                throw new IllegalStateException("The primitive is not a null, boolean, string, double or integer");
+            if (aPrimitive.isBoolean() && bPrimitive.isBoolean()) {
+                return JsonPrimitive.fromBool(aPrimitive.asBoolean() == bPrimitive.asBoolean());
+            }
+            if (aPrimitive.isString() && bPrimitive.isString()) {
+                return JsonPrimitive.fromBool(aPrimitive.asString().equals(bPrimitive.asString()));
+            }
+            if (aPrimitive.isDouble() && bPrimitive.isDouble()) {
+                return JsonPrimitive.fromBool(aPrimitive.asDouble() == bPrimitive.asDouble());
+            }
+            if (aPrimitive.isInteger() && bPrimitive.isInteger()) {
+                return JsonPrimitive.fromBool(aPrimitive.asInteger() == bPrimitive.asInteger());
             }
 
-            throw new IllegalStateException("The element is not an object, array or primitive");
+            return JsonPrimitive.fromBool(false);
         }
 
     }
