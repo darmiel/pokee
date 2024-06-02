@@ -96,24 +96,8 @@ public class Lexer {
             case ';' -> this.getAndAdvance(TokenType.SEMICOLON, ";");
 
             // logic and math operators
-            case '&' -> {
-                this.currentIndex++;
-                if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == '&') {
-                    this.currentIndex++;
-                    this.currentToken = new Token(TokenType.AND, "&&", this.currentIndex - 2, this.currentIndex);
-                } else {
-                    throw new LexerException("Unrecognized character: " + currentChar);
-                }
-            }
-            case '|' -> {
-                this.currentIndex++;
-                if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == '|') {
-                    this.currentIndex++;
-                    this.currentToken = new Token(TokenType.OR, "||", this.currentIndex - 2, this.currentIndex);
-                } else {
-                    throw new LexerException("Unrecognized character: " + currentChar);
-                }
-            }
+            case '&' -> this.processDoubleCharToken('&', TokenType.AND);
+            case '|' -> this.processDoubleCharToken('|', TokenType.OR);
 
             // value tokens
             case '"' -> {
@@ -170,6 +154,22 @@ public class Lexer {
             }
         }
         return true;
+    }
+
+    /**
+     * Processes a token that consists of two identical characters, such as '&&' or '||'.
+     *
+     * @param expectedChar The character that is expected to be repeated.
+     * @param tokenType    The TokenType to assign to the token.
+     */
+    private void processDoubleCharToken(char expectedChar, TokenType tokenType) {
+        this.currentIndex++;
+        if (!this.isEndOfQuery() && this.query.charAt(this.currentIndex) == expectedChar) {
+            this.currentIndex++;
+            this.currentToken = new Token(tokenType, "" + expectedChar + expectedChar, this.currentIndex - 2, this.currentIndex);
+        } else {
+            throw new LexerException("Unrecognized character: " + expectedChar);
+        }
     }
 
     /**
