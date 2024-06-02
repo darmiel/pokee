@@ -2,7 +2,6 @@ package com.github.pokee.psql.exception;
 
 import com.github.pokee.psql.Lexer;
 import com.github.pokee.psql.Parser;
-import com.github.pokee.psql.domain.token.Token;
 import com.github.pokee.psql.domain.token.support.TokenType;
 
 import java.util.Arrays;
@@ -10,34 +9,16 @@ import java.util.stream.Collectors;
 
 public class ParseException extends Exception {
 
-    private final int index;
-    private final Token currentToken;
-
     private final String formattedError;
     private final String message;
 
-    public ParseException(final int index, final Token currentToken, final String formattedError, final String message) {
-        this.index = index;
-        this.currentToken = currentToken;
-
+    public ParseException(final String formattedError, final String message) {
         this.formattedError = formattedError;
         this.message = message;
     }
 
-    public ParseException(final int index, final Token currentToken, final String formattedError) {
-        this(index, currentToken, formattedError, "Error parsing query");
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public Token getCurrentToken() {
-        return currentToken;
-    }
-
-    public String getFormattedError() {
-        return formattedError;
+    public ParseException(final String formattedError) {
+        this(formattedError, "Error parsing query");
     }
 
     /**
@@ -92,29 +73,48 @@ public class ParseException extends Exception {
         final int errorIndex = index - lineStartIndex - actualValue.length();
 
         final StringBuilder bob = new StringBuilder();
-        bob.append(Parser.TRACE_PREFIX).append(line).append("\n")
-                .append(Parser.TRACE_PREFIX).append(" ".repeat(errorIndex)).append("^".repeat(actualValue.length())).append("\n");
+        appendErrorHeader(bob, line, errorIndex, actualValue.length());
 
         if (customError != null) {
-            for (final String customErrorLine : customError.split("\n")) {
-                bob.append(Parser.TRACE_PREFIX).append(" ".repeat(errorIndex)).append("| ").append(customErrorLine).append("\n");
-            }
-            if (expectedTypes.length > 0) {
-                bob.append(Parser.TRACE_PREFIX).append(" ".repeat(errorIndex)).append("| Expected ");
-                if (expectedTypes.length > 1) {
-                    bob.append("one of ");
-                } else {
-                    bob.append(" ");
-                }
-                bob.append(Arrays.stream(expectedTypes)
-                                .map(TokenType::name)
-                                .collect(Collectors.joining(", ")))
-                        .append(" but got ").append(actualType).append(" with value ").append(actualValue).append("\n");
-            }
+            appendCustomError(bob, customError, errorIndex, expectedTypes, actualType, actualValue);
         } else {
-            bob.append(Parser.TRACE_PREFIX).append(" ".repeat(errorIndex)).append("| Expected");
+            appendDefaultError(bob, errorIndex, expectedTypes, actualType, actualValue);
+        }
+
+        return bob.toString();
+    }
+
+    /**
+     * Appends the error header to the error message.
+     *
+     * @param bob         The string builder to append to.
+     * @param line        The line where the error occurred.
+     * @param errorIndex  The index of the error within the line.
+     * @param valueLength The length of the value that caused the error.
+     */
+    private static void appendErrorHeader(StringBuilder bob, String line, int errorIndex, int valueLength) {
+        bob.append(Parser.TRACE_PREFIX).append(line).append("\n")
+                .append(Parser.TRACE_PREFIX).append(" ".repeat(errorIndex)).append("^".repeat(valueLength)).append("\n");
+    }
+
+    /**
+     * Appends a custom error message to the error message.
+     *
+     * @param bob           The string builder to append to.
+     * @param customError   The custom error message to append.
+     * @param errorIndex    The index of the error within the line.
+     * @param expectedTypes The expected token types.
+     * @param actualType    The actual token type.
+     * @param actualValue   The actual token value.
+     */
+    private static void appendCustomError(StringBuilder bob, String customError, int errorIndex, TokenType[] expectedTypes, TokenType actualType, String actualValue) {
+        for (final String customErrorLine : customError.split("\n")) {
+            bob.append(Parser.TRACE_PREFIX).append(" ".repeat(errorIndex)).append("| ").append(customErrorLine).append("\n");
+        }
+        if (expectedTypes.length > 0) {
+            bob.append(Parser.TRACE_PREFIX).append(" ".repeat(errorIndex)).append("| Expected ");
             if (expectedTypes.length > 1) {
-                bob.append(" one of ");
+                bob.append("one of ");
             } else {
                 bob.append(" ");
             }
@@ -123,16 +123,42 @@ public class ParseException extends Exception {
                             .collect(Collectors.joining(", ")))
                     .append(" but got ").append(actualType).append(" with value ").append(actualValue).append("\n");
         }
-
-        return bob.toString();
     }
 
+    /**
+     * Appends the default error message to the error message.
+     *
+     * @param bob           The string builder to append to.
+     * @param errorIndex    The index of the error within the line.
+     * @param expectedTypes The expected token types.
+     * @param actualType    The actual token type.
+     * @param actualValue   The actual token value.
+     */
+    private static void appendDefaultError(StringBuilder bob, int errorIndex, TokenType[] expectedTypes, TokenType actualType, String actualValue) {
+        bob.append(Parser.TRACE_PREFIX).append(" ".repeat(errorIndex)).append("| Expected");
+        if (expectedTypes.length > 1) {
+            bob.append(" one of ");
+        } else {
+            bob.append(" ");
+        }
+        bob.append(Arrays.stream(expectedTypes)
+                        .map(TokenType::name)
+                        .collect(Collectors.joining(", ")))
+                .append(" but got ").append(actualType).append(" with value ").append(actualValue).append("\n");
+    }
+
+    /**
+     * Constructs a new ParseException with a custom error message.
+     *
+     * @param lexer    The lexer that encountered the error.
+     * @param reason   The custom error message.
+     * @param expected The expected token types.
+     * @return A new ParseException with the custom error message.
+     */
     public static ParseException because(final Lexer lexer,
                                          final String reason,
                                          final TokenType... expected) {
         return new ParseException(
-                lexer.getCurrentIndex(),
-                lexer.getCurrentToken(),
                 ParseException.getParseExceptionText(lexer, reason, expected),
                 reason
         );
