@@ -205,8 +205,6 @@ public class Parser {
         this.advance();
 
         final List<ProjectionNode> projectionNodeList = this.parseProjectionNodes();
-        System.out.println(projectionNodeList);
-
         if (projectionNodeList.isEmpty()) {
             throw ParseException.because(this.lexer, "You must specify at least one projection in a query.");
         }
@@ -489,7 +487,7 @@ public class Parser {
         }
 
         throw ParseException.because(this.lexer, """
-                Expected either a function call. You can call a function using 
+                Expected either a function call. You can call a function using
                 `P::name.startsWith("Pika")` or compare fields using `P::name == "Pikachu`.""");
     }
 
